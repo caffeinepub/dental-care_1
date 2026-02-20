@@ -1,82 +1,59 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 
 export default function HeroSection() {
   const navigate = useNavigate();
 
+  const handleContactClick = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-primary/10">
-      <div className="container py-20 md:py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Ek Behtar Muskurahat ki Shuruat Yahan Se Hoti Hai.
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground">
-                Advanced technology aur dard-mukt (painless) treatment ke saath aapka apna dental clinic.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                onClick={() => navigate({ to: '/booking' })}
-                className="text-lg px-8 py-6 h-auto font-semibold group"
-              >
-                Abhi Appointment Book Karein
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 h-auto"
-              >
-                Humse Sampark Karein
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-8 pt-4">
-              <div>
-                <div className="text-3xl font-bold text-primary">10+</div>
-                <div className="text-sm text-muted-foreground">Saal Ka Tajurba</div>
-              </div>
-              <div className="h-12 w-px bg-border" />
-              <div>
-                <div className="text-3xl font-bold text-primary">5000+</div>
-                <div className="text-sm text-muted-foreground">Khush Mareez</div>
-              </div>
-              <div className="h-12 w-px bg-border" />
-              <div>
-                <div className="text-3xl font-bold text-primary">24/7</div>
-                <div className="text-sm text-muted-foreground">Emergency Care</div>
-              </div>
-            </div>
+    <section 
+      id="home"
+      className="relative overflow-hidden min-h-[600px] md:min-h-[700px] flex items-center justify-center"
+      style={{
+        backgroundImage: 'url(/assets/generated/hero-dental-office.dim_1920x800.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-primary/50" />
+      
+      <div className="container relative z-10 py-20 md:py-32">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <div className="space-y-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white">
+              Your Journey to a Beautiful Smile Starts Here
+            </h1>
+            <p className="text-lg md:text-xl lg:text-2xl text-white/95 max-w-3xl mx-auto">
+              Advanced technology and pain-free treatment at your trusted dental clinic
+            </p>
           </div>
 
-          <div className="relative">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div className="rounded-2xl overflow-hidden shadow-2xl">
-                  <img
-                    src="/assets/generated/hero-patient.dim_800x600.png"
-                    alt="Happy patient"
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </div>
-              <div className="space-y-4 pt-8">
-                <div className="rounded-2xl overflow-hidden shadow-2xl">
-                  <img
-                    src="/assets/generated/hero-dentist.dim_800x600.png"
-                    alt="Professional dentist"
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-3xl" />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+            <Button
+              size="lg"
+              onClick={() => navigate({ to: '/booking' })}
+              className="text-lg px-8 py-6 h-auto font-semibold group bg-white text-primary hover:bg-white/90 hover:scale-105 transition-all shadow-lg"
+            >
+              Book Appointment Now
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleContactClick}
+              className="text-lg px-8 py-6 h-auto border-2 border-white text-white hover:bg-white hover:text-primary hover:scale-105 transition-all"
+            >
+              <Phone className="mr-2 w-5 h-5" />
+              Contact Us
+            </Button>
           </div>
         </div>
       </div>

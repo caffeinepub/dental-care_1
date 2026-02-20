@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T12:25:44.262Z",
+  "generatedAt": "2026-02-20T13:16:06.224Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,8 +11,41 @@
     "implemented": 6,
     "items": [
       {
-        "id": "REQ-10",
-        "summary": "Add detailed content for 'Dental Check-up & Cleaning' service expansion including: Procedure description 'Digital X-ray aur danton ki gehrai se safai (Scaling)', Benefit 'Cavity aur masoodon ki bimari se bachav', Time duration 'Sirf 30-45 minute', and a CTA button 'Abhi check-up schedule karein' that navigates to the booking page",
+        "id": "REQ-42",
+        "summary": "Create a new DoctorsSection component at frontend/src/components/DoctorsSection.tsx that displays three dental professionals: Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin, with professional profile cards showing their names, titles/specializations, and profile images",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/DoctorsSection.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/DoctorsSection.tsx"
+        ]
+      },
+      {
+        "id": "REQ-43",
+        "summary": "Add the DoctorsSection component to the HomePage component in frontend/src/pages/HomePage.tsx, positioned between WhyChooseUsSection and TestimonialsSection",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-44",
+        "summary": "Update HeroSection component to include a background image showing dental equipment and a patient-doctor interaction scene as the hero banner background",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/HeroSection.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/HeroSection.tsx"
+        ]
+      },
+      {
+        "id": "REQ-45",
+        "summary": "Add dental equipment and patient care imagery to the ServicesSection component, displaying relevant contextual photos within or alongside the service cards",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/ServicesSection.tsx"
@@ -22,68 +55,60 @@
         ]
       },
       {
-        "id": "REQ-11",
-        "summary": "Add detailed content for 'Root Canal Treatment (RCT)' service expansion including: Procedure 'Sade hue hisse ko saaf karke danton ko bachana', Special feature 'Single-sitting painless procedure (bin dard ke)', Benefit 'Asli daant ko nikaalne se bachata hai', and CTA button 'Dard se chutkara paayein' that navigates to the booking page",
+        "id": "REQ-46",
+        "summary": "Add a photo gallery or image showcase to the WhyChooseUsSection component showing dental machinery, clinic interior with modern equipment, and patient-doctor interactions",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
+          "frontend/src/components/WhyChooseUsSection.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
+          "frontend/src/components/WhyChooseUsSection.tsx"
         ]
       },
       {
-        "id": "REQ-12",
-        "summary": "Add detailed content for 'Dental Implants' service expansion including: Procedure 'Titanium post ke saath naye majboot daant lagana', Longevity 'Ye zindagi bhar saath dete hain', Benefit 'Khane-peene aur bolne mein asli danton jaisa mehsoos hota hai', and CTA button 'Apni muskurahat wapas paayein' that navigates to the booking page",
+        "id": "REQ-47",
+        "summary": "Reference all generated images as static assets from frontend/public/assets/generated directory in the respective components, ensuring proper image loading and optimization",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
+          "frontend/src/components/HeroSection.tsx",
+          "frontend/src/components/DoctorsSection.tsx",
+          "frontend/src/components/ServicesSection.tsx",
+          "frontend/src/components/WhyChooseUsSection.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-13",
-        "summary": "Add detailed content for 'Teeth Whitening' service expansion including: Procedure 'Advanced laser technology se peelepan ko hatana', Result 'Pehle hi session mein 3-4 shades safed daant', Benefit 'Shaadi ya party ke liye turant chamak', and an appropriate CTA button that navigates to the booking page",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-14",
-        "summary": "Ensure the remaining services (Braces & Aligners and Pediatric Dentistry) also have expandable sections with similar structured content including procedure, benefits, and CTAs that navigate to the booking page, maintaining consistency with the other four services",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-9",
-        "summary": "Convert the existing ServicesSection component to use an accordion/expandable card pattern where each service card can be clicked to expand and reveal detailed information below the service title and description",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
+          "frontend/src/components/HeroSection.tsx",
+          "frontend/src/components/DoctorsSection.tsx",
+          "frontend/src/components/ServicesSection.tsx",
+          "frontend/src/components/WhyChooseUsSection.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/blob-storage/Mixin.mo",
+    "backend/blob-storage/Storage.mo",
     "build-request.json",
+    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/dental-equipment-1.dim_800x600.png",
+    "frontend/public/assets/generated/dental-equipment-2.dim_800x600.png",
+    "frontend/public/assets/generated/dental-equipment-3.dim_800x600.png",
+    "frontend/public/assets/generated/doctor-anas-jadla.dim_400x400.png",
+    "frontend/public/assets/generated/doctor-farhan-bangra.dim_400x400.png",
+    "frontend/public/assets/generated/doctor-jainul-aabedin.dim_400x400.png",
+    "frontend/public/assets/generated/hero-dental-office.dim_1920x800.png",
+    "frontend/public/assets/generated/patient-doctor-consultation.dim_800x600.png",
+    "frontend/public/assets/generated/patient-doctor-exam.dim_800x600.png",
+    "frontend/public/assets/generated/service-cleaning.dim_600x400.png",
+    "frontend/public/assets/generated/service-implants.dim_600x400.png",
+    "frontend/public/assets/generated/service-root-canal.dim_600x400.png",
+    "frontend/src/components/DoctorsSection.tsx",
+    "frontend/src/components/HeroSection.tsx",
     "frontend/src/components/ServicesSection.tsx",
+    "frontend/src/components/WhyChooseUsSection.tsx",
+    "frontend/src/pages/HomePage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

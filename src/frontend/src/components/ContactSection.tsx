@@ -1,36 +1,109 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Phone, Clock, MessageCircle } from 'lucide-react';
+import { MapPin, Phone, Clock, Mail } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 
 export default function ContactSection() {
   return (
-    <section className="relative py-20 overflow-hidden">
-      <div
-        className="absolute inset-0 z-0 opacity-10"
-        style={{
-          backgroundImage: 'url(/assets/generated/clinic-interior.dim_1200x600.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-      <div className="container relative z-10">
+    <section id="contact" className="bg-muted/30 py-20">
+      <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Humse Sampark Karein</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Contact Us</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Kisi bhi sawal ya appointment ke liye humse sampark karein
+            Get in touch with us for any questions or to schedule an appointment
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <Card className="backdrop-blur-sm bg-card/95">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* Contact Information */}
+          <Card className="h-full">
             <CardHeader>
-              <CardTitle>Clinic Location</CardTitle>
+              <CardTitle>Get In Touch</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Location */}
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Clinic Location</h3>
+                  <p className="text-muted-foreground">
+                    123 Dental Street, Medical District<br />
+                    City, State 12345
+                  </p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Phone Number</h3>
+                  <a 
+                    href="tel:+916352174912" 
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    +91 635-217-4912
+                  </a>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Email Address</h3>
+                  <a 
+                    href="mailto:anasjadala@gmail.com" 
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    anasjadala@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Hours */}
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Clinic Hours</h3>
+                  <p className="text-muted-foreground">
+                    Monday - Saturday: 9 AM - 8 PM<br />
+                    Sunday: Closed
+                  </p>
+                </div>
+              </div>
+
+              {/* WhatsApp Button */}
+              <div className="pt-4">
+                <Button 
+                  className="w-full bg-green-600 hover:bg-green-700 text-white hover:scale-105 transition-all"
+                  size="lg"
+                  onClick={() => window.open('https://wa.me/916352174912', '_blank')}
+                >
+                  <SiWhatsapp className="w-5 h-5 mr-2" />
+                  Chat on WhatsApp
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Google Maps */}
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle>Find Us</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="aspect-video rounded-lg overflow-hidden mb-4">
+              <div className="aspect-[4/3] rounded-lg overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.2873034788894!2d77.2090212!3d28.6139391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2daa9eb4d0b%3A0x717971125923e5d!2sIndia%20Gate!5e0!3m2!1sen!2sin!4v1234567890"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2412648718453!2d-73.98784368459395!3d40.74844097932847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -40,63 +113,8 @@ export default function ContactSection() {
                   title="Clinic Location"
                 />
               </div>
-              <div className="flex items-start gap-3 text-sm text-muted-foreground">
-                <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <p>123 Main Street, Medical Complex, New Delhi - 110001</p>
-              </div>
             </CardContent>
           </Card>
-
-          <div className="space-y-4">
-            <Card className="backdrop-blur-sm bg-card/95">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  Clinic Timings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Somvaar - Shanivaar</span>
-                    <span className="font-semibold">9:00 AM - 8:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Ravivaar</span>
-                    <span className="font-semibold">Band</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="backdrop-blur-sm bg-card/95">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Phone className="w-5 h-5" />
-                  Contact Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">Phone Number</p>
-                  <a
-                    href="tel:+919876543210"
-                    className="text-lg font-semibold hover:text-primary transition-colors"
-                  >
-                    +91 98765 43210
-                  </a>
-                </div>
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={() => window.open('https://wa.me/919876543210', '_blank')}
-                >
-                  <SiWhatsapp className="w-5 h-5 mr-2" />
-                  WhatsApp Par Baat Karein
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
     </section>

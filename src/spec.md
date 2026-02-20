@@ -1,13 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Add interactive expandable service cards to the ServicesSection component with detailed information for each dental service.
+**Goal:** Add dental equipment photos, patient-doctor interaction images, and a team section showcasing three doctors to the Satya Dental Care website.
 
 **Planned changes:**
-- Convert existing service cards to accordion/expandable pattern with click-to-expand functionality
-- Add detailed content (procedure, benefits, time/longevity, CTA) for all six services in Hindi/Urdu
-- Implement smooth expand/collapse animations with single-card-open-at-a-time behavior
-- Add CTA buttons in each expanded section that navigate to the booking page
-- Ensure consistent content structure across all services (Dental Check-up & Cleaning, Root Canal Treatment, Dental Implants, Teeth Whitening, Braces & Aligners, Pediatric Dentistry)
+- Create a new DoctorsSection component displaying three dental professionals (Dr. Anas Jadla, Dr. Farhan Bangra, Dr. Jainul Aabedin) with profile cards
+- Add DoctorsSection to HomePage between WhyChooseUsSection and TestimonialsSection
+- Update HeroSection with a background image showing dental equipment and patient-doctor interaction
+- Add dental equipment and patient care imagery to ServicesSection
+- Add photo gallery to WhyChooseUsSection showcasing dental machinery, clinic interior, and patient-doctor interactions
+- Reference all generated images from frontend/public/assets/generated directory
 
-**User-visible outcome:** Users can click on any service card to reveal detailed information about the procedure, benefits, and timing, with a prominent call-to-action button to book an appointment. Only one service expands at a time, creating a clean, organized browsing experience.
+**User-visible outcome:** Visitors will see a more visual and professional dental website with photos of modern equipment, patient care scenes, and the clinic's three doctors prominently featured.

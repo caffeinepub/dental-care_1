@@ -14,14 +14,14 @@ export default function BookingPage() {
         className="mb-6"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
-        Wapas Jaayein
+        Back to Home
       </Button>
 
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4">Appointment Book Karein</h1>
+          <h1 className="text-4xl font-bold mb-4">Book an Appointment</h1>
           <p className="text-muted-foreground">
-            Apni appointment book karne ke liye neeche diye gaye form ko bharein. Hum jald hi aapse sampark karenge.
+            Fill out the form below to schedule your appointment. We will contact you shortly to confirm the details.
           </p>
         </div>
 

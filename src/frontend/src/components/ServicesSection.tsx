@@ -1,215 +1,150 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Heart, Smile, Braces, Baby, Stethoscope, Clock, CheckCircle, Award } from 'lucide-react';
-import { useNavigate } from '@tanstack/react-router';
+import { Sparkles, Heart, Smile, Braces, Baby, Stethoscope, ArrowRight } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 
 const services = [
   {
+    id: 'dental-checkup',
     icon: Stethoscope,
     title: 'Check-up & Cleaning',
-    description: 'Rozana ki danton ki dekhbhal',
+    description: 'Comprehensive dental examination and professional cleaning to maintain optimal oral health',
     color: 'text-chart-1',
-    details: {
-      procedure: 'Digital X-ray aur danton ki gehrai se safai (Scaling)',
-      benefit: 'Cavity aur masoodon ki bimari se bachav',
-      time: 'Sirf 30-45 minute',
-      cta: 'Abhi check-up schedule karein',
-    },
+    bgColor: 'bg-chart-1/10',
+    image: '/assets/generated/service-cleaning.dim_600x400.png',
   },
   {
+    id: 'root-canal',
     icon: Heart,
-    title: 'Root Canal Treatment (RCT)',
-    description: 'Bina dard ke danton ka ilaaj',
+    title: 'Root Canal Treatment',
+    description: 'Pain-free tooth restoration with single-sitting painless procedures available',
     color: 'text-chart-2',
-    details: {
-      procedure: 'Sade hue hisse ko saaf karke danton ko bachana',
-      feature: 'Single-sitting painless procedure (bin dard ke)',
-      benefit: 'Asli daant ko nikaalne se bachata hai',
-      cta: 'Dard se chutkara paayein',
-    },
+    bgColor: 'bg-chart-2/10',
+    image: '/assets/generated/service-root-canal.dim_600x400.png',
   },
   {
+    id: 'dental-implants',
     icon: Smile,
     title: 'Dental Implants',
-    description: 'Khoye hue danton ko wapas lagayein',
+    description: 'Permanent solution for missing teeth that feels and functions like natural teeth',
     color: 'text-chart-3',
-    details: {
-      procedure: 'Titanium post ke saath naye majboot daant lagana',
-      life: 'Ye zindagi bhar saath dete hain',
-      benefit: 'Khane-peene aur bolne mein asli danton jaisa mehsoos hota hai',
-      cta: 'Apni muskurahat wapas paayein',
-    },
+    bgColor: 'bg-chart-3/10',
+    image: '/assets/generated/service-implants.dim_600x400.png',
   },
   {
+    id: 'teeth-whitening',
     icon: Sparkles,
     title: 'Teeth Whitening',
-    description: 'Chamakti muskurahat ke liye',
+    description: 'Professional laser whitening for 3-4 shades brighter smile in just one session',
     color: 'text-chart-4',
-    details: {
-      procedure: 'Advanced laser technology se peelepan ko hatana',
-      result: 'Pehle hi session mein 3-4 shades safed daant',
-      benefit: 'Shaadi ya party ke liye turant chamak',
-      cta: 'Chamakti muskurahat paayein',
-    },
+    bgColor: 'bg-chart-4/10',
+    image: '/assets/generated/patient-doctor-consultation.dim_800x600.png',
   },
   {
+    id: 'braces-aligners',
     icon: Braces,
     title: 'Braces & Aligners',
-    description: 'Tedhe-medhe danton ka sahi alignment',
+    description: 'Metal braces or invisible aligners to correct misalignment and achieve perfect smile',
     color: 'text-chart-5',
-    details: {
-      procedure: 'Metal braces ya invisible aligners se danton ko seedha karna',
-      feature: 'Comfortable aur effective treatment options',
-      benefit: 'Perfect smile aur behtar oral health',
-      duration: '6-18 mahine (case ke hisaab se)',
-      cta: 'Perfect smile paayein',
-    },
+    bgColor: 'bg-chart-5/10',
+    image: '/assets/generated/dental-equipment-1.dim_800x600.png',
   },
   {
+    id: 'pediatric-dentistry',
     icon: Baby,
     title: 'Pediatric Dentistry',
-    description: 'Bachon ke danton ka khaas ilaaj',
+    description: 'Gentle and friendly dental care for kids in a child-friendly environment',
     color: 'text-chart-1',
-    details: {
-      procedure: 'Bachon ke liye friendly aur gentle dental care',
-      feature: 'Child-friendly environment aur painless treatment',
-      benefit: 'Bachon mein dental health ki achi aadat',
-      cta: 'Apne bachon ka check-up karwayein',
-    },
+    bgColor: 'bg-chart-1/10',
+    image: '/assets/generated/patient-doctor-exam.dim_800x600.png',
   },
 ];
 
 export default function ServicesSection() {
-  const navigate = useNavigate();
-
-  const handleBooking = () => {
-    navigate({ to: '/booking' });
-  };
-
   return (
-    <section className="container py-20">
+    <section id="services" className="container py-20">
       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Humari Suvidhayein</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Hum aapko sabse behtareen dental care services provide karte hain
+          We provide comprehensive dental care services with the latest technology
         </p>
       </div>
 
-      <Accordion type="single" collapsible className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service, index) => {
           const Icon = service.icon;
           return (
-            <AccordionItem
-              key={index}
-              value={`service-${index}`}
-              className="border-2 rounded-lg overflow-hidden bg-card hover:shadow-lg transition-shadow"
+            <Card 
+              key={index} 
+              className="text-center hover:shadow-lg hover:scale-105 transition-all duration-300 group overflow-hidden"
             >
-              <AccordionTrigger className="px-6 py-4 hover:no-underline group">
-                <div className="flex items-center gap-4 text-left w-full">
-                  <div className={`w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform ${service.color}`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold mb-1">{service.title}</h3>
-                    <p className="text-sm text-muted-foreground">{service.description}</p>
-                  </div>
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={service.image} 
+                  alt={`${service.title} - Professional dental service`}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
+                <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full ${service.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
+                  <Icon className={`w-8 h-8 ${service.color}`} />
                 </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-6">
-                <div className="pt-4 space-y-4 border-t">
-                  {/* Procedure */}
-                  {service.details.procedure && (
-                    <div className="flex gap-3">
-                      <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm mb-1">Procedure:</p>
-                        <p className="text-muted-foreground">{service.details.procedure}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Special Feature */}
-                  {service.details.feature && (
-                    <div className="flex gap-3">
-                      <Award className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm mb-1">Khasiyat:</p>
-                        <p className="text-muted-foreground">{service.details.feature}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Life/Duration */}
-                  {service.details.life && (
-                    <div className="flex gap-3">
-                      <Award className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm mb-1">Durability:</p>
-                        <p className="text-muted-foreground">{service.details.life}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Duration */}
-                  {service.details.duration && (
-                    <div className="flex gap-3">
-                      <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm mb-1">Duration:</p>
-                        <p className="text-muted-foreground">{service.details.duration}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Time */}
-                  {service.details.time && (
-                    <div className="flex gap-3">
-                      <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm mb-1">Time:</p>
-                        <p className="text-muted-foreground">{service.details.time}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Result */}
-                  {service.details.result && (
-                    <div className="flex gap-3">
-                      <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm mb-1">Result:</p>
-                        <p className="text-muted-foreground">{service.details.result}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Benefit */}
-                  {service.details.benefit && (
-                    <div className="flex gap-3">
-                      <Heart className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm mb-1">Fayda:</p>
-                        <p className="text-muted-foreground">{service.details.benefit}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* CTA Button */}
-                  <div className="pt-2">
+              </div>
+              <CardHeader>
+                <CardTitle className="text-xl mb-2">{service.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <CardDescription className="text-muted-foreground">
+                  {service.description}
+                </CardDescription>
+                <div className="flex flex-col gap-2">
+                  <Link to="/services/$serviceId" params={{ serviceId: service.id }}>
                     <Button 
-                      onClick={handleBooking}
-                      className="w-full sm:w-auto"
-                      size="lg"
+                      variant="outline"
+                      className="w-full group/btn hover:bg-primary hover:text-primary-foreground transition-colors"
                     >
-                      {service.details.cta}
+                      Learn More
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                     </Button>
-                  </div>
+                  </Link>
+                  <Link to="/booking">
+                    <Button 
+                      className="w-full"
+                    >
+                      Book Now
+                    </Button>
+                  </Link>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
+              </CardContent>
+            </Card>
           );
         })}
-      </Accordion>
+      </div>
+
+      {/* Additional Equipment Showcase */}
+      <div className="mt-16">
+        <div className="text-center mb-8">
+          <h3 className="text-2xl md:text-3xl font-bold mb-3">State-of-the-Art Equipment</h3>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            We use the latest dental technology to ensure the best treatment outcomes
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+            <img 
+              src="/assets/generated/dental-equipment-2.dim_800x600.png" 
+              alt="Modern dental equipment and technology"
+              className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+            <img 
+              src="/assets/generated/patient-doctor-consultation.dim_800x600.png" 
+              alt="Patient consultation with dentist"
+              className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

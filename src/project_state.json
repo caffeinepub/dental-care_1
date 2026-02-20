@@ -1,16 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 7,
-  "summary": "Dental hospital website with professional design, online appointment booking, service showcase, testimonials, and contact integration",
+  "projectStateVersion": 17,
+  "summary": "Dental hospital website inspired by https://oraacaresmile.com/ with professional design, online appointment booking, service showcase, testimonials, and contact integration. Content in US English for international audience.",
   "architectural_notes": [
     "Website designed for dental hospital/clinic targeting patient trust and easy appointment booking",
-    "Multi-language support (Hindi/Hinglish) for better local accessibility",
     "Responsive design for mobile and desktop users",
     "Integration points: Google Maps API, WhatsApp Business API, Google Reviews widget",
-    "Service cards use accordion/toggle interaction pattern for progressive disclosure of detailed information"
+    "Service cards use accordion/toggle interaction pattern for progressive disclosure of detailed information",
+    "All content now in US English instead of Hindi/Hinglish for broader international accessibility",
+    "Design inspiration from https://oraacaresmile.com/ for visual style and user experience",
+    "Services should link to a dedicated detail page within the same site, not opening in new tabs",
+    "Website needs high-quality dental equipment and patient consultation imagery to build trust and showcase facility",
+    "Doctors section should highlight credentials and specializations of Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin"
   ],
   "known_issues": [],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Professional dental office hero banner showing modern dental equipment and a dentist consulting with a patient (hero-dental-office.dim_1920x800.png)\n- Close-up photo of advanced dental equipment and technology in a modern clinic setting (dental-equipment-1.dim_800x600.png)\n- Dentist examining a patient using modern dental tools (patient-doctor-exam.dim_800x600.png)\n- Modern dental chair and equipment setup in a bright clinic room (dental-equipment-2.dim_800x600.png)\n- Friendly dentist showing dental x-ray results to a smiling patient (patient-doctor-consultation.dim_800x600.png)\n- Sterilization equipment and hygiene setup in dental clinic (dental-equipment-3.dim_800x600.png)\n- Professional headshot of Dr. Anas Jadla in dental coat (doctor-anas-jadla.dim_400x400.png)\n- Professional headshot of Dr. Farhan Bangra in dental coat (doctor-farhan-bangra.dim_400x400.png)\n- Professional headshot of Dr. Jainul Aabedin in dental coat (doctor-jainul-aabedin.dim_400x400.png)\n- Dental service illustration showing teeth cleaning procedure (service-cleaning.dim_600x400.png)\n- Dental service illustration showing root canal treatment (service-root-canal.dim_600x400.png)\n- Dental service illustration showing dental implant procedure (service-implants.dim_600x400.png)",
   "existing_features": [
     {
       "id": "feature-create-a-hero-section-with-headline-ek-behtar-muskurahat-ki-shuruat-yahan-se-hoti-hai-subheadline-advanced-technology-aur-dard-mukt-painless-treatment-ke-saath-aapka-apna-dental-clinic-and-a-prominent-abhi-appointment-book-karein-call-to-action-button-that-navigates-to-the-appointment-booking-interface",
@@ -115,6 +120,270 @@
         "REQ-14"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-hospital-name-from-dr-priya-dental-clinic-to-satya-dental-care-across-all-frontend-components-including-header-footer-herosection-and-any-other-locations-where-the-clinic-name-appears",
+      "title": "Update the hospital name from 'Dr. Priya Dental Clinic' to 'Satya Dental Care' across all frontend components including Header, Footer, HeroSection, and any other locations where the clinic name appears",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-contact-phone-number-to-6352174912-in-header-contactsection-footer-and-any-other-components-displaying-phone-numbers",
+      "title": "Update the contact phone number to 6352174912 in Header, ContactSection, Footer, and any other components displaying phone numbers",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-whatsapp-contact-number-to-6352174912-in-contactsection-and-any-other-components-with-whatsapp-integration-ensuring-the-whatsapp-link-uses-the-correct-international-format",
+      "title": "Update the WhatsApp contact number to 6352174912 in ContactSection and any other components with WhatsApp integration, ensuring the WhatsApp link uses the correct international format",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-email-address-to-anasjadala-gmail-com-in-contactsection-footer-and-any-other-components-displaying-contact-email",
+      "title": "Update the email address to anasjadala@gmail.com in ContactSection, Footer, and any other components displaying contact email",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-all-hindi-and-hinglish-content-in-herosection-to-us-english-including-the-headline-ek-behtar-muskurahat-ki-shuruat-yahan-se-hoti-hai-and-subheadline-advanced-technology-aur-dard-mukt-painless-treatment-ke-saath-aapka-apna-dental-clinic-replacing-them-with-professional-us-english-equivalents-that-convey-the-same-message-about-quality-dental-care",
+      "title": "Convert all Hindi and Hinglish content in HeroSection to US English including the headline 'Ek Behtar Muskurahat ki Shuruat Yahan Se Hoti Hai' and subheadline 'Advanced technology aur dard-mukt (painless) treatment ke saath aapka apna dental clinic', replacing them with professional US English equivalents that convey the same message about quality dental care",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-all-hindi-and-hinglish-service-descriptions-in-servicessection-to-us-english-for-all-6-services-check-up-cleaning-root-canal-treatment-dental-implants-teeth-whitening-braces-aligners-pediatric-dentistry-including-titles-descriptions-procedure-details-benefits-and-cta-button-labels",
+      "title": "Convert all Hindi and Hinglish service descriptions in ServicesSection to US English for all 6 services (Check-up & Cleaning, Root Canal Treatment, Dental Implants, Teeth Whitening, Braces & Aligners, Pediatric Dentistry) including titles, descriptions, procedure details, benefits, and CTA button labels",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-all-hindi-and-hinglish-content-in-whychooseussection-to-us-english-for-all-four-features-expert-doctors-modern-tech-emergency-care-affordable-price-including-titles-and-descriptions",
+      "title": "Convert all Hindi and Hinglish content in WhyChooseUsSection to US English for all four features (Expert Doctors, Modern Tech, Emergency Care, Affordable Price) including titles and descriptions",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-all-hindi-content-in-testimonialssection-patient-reviews-to-us-english-while-maintaining-the-authenticity-and-sentiment-of-the-testimonials",
+      "title": "Convert all Hindi content in TestimonialsSection patient reviews to US English while maintaining the authenticity and sentiment of the testimonials",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-all-hindi-and-hinglish-content-in-contactsection-to-us-english-including-the-clinic-hours-label-somvaar-se-shanivaar-9-am-8-pm-and-any-other-text-labels",
+      "title": "Convert all Hindi and Hinglish content in ContactSection to US English including the clinic hours label 'Somvaar se Shanivaar, 9 AM - 8 PM' and any other text labels",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-all-hindi-and-hinglish-content-in-appointmentform-to-us-english-including-form-labels-placeholders-validation-messages-and-success-confirmation-text",
+      "title": "Convert all Hindi and Hinglish content in AppointmentForm to US English including form labels, placeholders, validation messages, and success confirmation text",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-all-hindi-and-hinglish-content-in-bookingpage-to-us-english-including-page-headings-and-any-instructional-text",
+      "title": "Convert all Hindi and Hinglish content in BookingPage to US English including page headings and any instructional text",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-footer-component-to-display-satya-dental-care-as-the-clinic-name-phone-number-6352174912-and-email-anasjadala-gmail-com-in-us-english-with-appropriate-labels",
+      "title": "Update Footer component to display 'Satya Dental Care' as the clinic name, phone number 6352174912, and email anasjadala@gmail.com in US English with appropriate labels",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-copyright-text-2026-satya-dental-care-built-using-caffeine-ai-from-the-footer-component-keeping-only-the-copyright-symbol-and-year-with-the-clinic-name-e-g-2026-satya-dental-care",
+      "title": "Remove the copyright text '© 2026 Satya Dental Care. Built using Caffeine.ai' from the Footer component, keeping only the copyright symbol and year with the clinic name (e.g., '© 2026 Satya Dental Care')",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-herosection-to-match-the-oraa-care-smile-layout-style-with-a-full-width-background-hero-banner-centered-text-overlay-with-headline-and-subheadline-and-prominent-cta-buttons-positioned-centrally-below-the-text",
+      "title": "Update HeroSection to match the Oraa Care Smile layout style with a full-width background hero banner, centered text overlay with headline and subheadline, and prominent CTA buttons positioned centrally below the text",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-servicessection-to-display-services-in-a-clean-grid-layout-with-icon-cards-similar-to-oraa-care-smile-where-each-service-shows-an-icon-title-and-brief-description-before-expansion",
+      "title": "Redesign ServicesSection to display services in a clean grid layout with icon cards similar to Oraa Care Smile, where each service shows an icon, title, and brief description before expansion",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-whychooseussection-to-use-a-horizontal-card-layout-with-icons-and-text-similar-to-oraa-care-smile-emphasizing-visual-consistency-and-professional-presentation",
+      "title": "Update WhyChooseUsSection to use a horizontal card layout with icons and text similar to Oraa Care Smile, emphasizing visual consistency and professional presentation",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-testimonialssection-with-a-carousel-or-slider-layout-for-patient-reviews-including-star-ratings-and-patient-photos-matching-the-testimonial-presentation-style-of-oraa-care-smile",
+      "title": "Redesign TestimonialsSection with a carousel or slider layout for patient reviews, including star ratings and patient photos, matching the testimonial presentation style of Oraa Care Smile",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-contactsection-to-display-contact-information-and-google-maps-in-a-side-by-side-layout-similar-to-oraa-care-smile-with-contact-details-on-one-side-and-map-on-the-other",
+      "title": "Update ContactSection to display contact information and Google Maps in a side-by-side layout similar to Oraa Care Smile, with contact details on one side and map on the other",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-global-color-scheme-and-typography-to-match-oraa-care-smile-s-design-system-using-their-color-palette-healthcare-blues-clean-whites-professional-accents-and-modern-sans-serif-typography",
+      "title": "Update the global color scheme and typography to match Oraa Care Smile's design system, using their color palette (healthcare blues, clean whites, professional accents) and modern sans-serif typography",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-smooth-scroll-behavior-to-navigation-links-and-cta-buttons-throughout-the-site-enabling-seamless-scrolling-to-different-sections-when-clicked",
+      "title": "Add a smooth scroll behavior to navigation links and CTA buttons throughout the site, enabling seamless scrolling to different sections when clicked",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-header-navigation-to-include-inline-section-links-home-services-about-testimonials-contact-that-scroll-to-corresponding-sections-on-the-homepage-matching-oraa-care-smile-s-navigation-pattern",
+      "title": "Update Header navigation to include inline section links (Home, Services, About, Testimonials, Contact) that scroll to corresponding sections on the homepage, matching Oraa Care Smile's navigation pattern",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-hover-effects-and-animations-to-service-cards-cta-buttons-and-interactive-elements-throughout-the-site-to-match-the-polished-modern-interaction-style-of-oraa-care-smile",
+      "title": "Add hover effects and animations to service cards, CTA buttons, and interactive elements throughout the site to match the polished, modern interaction style of Oraa Care Smile",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-servicedetailpage-component-at-frontend-src-pages-servicedetailpage-tsx-that-displays-comprehensive-information-about-a-single-dental-service-including-service-name-detailed-description-procedure-information-benefits-duration-pricing-information-if-available-and-a-call-to-action-button-to-book-an-appointment",
+      "title": "Create a new ServiceDetailPage component at frontend/src/pages/ServiceDetailPage.tsx that displays comprehensive information about a single dental service including service name, detailed description, procedure information, benefits, duration, pricing information (if available), and a call-to-action button to book an appointment",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-route-services-serviceid-to-the-tanstack-router-configuration-in-frontend-src-app-tsx-that-renders-the-servicedetailpage-component-and-accepts-a-dynamic-serviceid-parameter",
+      "title": "Add a new route /services/:serviceId to the TanStack Router configuration in frontend/src/App.tsx that renders the ServiceDetailPage component and accepts a dynamic serviceId parameter",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-servicessection-component-in-frontend-src-components-servicessection-tsx-to-make-each-service-card-link-to-its-dedicated-detail-page-using-client-side-navigation-link-component-from-tanstack-router-ensuring-navigation-occurs-within-the-same-tab-without-opening-new-browser-tabs",
+      "title": "Update the ServicesSection component in frontend/src/components/ServicesSection.tsx to make each service card link to its dedicated detail page using client-side navigation (Link component from TanStack Router), ensuring navigation occurs within the same tab without opening new browser tabs",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-service-data-structure-or-service-content-configuration-in-the-servicedetailpage-that-maps-service-ids-to-their-full-detailed-content-including-comprehensive-procedure-descriptions-benefits-lists-duration-information-and-any-special-features-for-all-6-dental-services",
+      "title": "Create a service data structure or service content configuration in the ServiceDetailPage that maps service IDs to their full detailed content, including comprehensive procedure descriptions, benefits lists, duration information, and any special features for all 6 dental services",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-back-navigation-button-or-breadcrumb-navigation-to-the-servicedetailpage-that-allows-users-to-return-to-the-homepage-services-section-using-same-tab-navigation",
+      "title": "Add a back navigation button or breadcrumb navigation to the ServiceDetailPage that allows users to return to the homepage services section using same-tab navigation",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-doctorssection-component-at-frontend-src-components-doctorssection-tsx-that-displays-three-dental-professionals-dr-anas-jadla-dr-farhan-bangra-and-dr-jainul-aabedin-with-professional-profile-cards-showing-their-names-titles-specializations-and-profile-images",
+      "title": "Create a new DoctorsSection component at frontend/src/components/DoctorsSection.tsx that displays three dental professionals: Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin, with professional profile cards showing their names, titles/specializations, and profile images",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-the-doctorssection-component-to-the-homepage-component-in-frontend-src-pages-homepage-tsx-positioned-between-whychooseussection-and-testimonialssection",
+      "title": "Add the DoctorsSection component to the HomePage component in frontend/src/pages/HomePage.tsx, positioned between WhyChooseUsSection and TestimonialsSection",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-herosection-component-to-include-a-background-image-showing-dental-equipment-and-a-patient-doctor-interaction-scene-as-the-hero-banner-background",
+      "title": "Update HeroSection component to include a background image showing dental equipment and a patient-doctor interaction scene as the hero banner background",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-dental-equipment-and-patient-care-imagery-to-the-servicessection-component-displaying-relevant-contextual-photos-within-or-alongside-the-service-cards",
+      "title": "Add dental equipment and patient care imagery to the ServicesSection component, displaying relevant contextual photos within or alongside the service cards",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-photo-gallery-or-image-showcase-to-the-whychooseussection-component-showing-dental-machinery-clinic-interior-with-modern-equipment-and-patient-doctor-interactions",
+      "title": "Add a photo gallery or image showcase to the WhyChooseUsSection component showing dental machinery, clinic interior with modern equipment, and patient-doctor interactions",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-reference-all-generated-images-as-static-assets-from-frontend-public-assets-generated-directory-in-the-respective-components-ensuring-proper-image-loading-and-optimization",
+      "title": "Reference all generated images as static assets from frontend/public/assets/generated directory in the respective components, ensuring proper image loading and optimization",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -165,6 +434,48 @@
     {
       "id": "AR-8",
       "summary": "Make service cards interactive with click-to-expand accordion functionality showing procedure, benefits, time, and CTA for each service",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Update contact number and WhatsApp to 6352174912, email to anasjadala@gmail.com",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Convert all website content from Hindi/Hinglish to US English",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Remove footer text showing '2026 Satya Dental Care built with using Carreine.ai'",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Redesign website to match the style, layout, and features of https://oraacaresmile.com/",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Create a separate dedicated services detail page that opens within the same website (not in a new tab)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Add multiple dental machine photos and patient-with-doctor photos throughout the website",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Create a doctors section featuring 3 doctors: Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin",
       "reqIds": [],
       "status": "pending"
     }

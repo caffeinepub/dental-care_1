@@ -1,35 +1,54 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Star } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 
 const testimonials = [
   {
     name: 'Rajesh Kumar',
     initial: 'RK',
     rating: 5,
-    text: 'Bahut hi achha experience raha. Doctor ne bina dard ke mera root canal kiya. Staff bhi bahut helpful hai.',
+    text: 'Excellent experience! The doctor performed my root canal completely pain-free. The staff is very helpful and professional.',
   },
   {
     name: 'Priya Sharma',
     initial: 'PS',
     rating: 5,
-    text: 'Meri beti ke danton ka treatment yahan karwaya. Doctors bachon ke saath bahut pyaar se pesh aate hain.',
+    text: 'I brought my daughter here for treatment. The doctors are wonderful with children and very caring. Highly recommend!',
   },
   {
     name: 'Amit Patel',
     initial: 'AP',
     rating: 5,
-    text: 'Teeth whitening karwane ke baad meri smile bilkul badal gayi. Highly recommended!',
+    text: 'After getting teeth whitening done, my smile has completely transformed. Amazing results! Highly recommended!',
+  },
+  {
+    name: 'Sneha Reddy',
+    initial: 'SR',
+    rating: 5,
+    text: 'Best dental clinic in the area! Modern equipment and very professional staff. My dental implant procedure was smooth and painless.',
+  },
+  {
+    name: 'Vikram Singh',
+    initial: 'VS',
+    rating: 5,
+    text: 'Great service and affordable prices. The doctors take time to explain everything clearly. Very satisfied with my treatment.',
   },
 ];
 
 export default function TestimonialsSection() {
   return (
-    <section className="container py-20">
+    <section id="testimonials" className="container py-20">
       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Mareezon Ki Raay</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Patient Reviews</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Hamare khush patients kya kehte hain
+          What our happy patients have to say
         </p>
         <div className="flex items-center justify-center gap-2 mt-4">
           <div className="flex">
@@ -41,35 +60,49 @@ export default function TestimonialsSection() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {testimonials.map((testimonial, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                <Avatar>
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {testimonial.initial}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-semibold">{testimonial.name}</div>
-                  <div className="flex">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
+      <div className="max-w-5xl mx-auto">
+        <Carousel
+          opts={{
+            align: 'start',
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {testimonials.map((testimonial, index) => (
+              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                <div className="p-1">
+                  <Card className="hover:shadow-lg transition-all duration-300 h-full">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4 mb-4">
+                        <Avatar className="w-12 h-12">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+                            {testimonial.initial}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-semibold">{testimonial.name}</div>
+                          <div className="flex">
+                            {[...Array(testimonial.rating)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-muted-foreground">{testimonial.text}</p>
+                    </CardContent>
+                  </Card>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">{testimonial.text}</p>
-            </CardContent>
-          </Card>
-        ))}
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hover:scale-110 transition-transform" />
+          <CarouselNext className="hover:scale-110 transition-transform" />
+        </Carousel>
       </div>
 
-      <div className="text-center">
-        <p className="text-sm text-muted-foreground mb-4">
+      <div className="text-center mt-8">
+        <p className="text-sm text-muted-foreground">
           Before/After photos available at clinic with patient consent
         </p>
       </div>
