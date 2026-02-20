@@ -1,0 +1,134 @@
+{
+  "kind": "build_request",
+  "title": "Add interactive expandable service cards with detailed information",
+  "projectName": "Dental Care Clinic",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-9",
+      "text": "Convert the existing ServicesSection component to use an accordion/expandable card pattern where each service card can be clicked to expand and reveal detailed information below the service title and description",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ],
+        "quotes": [
+          "Jab user kisi service ke box par click kare, toh woh niche ki taraf expand (khul) jaye aur details dikhaye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each service card is clickable and toggles between collapsed and expanded states",
+        "Expanded state shows additional details without navigating away from the page",
+        "Only one card can be expanded at a time (accordion behavior)",
+        "Smooth animation when expanding/collapsing cards"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Add detailed content for 'Dental Check-up & Cleaning' service expansion including: Procedure description 'Digital X-ray aur danton ki gehrai se safai (Scaling)', Benefit 'Cavity aur masoodon ki bimari se bachav', Time duration 'Sirf 30-45 minute', and a CTA button 'Abhi check-up schedule karein' that navigates to the booking page",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ],
+        "quotes": [
+          "Procedure: Digital X-ray aur danton ki gehrai se safai (Scaling)",
+          "Time: Sirf 30-45 minute"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Expanded card displays procedure, benefit, and time information in Hindi/Urdu",
+        "CTA button is prominently displayed and functional",
+        "Content is properly formatted and readable"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Add detailed content for 'Root Canal Treatment (RCT)' service expansion including: Procedure 'Sade hue hisse ko saaf karke danton ko bachana', Special feature 'Single-sitting painless procedure (bin dard ke)', Benefit 'Asli daant ko nikaalne se bachata hai', and CTA button 'Dard se chutkara paayein' that navigates to the booking page",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ],
+        "quotes": [
+          "Khasiyat: Single-sitting painless procedure (bin dard ke)",
+          "CTA: \"Dard se chutkara paayein\""
+        ]
+      },
+      "acceptanceCriteria": [
+        "Expanded card highlights the painless single-sitting procedure",
+        "All content displays correctly in Hindi/Urdu",
+        "CTA button navigates to booking page"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "text": "Add detailed content for 'Dental Implants' service expansion including: Procedure 'Titanium post ke saath naye majboot daant lagana', Longevity 'Ye zindagi bhar saath dete hain', Benefit 'Khane-peene aur bolne mein asli danton jaisa mehsoos hota hai', and CTA button 'Apni muskurahat wapas paayein' that navigates to the booking page",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ],
+        "quotes": [
+          "Life: Ye zindagi bhar saath dete hain",
+          "CTA: \"Apni muskurahat wapas paayein\""
+        ]
+      },
+      "acceptanceCriteria": [
+        "Expanded card emphasizes lifetime durability of implants",
+        "Natural feel benefits are clearly communicated",
+        "CTA button is functional"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Add detailed content for 'Teeth Whitening' service expansion including: Procedure 'Advanced laser technology se peelepan ko hatana', Result 'Pehle hi session mein 3-4 shades safed daant', Benefit 'Shaadi ya party ke liye turant chamak', and an appropriate CTA button that navigates to the booking page",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ],
+        "quotes": [
+          "Result: Pehle hi session mein 3-4 shades safed daant",
+          "Fayda: Shaadi ya party ke liye turant chamak"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Expanded card highlights immediate results (3-4 shades whiter)",
+        "Special occasions context is included",
+        "CTA button navigates to booking page"
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "text": "Ensure the remaining services (Braces & Aligners and Pediatric Dentistry) also have expandable sections with similar structured content including procedure, benefits, and CTAs that navigate to the booking page, maintaining consistency with the other four services",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All six services have expandable content",
+        "Content structure is consistent across all services",
+        "All CTA buttons navigate to booking page"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify the backend/main.mo file for this feature",
+    "Do not change the existing booking system functionality",
+    "Maintain the current Hindi/Urdu language support throughout expanded content",
+    "Preserve the existing visual design theme (healthcare teal colors, professional typography)"
+  ],
+  "nonGoals": [
+    "Adding new services beyond the existing six",
+    "Modifying the appointment booking form",
+    "Changing the overall page layout or navigation structure",
+    "Adding backend storage for service details"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 7,
+  "summary": "Dental hospital website with professional design, online appointment booking, service showcase, testimonials, and contact integration",
+  "architectural_notes": [
+    "Website designed for dental hospital/clinic targeting patient trust and easy appointment booking",
+    "Multi-language support (Hindi/Hinglish) for better local accessibility",
+    "Responsive design for mobile and desktop users",
+    "Integration points: Google Maps API, WhatsApp Business API, Google Reviews widget",
+    "Service cards use accordion/toggle interaction pattern for progressive disclosure of detailed information"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-a-hero-section-with-headline-ek-behtar-muskurahat-ki-shuruat-yahan-se-hoti-hai-subheadline-advanced-technology-aur-dard-mukt-painless-treatment-ke-saath-aapka-apna-dental-clinic-and-a-prominent-abhi-appointment-book-karein-call-to-action-button-that-navigates-to-the-appointment-booking-interface",
+      "title": "Create a hero section with headline 'Ek Behtar Muskurahat ki Shuruat Yahan Se Hoti Hai.', subheadline 'Advanced technology aur dard-mukt (painless) treatment ke saath aapka apna dental clinic.', and a prominent 'Abhi Appointment Book Karein' call-to-action button that navigates to the appointment booking interface",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-services-section-displaying-6-dental-services-check-up-cleaning-rozana-ki-danton-ki-dekhbhal-root-canal-treatment-bina-dard-ke-danton-ka-ilaaj-dental-implants-khoye-hue-danton-ko-wapas-lagayein-teeth-whitening-chamakti-muskurahat-ke-liye-braces-aligners-tedhe-medhe-danton-ka-sahi-alignment-and-pediatric-dentistry-bachon-ke-danton-ka-khaas-ilaaj",
+      "title": "Create a services section displaying 6 dental services: Check-up & Cleaning (Rozana ki danton ki dekhbhal), Root Canal Treatment (Bina dard ke danton ka ilaaj), Dental Implants (Khoye hue danton ko wapas lagayein), Teeth Whitening (Chamakti muskurahat ke liye), Braces & Aligners (Tedhe-medhe danton ka sahi alignment), and Pediatric Dentistry (Bachon ke danton ka khaas ilaaj)",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-why-choose-us-section-highlighting-four-key-features-expert-doctors-10-saalon-ka-tajurba-modern-tech-latest-machines-aur-sterilization-emergency-care-24-7-dental-emergency-support-and-affordable-price-sahi-daam-par-behtareen-ilaaj",
+      "title": "Create a 'Why Choose Us' section highlighting four key features: Expert Doctors (10+ saalon ka tajurba), Modern Tech (Latest machines aur sterilization), Emergency Care (24/7 dental emergency support), and Affordable Price (Sahi daam par behtareen ilaaj)",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-patient-testimonials-section-that-displays-patient-reviews-with-a-google-ratings-integration-widget-and-include-space-for-before-after-photos",
+      "title": "Create a patient testimonials section that displays patient reviews with a Google ratings integration widget, and include space for before/after photos",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-contact-section-with-embedded-google-maps-for-clinic-location-display-clinic-hours-somvaar-se-shanivaar-9-am-8-pm-and-provide-phone-number-and-whatsapp-chat-link-for-easy-communication",
+      "title": "Create a contact section with embedded Google Maps for clinic location, display clinic hours (Somvaar se Shanivaar, 9 AM - 8 PM), and provide phone number and WhatsApp chat link for easy communication",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-an-online-appointment-booking-system-that-allows-patients-to-schedule-appointments-capturing-patient-name-contact-information-preferred-date-and-time-and-service-type",
+      "title": "Implement an online appointment booking system that allows patients to schedule appointments, capturing patient name, contact information, preferred date and time, and service type",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-professional-modern-and-trust-building-visual-design-theme-throughout-the-website-that-conveys-cleanliness-medical-professionalism-and-patient-comfort-using-a-color-palette-that-evokes-healthcare-trust-such-as-calming-teals-clean-whites-and-professional-grays-clear-typography-suitable-for-medical-content-and-generous-spacing-that-emphasizes-clarity-and-approachability",
+      "title": "Apply a professional, modern, and trust-building visual design theme throughout the website that conveys cleanliness, medical professionalism, and patient comfort, using a color palette that evokes healthcare trust (such as calming teals, clean whites, and professional grays), clear typography suitable for medical content, and generous spacing that emphasizes clarity and approachability",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-convert-the-existing-servicessection-component-to-use-an-accordion-expandable-card-pattern-where-each-service-card-can-be-clicked-to-expand-and-reveal-detailed-information-below-the-service-title-and-description",
+      "title": "Convert the existing ServicesSection component to use an accordion/expandable card pattern where each service card can be clicked to expand and reveal detailed information below the service title and description",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-content-for-dental-check-up-cleaning-service-expansion-including-procedure-description-digital-x-ray-aur-danton-ki-gehrai-se-safai-scaling-benefit-cavity-aur-masoodon-ki-bimari-se-bachav-time-duration-sirf-30-45-minute-and-a-cta-button-abhi-check-up-schedule-karein-that-navigates-to-the-booking-page",
+      "title": "Add detailed content for 'Dental Check-up & Cleaning' service expansion including: Procedure description 'Digital X-ray aur danton ki gehrai se safai (Scaling)', Benefit 'Cavity aur masoodon ki bimari se bachav', Time duration 'Sirf 30-45 minute', and a CTA button 'Abhi check-up schedule karein' that navigates to the booking page",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-content-for-root-canal-treatment-rct-service-expansion-including-procedure-sade-hue-hisse-ko-saaf-karke-danton-ko-bachana-special-feature-single-sitting-painless-procedure-bin-dard-ke-benefit-asli-daant-ko-nikaalne-se-bachata-hai-and-cta-button-dard-se-chutkara-paayein-that-navigates-to-the-booking-page",
+      "title": "Add detailed content for 'Root Canal Treatment (RCT)' service expansion including: Procedure 'Sade hue hisse ko saaf karke danton ko bachana', Special feature 'Single-sitting painless procedure (bin dard ke)', Benefit 'Asli daant ko nikaalne se bachata hai', and CTA button 'Dard se chutkara paayein' that navigates to the booking page",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-content-for-dental-implants-service-expansion-including-procedure-titanium-post-ke-saath-naye-majboot-daant-lagana-longevity-ye-zindagi-bhar-saath-dete-hain-benefit-khane-peene-aur-bolne-mein-asli-danton-jaisa-mehsoos-hota-hai-and-cta-button-apni-muskurahat-wapas-paayein-that-navigates-to-the-booking-page",
+      "title": "Add detailed content for 'Dental Implants' service expansion including: Procedure 'Titanium post ke saath naye majboot daant lagana', Longevity 'Ye zindagi bhar saath dete hain', Benefit 'Khane-peene aur bolne mein asli danton jaisa mehsoos hota hai', and CTA button 'Apni muskurahat wapas paayein' that navigates to the booking page",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-detailed-content-for-teeth-whitening-service-expansion-including-procedure-advanced-laser-technology-se-peelepan-ko-hatana-result-pehle-hi-session-mein-3-4-shades-safed-daant-benefit-shaadi-ya-party-ke-liye-turant-chamak-and-an-appropriate-cta-button-that-navigates-to-the-booking-page",
+      "title": "Add detailed content for 'Teeth Whitening' service expansion including: Procedure 'Advanced laser technology se peelepan ko hatana', Result 'Pehle hi session mein 3-4 shades safed daant', Benefit 'Shaadi ya party ke liye turant chamak', and an appropriate CTA button that navigates to the booking page",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-remaining-services-braces-aligners-and-pediatric-dentistry-also-have-expandable-sections-with-similar-structured-content-including-procedure-benefits-and-ctas-that-navigate-to-the-booking-page-maintaining-consistency-with-the-other-four-services",
+      "title": "Ensure the remaining services (Braces & Aligners and Pediatric Dentistry) also have expandable sections with similar structured content including procedure, benefits, and CTAs that navigate to the booking page, maintaining consistency with the other four services",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Hero section with headline, subheadline, CTA button, and patient/dentist images",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Services section displaying 6 dental services with descriptions",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Why Choose Us section highlighting expertise, technology, emergency care, and pricing",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Patient testimonials section with reviews, before/after photos, and Google ratings widget",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Contact section with Google Maps integration, clinic hours, phone number, and WhatsApp chat link",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Online appointment booking system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Deploy the dental hospital website to production on the Internet Computer network, making it publicly accessible with a live URL",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Make service cards interactive with click-to-expand accordion functionality showing procedure, benefits, time, and CTA for each service",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Dental Care",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

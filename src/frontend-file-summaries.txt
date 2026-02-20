@@ -1,0 +1,17 @@
+{
+  "frontend/src/App.tsx": "Main application component that sets up TanStack Router with routes for home and booking pages, wrapped with QueryClient and Toaster for notifications.",
+  "frontend/src/components/Layout.tsx": "Layout wrapper component that provides consistent structure with Header, main content area with Outlet, and Footer across all pages.",
+  "frontend/src/components/Header.tsx": "Sticky header component with dental clinic logo, navigation, phone number display, and prominent appointment booking button.",
+  "frontend/src/components/Footer.tsx": "Footer component with clinic information, contact details, quick links, and Caffeine.ai attribution with UTM tracking.",
+  "frontend/src/pages/HomePage.tsx": "Home page component that composes all main sections including Hero, Services, Why Choose Us, Testimonials, and Contact sections.",
+  "frontend/src/pages/BookingPage.tsx": "Dedicated booking page with back navigation and centered appointment form with Hindi instructions.",
+  "frontend/src/components/HeroSection.tsx": "Hero section with Hindi headline, subheadline, dual CTA buttons, statistics display, and grid layout showcasing patient and dentist images.",
+  "frontend/src/components/ServicesSection.tsx": "Services section displaying 6 dental services in an accordion pattern where each service card expands to show detailed information including procedure, benefits, duration, and a CTA button that navigates to the booking page.",
+  "frontend/src/components/WhyChooseUsSection.tsx": "Why Choose Us section highlighting 4 key differentiators with icons and descriptions in a responsive grid layout.",
+  "frontend/src/components/TestimonialsSection.tsx": "Testimonials section displaying patient reviews with avatars, ratings, Google rating display, and note about before/after photos.",
+  "frontend/src/components/ContactSection.tsx": "Contact section with embedded Google Maps, clinic hours, phone number, and WhatsApp integration button.",
+  "frontend/src/components/AppointmentForm.tsx": "Appointment booking form with validation, service selection, date/time pickers, and backend integration with success state display.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching all appointments and searching appointments by service type from the backend.",
+  "frontend/src/index.css": "Global styles with healthcare-themed OKLCH color system using calming teals for both light and dark modes, and typography settings.",
+  "frontend/tailwind.config.js": "Tailwind configuration with Inter font family, healthcare color tokens, custom shadows, and extended design system for professional medical aesthetic."
+}

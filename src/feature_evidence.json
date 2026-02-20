@@ -1,0 +1,113 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-convert-the-existing-servicessection-component-to-use-an-accordion-expandable-card-pattern-where-each-service-card-can-be-clicked-to-expand-and-reveal-detailed-information-below-the-service-title-and-description",
+      "featureTitle": "Convert the existing ServicesSection component to use an accordion/expandable card pattern where each service card can be clicked to expand and reveal detailed information below the service title and description",
+      "files": [
+        "frontend/src/components/ServicesSection.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-detailed-content-for-dental-check-up-cleaning-service-expansion-including-procedure-description-digital-x-ray-aur-danton-ki-gehrai-se-safai-scaling-benefit-cavity-aur-masoodon-ki-bimari-se-bachav-time-duration-sirf-30-45-minute-and-a-cta-button-abhi-check-up-schedule-karein-that-navigates-to-the-booking-page",
+      "featureTitle": "Add detailed content for 'Dental Check-up & Cleaning' service expansion including: Procedure description 'Digital X-ray aur danton ki gehrai se safai (Scaling)', Benefit 'Cavity aur masoodon ki bimari se bachav', Time duration 'Sirf 30-45 minute', and a CTA button 'Abhi check-up schedule karein' that navigates to the booking page",
+      "files": [
+        "frontend/src/components/ServicesSection.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-10"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-detailed-content-for-root-canal-treatment-rct-service-expansion-including-procedure-sade-hue-hisse-ko-saaf-karke-danton-ko-bachana-special-feature-single-sitting-painless-procedure-bin-dard-ke-benefit-asli-daant-ko-nikaalne-se-bachata-hai-and-cta-button-dard-se-chutkara-paayein-that-navigates-to-the-booking-page",
+      "featureTitle": "Add detailed content for 'Root Canal Treatment (RCT)' service expansion including: Procedure 'Sade hue hisse ko saaf karke danton ko bachana', Special feature 'Single-sitting painless procedure (bin dard ke)', Benefit 'Asli daant ko nikaalne se bachata hai', and CTA button 'Dard se chutkara paayein' that navigates to the booking page",
+      "files": [
+        "frontend/src/components/ServicesSection.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-11"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-detailed-content-for-dental-implants-service-expansion-including-procedure-titanium-post-ke-saath-naye-majboot-daant-lagana-longevity-ye-zindagi-bhar-saath-dete-hain-benefit-khane-peene-aur-bolne-mein-asli-danton-jaisa-mehsoos-hota-hai-and-cta-button-apni-muskurahat-wapas-paayein-that-navigates-to-the-booking-page",
+      "featureTitle": "Add detailed content for 'Dental Implants' service expansion including: Procedure 'Titanium post ke saath naye majboot daant lagana', Longevity 'Ye zindagi bhar saath dete hain', Benefit 'Khane-peene aur bolne mein asli danton jaisa mehsoos hota hai', and CTA button 'Apni muskurahat wapas paayein' that navigates to the booking page",
+      "files": [
+        "frontend/src/components/ServicesSection.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-detailed-content-for-teeth-whitening-service-expansion-including-procedure-advanced-laser-technology-se-peelepan-ko-hatana-result-pehle-hi-session-mein-3-4-shades-safed-daant-benefit-shaadi-ya-party-ke-liye-turant-chamak-and-an-appropriate-cta-button-that-navigates-to-the-booking-page",
+      "featureTitle": "Add detailed content for 'Teeth Whitening' service expansion including: Procedure 'Advanced laser technology se peelepan ko hatana', Result 'Pehle hi session mein 3-4 shades safed daant', Benefit 'Shaadi ya party ke liye turant chamak', and an appropriate CTA button that navigates to the booking page",
+      "files": [
+        "frontend/src/components/ServicesSection.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-13"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-remaining-services-braces-aligners-and-pediatric-dentistry-also-have-expandable-sections-with-similar-structured-content-including-procedure-benefits-and-ctas-that-navigate-to-the-booking-page-maintaining-consistency-with-the-other-four-services",
+      "featureTitle": "Ensure the remaining services (Braces & Aligners and Pediatric Dentistry) also have expandable sections with similar structured content including procedure, benefits, and CTAs that navigate to the booking page, maintaining consistency with the other four services",
+      "files": [
+        "frontend/src/components/ServicesSection.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-14"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

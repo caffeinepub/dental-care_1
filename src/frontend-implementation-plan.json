@@ -1,0 +1,104 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add interactive expandable service cards with detailed information",
+  "requirements": [
+    {
+      "id": "REQ-9",
+      "summary": "Convert ServicesSection to accordion pattern with expandable service cards",
+      "acceptanceCriteria": [
+        "Each service card is clickable and toggles between collapsed and expanded states",
+        "Expanded state shows additional details without navigating away from the page",
+        "Only one card can be expanded at a time (accordion behavior)",
+        "Smooth animation when expanding/collapsing cards"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServicesSection.tsx",
+          "operation": "modify",
+          "description": "Transform the existing service cards grid into an accordion pattern. Add state management to track which service card is currently expanded (only one at a time). Add click handlers to each service card that toggle the expanded state. Implement smooth expand/collapse animations using CSS transitions or Framer Motion. Maintain the existing service data structure (6 services with icons, titles, and descriptions) while adding expandable content sections below each card when clicked."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Add detailed expansion content for Dental Check-up & Cleaning service",
+      "acceptanceCriteria": [
+        "Expanded card displays procedure, benefit, and time information in Hindi/Urdu",
+        "CTA button is prominently displayed and functional",
+        "Content is properly formatted and readable"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServicesSection.tsx",
+          "operation": "modify",
+          "description": "Add detailed expansion content for the Dental Check-up & Cleaning service including: Procedure Digital X-ray aur danton ki gehrai se safai (Scaling), Benefit Cavity aur masoodon ki bimari se bachav, Time Sirf 30-45 minute. Add a CTA button Abhi check-up schedule karein that uses React Router's useNavigate hook to navigate to /booking when clicked. Ensure the expanded content appears smoothly below the service card when expanded."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Add detailed expansion content for Root Canal Treatment service",
+      "acceptanceCriteria": [
+        "Expanded card highlights the painless single-sitting procedure",
+        "All content displays correctly in Hindi/Urdu",
+        "CTA button navigates to booking page"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServicesSection.tsx",
+          "operation": "modify",
+          "description": "Add detailed expansion content for Root Canal Treatment (RCT) including: Procedure Sade hue hisse ko saaf karke danton ko bachana, Special feature Single-sitting painless procedure (bin dard ke), Benefit Asli daant ko nikaalne se bachata hai. Add a CTA button Dard se chutkara paayein that navigates to the booking page. Emphasize the painless single-sitting feature prominently in the expanded content layout."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Add detailed expansion content for Dental Implants service",
+      "acceptanceCriteria": [
+        "Expanded card emphasizes lifetime durability of implants",
+        "Natural feel benefits are clearly communicated",
+        "CTA button is functional"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServicesSection.tsx",
+          "operation": "modify",
+          "description": "Add detailed expansion content for Dental Implants including: Procedure Titanium post ke saath naye majboot daant lagana, Longevity Ye zindagi bhar saath dete hain, Benefit Khane-peene aur bolne mein asli danton jaisa mehsoos hota hai. Add a CTA button Apni muskurahat wapas paayein that navigates to the booking page. Highlight the lifetime durability aspect prominently in the UI."
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Add detailed expansion content for Teeth Whitening service",
+      "acceptanceCriteria": [
+        "Expanded card highlights immediate results (3-4 shades whiter)",
+        "Special occasions context is included",
+        "CTA button navigates to booking page"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServicesSection.tsx",
+          "operation": "modify",
+          "description": "Add detailed expansion content for Teeth Whitening including: Procedure Advanced laser technology se peelepan ko hatana, Result Pehle hi session mein 3-4 shades safed daant, Benefit Shaadi ya party ke liye turant chamak. Add an appropriate CTA button that navigates to the booking page. Emphasize the immediate 3-4 shades improvement and special occasions use case in the layout."
+        }
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "summary": "Add expansion content for Braces & Aligners and Pediatric Dentistry services",
+      "acceptanceCriteria": [
+        "All six services have expandable content",
+        "Content structure is consistent across all services",
+        "All CTA buttons navigate to booking page"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServicesSection.tsx",
+          "operation": "modify",
+          "description": "Add detailed expansion content for the remaining two services: Braces & Aligners and Pediatric Dentistry. Create structured content similar to the other four services with sections for procedure, benefits, and relevant features in Hindi/Urdu. Add CTA buttons for both services that navigate to the booking page. Ensure all six services follow the same content structure pattern (procedure/features, benefits, duration/results where applicable, and CTA button) for visual and functional consistency."
+        }
+      ]
+    }
+  ]
+}
