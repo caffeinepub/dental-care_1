@@ -7,16 +7,48 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
+export type Time = bigint;
 export interface Appointment {
-    serviceType: string;
+    serviceType: ServiceType;
     contactInfo: string;
     date: Time;
     patientName: string;
 }
-export type Time = bigint;
+export interface UserProfile {
+    name: string;
+}
+export enum ServiceType {
+    PediatricExamAndCleaning = "PediatricExamAndCleaning",
+    PeriodontalScaling = "PeriodontalScaling",
+    BotoxConsultForMigraines = "BotoxConsultForMigraines",
+    Extraction = "Extraction",
+    InvisalignConsult = "InvisalignConsult",
+    HygieneAndExam = "HygieneAndExam",
+    Hygiene = "Hygiene",
+    BotoxConsultForCosmetic = "BotoxConsultForCosmetic",
+    FirstExamAndXray = "FirstExamAndXray",
+    CrownAndExam = "CrownAndExam",
+    ExtractionConsult = "ExtractionConsult"
+}
+export enum UserRole {
+    admin = "admin",
+    user = "user",
+    guest = "guest"
+}
 export interface backendInterface {
-    book(patientName: string, contactInfo: string, date: Time, serviceType: string): Promise<void>;
+    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<void>;
     cancel(appointmentId: bigint): Promise<void>;
     getAll(): Promise<Array<Appointment>>;
-    searchByService(serviceType: string): Promise<Array<Appointment>>;
+    getAllAppointments(): Promise<Array<Appointment>>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
+    getPastAppointments(): Promise<Array<Appointment>>;
+    getUpcoming(): Promise<Array<Appointment>>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    isCallerAdmin(): Promise<boolean>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    searchByPatient(patientName: string): Promise<Array<Appointment>>;
+    searchByService(serviceType: ServiceType): Promise<Array<Appointment>>;
+    serviceTypeToText(serviceType: ServiceType): Promise<string>;
 }

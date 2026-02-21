@@ -1,5 +1,10 @@
+import { Heart } from 'lucide-react';
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const appIdentifier = typeof window !== 'undefined' 
+    ? encodeURIComponent(window.location.hostname) 
+    : 'satya-dental-care';
 
   return (
     <footer className="border-t border-border/40 bg-muted/30 mt-20">
@@ -39,8 +44,19 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border/40 text-center text-sm text-muted-foreground">
-          <p>© {currentYear} Satya Dental Care</p>
+        <div className="mt-8 pt-8 border-t border-border/40 text-center space-y-2">
+          <p className="text-sm text-muted-foreground">© {currentYear} Satya Dental Care</p>
+          <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
+            Built with <Heart className="w-4 h-4 text-red-500 fill-red-500 inline" /> using{' '}
+            <a 
+              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline font-medium"
+            >
+              caffeine.ai
+            </a>
+          </p>
         </div>
       </div>
     </footer>

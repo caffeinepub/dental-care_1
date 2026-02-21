@@ -3,7 +3,9 @@ import { createRouter, RouterProvider, createRoute, createRootRoute } from '@tan
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import BookingPage from './pages/BookingPage';
+import ServicesPage from './pages/ServicesPage';
 import ServiceDetailPage from './pages/ServiceDetailPage';
+import AdminPage from './pages/AdminPage';
 import { Toaster } from '@/components/ui/sonner';
 
 const queryClient = new QueryClient();
@@ -27,6 +29,13 @@ const bookingRoute = createRoute({
   component: BookingPage,
 });
 
+// Define services route
+const servicesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/services',
+  component: ServicesPage,
+});
+
 // Define service detail route
 const serviceDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -34,8 +43,15 @@ const serviceDetailRoute = createRoute({
   component: ServiceDetailPage,
 });
 
+// Define admin route
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  component: AdminPage,
+});
+
 // Create router
-const routeTree = rootRoute.addChildren([indexRoute, bookingRoute, serviceDetailRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, bookingRoute, servicesRoute, serviceDetailRoute, adminRoute]);
 const router = createRouter({ routeTree });
 
 // Register router for type safety

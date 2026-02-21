@@ -1,150 +1,105 @@
 {
   "kind": "build_request",
-  "title": "Add dental equipment photos, patient-doctor images, and team section with 3 doctors",
-  "projectName": "Satya Dental Care",
-  "priority": "normal",
+  "title": "Fix installation error during appointment booking",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-42",
-      "text": "Create a new DoctorsSection component at frontend/src/components/DoctorsSection.tsx that displays three dental professionals: Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin, with professional profile cards showing their names, titles/specializations, and profile images",
-      "target": "frontend",
+      "id": "REQ-122",
+      "text": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-latest"
         ],
         "quotes": [
-          "add 3 doctor in other section 1sr dr. anas jadla 2nd dr farhan bangra and 3rs dr. jainul aabedin"
+          "ab instaling vala problem aa raha hai"
         ]
       },
       "acceptanceCriteria": [
-        "DoctorsSection component displays exactly 3 doctor profile cards",
-        "First doctor is Dr. Anas Jadla",
-        "Second doctor is Dr. Farhan Bangra",
-        "Third doctor is Dr. Jainul Aabedin",
-        "Each card shows doctor name and a profile photo placeholder",
-        "Section uses consistent styling matching the Oraa Care Smile design system"
+        "Installation errors no longer occur during appointment booking operations",
+        "Users can successfully submit appointment forms without encountering installation-related failures",
+        "Error messages related to installation are eliminated from the user experience",
+        "Backend canister remains in running state during appointment operations"
       ]
     },
     {
-      "id": "REQ-43",
-      "text": "Add the DoctorsSection component to the HomePage component in frontend/src/pages/HomePage.tsx, positioned between WhyChooseUsSection and TestimonialsSection",
+      "id": "REQ-123",
+      "text": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component (frontend/src/components/AppointmentForm.tsx) to capture and display installation-related errors with actionable feedback",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "add 3 doctor in other section"
+          "msg-latest"
         ]
       },
       "acceptanceCriteria": [
-        "DoctorsSection is rendered on the homepage",
-        "Section appears after Why Choose Us and before Testimonials",
-        "Section integrates smoothly with page flow and responsive layout"
+        "Installation errors are caught and logged with detailed stack traces",
+        "User-facing error messages provide clear guidance on what went wrong",
+        "Error messages are displayed in English in the appointment form UI",
+        "Console logs include sufficient diagnostic information for debugging"
       ]
     },
     {
-      "id": "REQ-44",
-      "text": "Update HeroSection component to include a background image showing dental equipment and a patient-doctor interaction scene as the hero banner background",
-      "target": "frontend",
+      "id": "REQ-124",
+      "text": "Verify that the backend canister (63qpd-iqaaa-aaaah-qrmga-cai) dependencies and Motoko module imports are correctly configured and that no missing or broken dependencies are causing installation failures",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "bahut sare photos dal do dental machin and dental petent photo with doctor"
+          "msg-latest"
         ]
       },
       "acceptanceCriteria": [
-        "Hero section displays a professional dental office background image",
-        "Background image includes visible dental equipment",
-        "Background image shows patient-doctor interaction",
-        "Image maintains visual hierarchy with overlay text remaining readable"
+        "All Motoko module imports in backend/main.mo are valid and accessible",
+        "Backend canister compiles without dependency resolution errors",
+        "No missing package or module errors appear in deployment logs",
+        "Backend canister initialization completes successfully"
       ]
     },
     {
-      "id": "REQ-45",
-      "text": "Add dental equipment and patient care imagery to the ServicesSection component, displaying relevant contextual photos within or alongside the service cards",
+      "id": "REQ-125",
+      "text": "Add retry logic and graceful degradation in the appointment booking mutation hook (frontend/src/hooks/useQueries.ts) to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "bahut sare photos dal do dental machin and dental petent photo with doctor"
+          "msg-latest"
         ]
       },
       "acceptanceCriteria": [
-        "Services section displays multiple dental equipment images",
-        "At least one image shows a patient with a dentist",
-        "Images are contextually relevant to the services being showcased",
-        "Images maintain professional quality and healthcare aesthetic"
+        "Failed appointment submissions automatically retry up to 3 times",
+        "Exponential backoff delays are applied between retry attempts",
+        "Users see a loading indicator during retry attempts",
+        "After maximum retries, a clear error message is displayed"
       ]
     },
     {
-      "id": "REQ-46",
-      "text": "Add a photo gallery or image showcase to the WhyChooseUsSection component showing dental machinery, clinic interior with modern equipment, and patient-doctor interactions",
+      "id": "REQ-126",
+      "text": "Verify that the Internet Identity authentication and actor initialization in useActor hook (frontend/src/hooks/useActor.ts) properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "bahut sare photos dal do dental machin and dental petent photo with doctor"
+          "msg-latest"
         ]
       },
       "acceptanceCriteria": [
-        "Why Choose Us section includes multiple professional photos",
-        "Photos showcase dental equipment and technology",
-        "At least one photo shows patient-doctor interaction",
-        "Images support the messaging about modern technology and expert doctors"
-      ]
-    },
-    {
-      "id": "REQ-47",
-      "text": "Reference all generated images as static assets from frontend/public/assets/generated directory in the respective components, ensuring proper image loading and optimization",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All components reference images from /assets/generated/ path",
-        "Images load correctly from the public directory",
-        "Image references include appropriate alt text for accessibility",
-        "Images are optimized for web display with appropriate dimensions"
+        "Expired authentication tokens are detected before form submission",
+        "Users are prompted to re-authenticate when tokens are invalid",
+        "Actor initialization completes successfully before enabling form submission",
+        "Token refresh or re-authentication is handled automatically when possible"
       ]
     }
   ],
   "constraints": [
-    "Do not modify backend/main.mo or backend architecture",
-    "Do not edit immutable frontend paths: useInternetIdentity.ts, useActor.ts, main.tsx, frontend/src/components/ui",
-    "Maintain the existing single-actor Motoko backend structure",
-    "Keep all styling consistent with the Oraa Care Smile design system already implemented"
+    "Do not modify the Internet Identity authentication flow in frontend/src/hooks/useInternetIdentity.ts",
+    "Preserve existing appointment booking data structure and backend API contract",
+    "Maintain compatibility with the existing backend canister deployment (63qpd-iqaaa-aaaah-qrmga-cai)"
   ],
   "nonGoals": [
-    "Adding actual doctor biography or credential details beyond names",
-    "Implementing doctor scheduling or individual doctor booking flows",
-    "Creating an admin panel for managing doctor profiles",
-    "Adding video content or animated media",
-    "Integrating with external image hosting services"
+    "Redesigning the appointment form UI or changing its visual appearance",
+    "Adding new appointment fields or modifying the appointment data model",
+    "Implementing alternative authentication mechanisms beyond Internet Identity",
+    "Changing the backend canister ID or redeploying to a new canister"
   ],
   "imageRequirements": {
-    "required": [
-      "Professional dental office hero banner showing modern dental equipment and a dentist consulting with a patient (hero-dental-office.dim_1920x800.png)",
-      "Close-up photo of advanced dental equipment and technology in a modern clinic setting (dental-equipment-1.dim_800x600.png)",
-      "Dentist examining a patient using modern dental tools (patient-doctor-exam.dim_800x600.png)",
-      "Modern dental chair and equipment setup in a bright clinic room (dental-equipment-2.dim_800x600.png)",
-      "Friendly dentist showing dental x-ray results to a smiling patient (patient-doctor-consultation.dim_800x600.png)",
-      "Sterilization equipment and hygiene setup in dental clinic (dental-equipment-3.dim_800x600.png)",
-      "Professional headshot of Dr. Anas Jadla in dental coat (doctor-anas-jadla.dim_400x400.png)",
-      "Professional headshot of Dr. Farhan Bangra in dental coat (doctor-farhan-bangra.dim_400x400.png)",
-      "Professional headshot of Dr. Jainul Aabedin in dental coat (doctor-jainul-aabedin.dim_400x400.png)",
-      "Dental service illustration showing teeth cleaning procedure (service-cleaning.dim_600x400.png)",
-      "Dental service illustration showing root canal treatment (service-root-canal.dim_600x400.png)",
-      "Dental service illustration showing dental implant procedure (service-implants.dim_600x400.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }

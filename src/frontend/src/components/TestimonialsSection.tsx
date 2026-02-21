@@ -1,12 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from '@/components/ui/carousel';
 
 const testimonials = [
@@ -43,8 +45,28 @@ const testimonials = [
 ];
 
 export default function TestimonialsSection() {
+  const [api, setApi] = useState<CarouselApi>();
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (!api) return;
+
+    const autoplay = setInterval(() => {
+      if (!isHovered) {
+        api.scrollNext();
+      }
+    }, 6000);
+
+    return () => clearInterval(autoplay);
+  }, [api, isHovered]);
+
   return (
-    <section id="testimonials" className="container py-20">
+    <section 
+      id="testimonials" 
+      className="container py-20"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Patient Reviews</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -62,6 +84,7 @@ export default function TestimonialsSection() {
 
       <div className="max-w-5xl mx-auto">
         <Carousel
+          setApi={setApi}
           opts={{
             align: 'start',
             loop: true,
@@ -89,22 +112,18 @@ export default function TestimonialsSection() {
                           </div>
                         </div>
                       </div>
-                      <p className="text-muted-foreground">{testimonial.text}</p>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {testimonial.text}
+                      </p>
                     </CardContent>
                   </Card>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hover:scale-110 transition-transform" />
-          <CarouselNext className="hover:scale-110 transition-transform" />
+          <CarouselPrevious />
+          <CarouselNext />
         </Carousel>
-      </div>
-
-      <div className="text-center mt-8">
-        <p className="text-sm text-muted-foreground">
-          Before/After photos available at clinic with patient consent
-        </p>
       </div>
     </section>
   );

@@ -1,114 +1,81 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T13:16:06.224Z",
+  "generatedAt": "2026-02-20T18:55:05.445Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 6,
+    "total": 5,
+    "implemented": 4,
     "items": [
       {
-        "id": "REQ-42",
-        "summary": "Create a new DoctorsSection component at frontend/src/components/DoctorsSection.tsx that displays three dental professionals: Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin, with professional profile cards showing their names, titles/specializations, and profile images",
+        "id": "REQ-122",
+        "summary": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/DoctorsSection.tsx"
+          "frontend/src/components/AppointmentForm.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/DoctorsSection.tsx"
+          "frontend/src/components/AppointmentForm.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
-        "id": "REQ-43",
-        "summary": "Add the DoctorsSection component to the HomePage component in frontend/src/pages/HomePage.tsx, positioned between WhyChooseUsSection and TestimonialsSection",
+        "id": "REQ-123",
+        "summary": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component (frontend/src/components/AppointmentForm.tsx) to capture and display installation-related errors with actionable feedback",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/components/AppointmentForm.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/components/AppointmentForm.tsx"
         ]
       },
       {
-        "id": "REQ-44",
-        "summary": "Update HeroSection component to include a background image showing dental equipment and a patient-doctor interaction scene as the hero banner background",
+        "id": "REQ-124",
+        "summary": "Verify that the backend canister (63qpd-iqaaa-aaaah-qrmga-cai) dependencies and Motoko module imports are correctly configured and that no missing or broken dependencies are causing installation failures",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-125",
+        "summary": "Add retry logic and graceful degradation in the appointment booking mutation hook (frontend/src/hooks/useQueries.ts) to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/HeroSection.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/AppointmentForm.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/HeroSection.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/AppointmentForm.tsx"
         ]
       },
       {
-        "id": "REQ-45",
-        "summary": "Add dental equipment and patient care imagery to the ServicesSection component, displaying relevant contextual photos within or alongside the service cards",
+        "id": "REQ-126",
+        "summary": "Verify that the Internet Identity authentication and actor initialization in useActor hook (frontend/src/hooks/useActor.ts) properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
+          "frontend/src/hooks/useActor.ts",
+          "frontend/src/components/AppointmentForm.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/ServicesSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-46",
-        "summary": "Add a photo gallery or image showcase to the WhyChooseUsSection component showing dental machinery, clinic interior with modern equipment, and patient-doctor interactions",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/WhyChooseUsSection.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/WhyChooseUsSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-47",
-        "summary": "Reference all generated images as static assets from frontend/public/assets/generated directory in the respective components, ensuring proper image loading and optimization",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/HeroSection.tsx",
-          "frontend/src/components/DoctorsSection.tsx",
-          "frontend/src/components/ServicesSection.tsx",
-          "frontend/src/components/WhyChooseUsSection.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/HeroSection.tsx",
-          "frontend/src/components/DoctorsSection.tsx",
-          "frontend/src/components/ServicesSection.tsx",
-          "frontend/src/components/WhyChooseUsSection.tsx"
+          "frontend/src/components/AppointmentForm.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/blob-storage/Mixin.mo",
-    "backend/blob-storage/Storage.mo",
+    "backend/main.mo",
     "build-request.json",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/dental-equipment-1.dim_800x600.png",
-    "frontend/public/assets/generated/dental-equipment-2.dim_800x600.png",
-    "frontend/public/assets/generated/dental-equipment-3.dim_800x600.png",
-    "frontend/public/assets/generated/doctor-anas-jadla.dim_400x400.png",
-    "frontend/public/assets/generated/doctor-farhan-bangra.dim_400x400.png",
-    "frontend/public/assets/generated/doctor-jainul-aabedin.dim_400x400.png",
-    "frontend/public/assets/generated/hero-dental-office.dim_1920x800.png",
-    "frontend/public/assets/generated/patient-doctor-consultation.dim_800x600.png",
-    "frontend/public/assets/generated/patient-doctor-exam.dim_800x600.png",
-    "frontend/public/assets/generated/service-cleaning.dim_600x400.png",
-    "frontend/public/assets/generated/service-implants.dim_600x400.png",
-    "frontend/public/assets/generated/service-root-canal.dim_600x400.png",
-    "frontend/src/components/DoctorsSection.tsx",
-    "frontend/src/components/HeroSection.tsx",
-    "frontend/src/components/ServicesSection.tsx",
-    "frontend/src/components/WhyChooseUsSection.tsx",
-    "frontend/src/pages/HomePage.tsx",
+    "frontend/src/components/AppointmentForm.tsx",
+    "frontend/src/hooks/useQueries.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

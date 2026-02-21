@@ -89,32 +89,195 @@ export class ExternalBlob {
         return this;
     }
 }
+export type Time = bigint;
+export interface _CaffeineStorageRefillInformation {
+    proposed_top_up_amount?: bigint;
+}
+export interface _CaffeineStorageCreateCertificateResult {
+    method: string;
+    blob_hash: string;
+}
 export interface Appointment {
-    serviceType: string;
+    serviceType: ServiceType;
     contactInfo: string;
     date: Time;
     patientName: string;
 }
-export type Time = bigint;
+export interface UserProfile {
+    name: string;
+}
+export interface _CaffeineStorageRefillResult {
+    success?: boolean;
+    topped_up_amount?: bigint;
+}
+export enum ServiceType {
+    PediatricExamAndCleaning = "PediatricExamAndCleaning",
+    PeriodontalScaling = "PeriodontalScaling",
+    BotoxConsultForMigraines = "BotoxConsultForMigraines",
+    Extraction = "Extraction",
+    InvisalignConsult = "InvisalignConsult",
+    HygieneAndExam = "HygieneAndExam",
+    Hygiene = "Hygiene",
+    BotoxConsultForCosmetic = "BotoxConsultForCosmetic",
+    FirstExamAndXray = "FirstExamAndXray",
+    CrownAndExam = "CrownAndExam",
+    ExtractionConsult = "ExtractionConsult"
+}
+export enum UserRole {
+    admin = "admin",
+    user = "user",
+    guest = "guest"
+}
 export interface backendInterface {
-    book(patientName: string, contactInfo: string, date: Time, serviceType: string): Promise<void>;
+    _caffeineStorageBlobIsLive(hash: Uint8Array): Promise<boolean>;
+    _caffeineStorageBlobsToDelete(): Promise<Array<Uint8Array>>;
+    _caffeineStorageConfirmBlobDeletion(blobs: Array<Uint8Array>): Promise<void>;
+    _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
+    _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
+    _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<void>;
     cancel(appointmentId: bigint): Promise<void>;
     getAll(): Promise<Array<Appointment>>;
-    searchByService(serviceType: string): Promise<Array<Appointment>>;
+    getAllAppointments(): Promise<Array<Appointment>>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
+    getPastAppointments(): Promise<Array<Appointment>>;
+    getUpcoming(): Promise<Array<Appointment>>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    isCallerAdmin(): Promise<boolean>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    searchByPatient(patientName: string): Promise<Array<Appointment>>;
+    searchByService(serviceType: ServiceType): Promise<Array<Appointment>>;
+    serviceTypeToText(serviceType: ServiceType): Promise<string>;
 }
+import type { Appointment as _Appointment, ServiceType as _ServiceType, Time as _Time, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
-    async book(arg0: string, arg1: string, arg2: Time, arg3: string): Promise<void> {
+    async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
         if (this.processError) {
             try {
-                const result = await this.actor.book(arg0, arg1, arg2, arg3);
+                const result = await this.actor._caffeineStorageBlobIsLive(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.book(arg0, arg1, arg2, arg3);
+            const result = await this.actor._caffeineStorageBlobIsLive(arg0);
+            return result;
+        }
+    }
+    async _caffeineStorageBlobsToDelete(): Promise<Array<Uint8Array>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._caffeineStorageBlobsToDelete();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._caffeineStorageBlobsToDelete();
+            return result;
+        }
+    }
+    async _caffeineStorageConfirmBlobDeletion(arg0: Array<Uint8Array>): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._caffeineStorageConfirmBlobDeletion(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._caffeineStorageConfirmBlobDeletion(arg0);
+            return result;
+        }
+    }
+    async _caffeineStorageCreateCertificate(arg0: string): Promise<_CaffeineStorageCreateCertificateResult> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._caffeineStorageCreateCertificate(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._caffeineStorageCreateCertificate(arg0);
+            return result;
+        }
+    }
+    async _caffeineStorageRefillCashier(arg0: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._caffeineStorageRefillCashier(to_candid_opt_n1(this._uploadFile, this._downloadFile, arg0));
+                return from_candid__CaffeineStorageRefillResult_n4(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._caffeineStorageRefillCashier(to_candid_opt_n1(this._uploadFile, this._downloadFile, arg0));
+            return from_candid__CaffeineStorageRefillResult_n4(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async _caffeineStorageUpdateGatewayPrincipals(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._caffeineStorageUpdateGatewayPrincipals();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._caffeineStorageUpdateGatewayPrincipals();
+            return result;
+        }
+    }
+    async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._initializeAccessControlWithSecret(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._initializeAccessControlWithSecret(arg0);
+            return result;
+        }
+    }
+    async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n8(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n8(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async book(arg0: string, arg1: string, arg2: Time, arg3: ServiceType): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.book(arg0, arg1, arg2, to_candid_ServiceType_n10(this._uploadFile, this._downloadFile, arg3));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.book(arg0, arg1, arg2, to_candid_ServiceType_n10(this._uploadFile, this._downloadFile, arg3));
             return result;
         }
     }
@@ -136,30 +299,341 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getAll();
-                return result;
+                return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getAll();
-            return result;
+            return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
         }
     }
-    async searchByService(arg0: string): Promise<Array<Appointment>> {
+    async getAllAppointments(): Promise<Array<Appointment>> {
         if (this.processError) {
             try {
-                const result = await this.actor.searchByService(arg0);
+                const result = await this.actor.getAllAppointments();
+                return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllAppointments();
+            return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getCallerUserProfile(): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserProfile();
+                return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserProfile();
+            return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getCallerUserRole(): Promise<UserRole> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserRole();
+                return from_candid_UserRole_n18(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserRole();
+            return from_candid_UserRole_n18(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getPastAppointments(): Promise<Array<Appointment>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPastAppointments();
+                return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPastAppointments();
+            return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getUpcoming(): Promise<Array<Appointment>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUpcoming();
+                return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUpcoming();
+            return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserProfile(arg0);
+                return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserProfile(arg0);
+            return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async isCallerAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isCallerAdmin();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.searchByService(arg0);
+            const result = await this.actor.isCallerAdmin();
             return result;
         }
     }
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveCallerUserProfile(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
+    async searchByPatient(arg0: string): Promise<Array<Appointment>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.searchByPatient(arg0);
+                return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.searchByPatient(arg0);
+            return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async searchByService(arg0: ServiceType): Promise<Array<Appointment>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.searchByService(to_candid_ServiceType_n10(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.searchByService(to_candid_ServiceType_n10(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async serviceTypeToText(arg0: ServiceType): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.serviceTypeToText(to_candid_ServiceType_n10(this._uploadFile, this._downloadFile, arg0));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.serviceTypeToText(to_candid_ServiceType_n10(this._uploadFile, this._downloadFile, arg0));
+            return result;
+        }
+    }
+}
+function from_candid_Appointment_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Appointment): Appointment {
+    return from_candid_record_n14(_uploadFile, _downloadFile, value);
+}
+function from_candid_ServiceType_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ServiceType): ServiceType {
+    return from_candid_variant_n16(_uploadFile, _downloadFile, value);
+}
+function from_candid_UserRole_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n19(_uploadFile, _downloadFile, value);
+}
+function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
+    return from_candid_record_n5(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_record_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    serviceType: _ServiceType;
+    contactInfo: string;
+    date: _Time;
+    patientName: string;
+}): {
+    serviceType: ServiceType;
+    contactInfo: string;
+    date: Time;
+    patientName: string;
+} {
+    return {
+        serviceType: from_candid_ServiceType_n15(_uploadFile, _downloadFile, value.serviceType),
+        contactInfo: value.contactInfo,
+        date: value.date,
+        patientName: value.patientName
+    };
+}
+function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    success: [] | [boolean];
+    topped_up_amount: [] | [bigint];
+}): {
+    success?: boolean;
+    topped_up_amount?: bigint;
+} {
+    return {
+        success: record_opt_to_undefined(from_candid_opt_n6(_uploadFile, _downloadFile, value.success)),
+        topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
+    };
+}
+function from_candid_variant_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    PediatricExamAndCleaning: null;
+} | {
+    PeriodontalScaling: null;
+} | {
+    BotoxConsultForMigraines: null;
+} | {
+    Extraction: null;
+} | {
+    InvisalignConsult: null;
+} | {
+    HygieneAndExam: null;
+} | {
+    Hygiene: null;
+} | {
+    BotoxConsultForCosmetic: null;
+} | {
+    FirstExamAndXray: null;
+} | {
+    CrownAndExam: null;
+} | {
+    ExtractionConsult: null;
+}): ServiceType {
+    return "PediatricExamAndCleaning" in value ? ServiceType.PediatricExamAndCleaning : "PeriodontalScaling" in value ? ServiceType.PeriodontalScaling : "BotoxConsultForMigraines" in value ? ServiceType.BotoxConsultForMigraines : "Extraction" in value ? ServiceType.Extraction : "InvisalignConsult" in value ? ServiceType.InvisalignConsult : "HygieneAndExam" in value ? ServiceType.HygieneAndExam : "Hygiene" in value ? ServiceType.Hygiene : "BotoxConsultForCosmetic" in value ? ServiceType.BotoxConsultForCosmetic : "FirstExamAndXray" in value ? ServiceType.FirstExamAndXray : "CrownAndExam" in value ? ServiceType.CrownAndExam : "ExtractionConsult" in value ? ServiceType.ExtractionConsult : value;
+}
+function from_candid_variant_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+}): UserRole {
+    return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
+}
+function from_candid_vec_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Appointment>): Array<Appointment> {
+    return value.map((x)=>from_candid_Appointment_n13(_uploadFile, _downloadFile, x));
+}
+function to_candid_ServiceType_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ServiceType): _ServiceType {
+    return to_candid_variant_n11(_uploadFile, _downloadFile, value);
+}
+function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
+    return to_candid_variant_n9(_uploadFile, _downloadFile, value);
+}
+function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation): __CaffeineStorageRefillInformation {
+    return to_candid_record_n3(_uploadFile, _downloadFile, value);
+}
+function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation | null): [] | [__CaffeineStorageRefillInformation] {
+    return value === null ? candid_none() : candid_some(to_candid__CaffeineStorageRefillInformation_n2(_uploadFile, _downloadFile, value));
+}
+function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    proposed_top_up_amount?: bigint;
+}): {
+    proposed_top_up_amount: [] | [bigint];
+} {
+    return {
+        proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
+    };
+}
+function to_candid_variant_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ServiceType): {
+    PediatricExamAndCleaning: null;
+} | {
+    PeriodontalScaling: null;
+} | {
+    BotoxConsultForMigraines: null;
+} | {
+    Extraction: null;
+} | {
+    InvisalignConsult: null;
+} | {
+    HygieneAndExam: null;
+} | {
+    Hygiene: null;
+} | {
+    BotoxConsultForCosmetic: null;
+} | {
+    FirstExamAndXray: null;
+} | {
+    CrownAndExam: null;
+} | {
+    ExtractionConsult: null;
+} {
+    return value == ServiceType.PediatricExamAndCleaning ? {
+        PediatricExamAndCleaning: null
+    } : value == ServiceType.PeriodontalScaling ? {
+        PeriodontalScaling: null
+    } : value == ServiceType.BotoxConsultForMigraines ? {
+        BotoxConsultForMigraines: null
+    } : value == ServiceType.Extraction ? {
+        Extraction: null
+    } : value == ServiceType.InvisalignConsult ? {
+        InvisalignConsult: null
+    } : value == ServiceType.HygieneAndExam ? {
+        HygieneAndExam: null
+    } : value == ServiceType.Hygiene ? {
+        Hygiene: null
+    } : value == ServiceType.BotoxConsultForCosmetic ? {
+        BotoxConsultForCosmetic: null
+    } : value == ServiceType.FirstExamAndXray ? {
+        FirstExamAndXray: null
+    } : value == ServiceType.CrownAndExam ? {
+        CrownAndExam: null
+    } : value == ServiceType.ExtractionConsult ? {
+        ExtractionConsult: null
+    } : value;
+}
+function to_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+} {
+    return value == UserRole.admin ? {
+        admin: null
+    } : value == UserRole.user ? {
+        user: null
+    } : value == UserRole.guest ? {
+        guest: null
+    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

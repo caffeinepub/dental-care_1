@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-new-doctorssection-component-at-frontend-src-components-doctorssection-tsx-that-displays-three-dental-professionals-dr-anas-jadla-dr-farhan-bangra-and-dr-jainul-aabedin-with-professional-profile-cards-showing-their-names-titles-specializations-and-profile-images",
-      "featureTitle": "Create a new DoctorsSection component at frontend/src/components/DoctorsSection.tsx that displays three dental professionals: Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin, with professional profile cards showing their names, titles/specializations, and profile images",
+      "featureId": "feature-debug-and-resolve-the-installation-error-that-occurs-when-users-attempt-to-book-appointments-or-perform-other-operations-in-the-application",
+      "featureTitle": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
       "files": [
-        "frontend/src/components/DoctorsSection.tsx"
+        "frontend/src/components/AppointmentForm.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -13,18 +14,19 @@
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
         "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-42"
+        "REQ-122"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-the-doctorssection-component-to-the-homepage-component-in-frontend-src-pages-homepage-tsx-positioned-between-whychooseussection-and-testimonialssection",
-      "featureTitle": "Add the DoctorsSection component to the HomePage component in frontend/src/pages/HomePage.tsx, positioned between WhyChooseUsSection and TestimonialsSection",
+      "featureId": "feature-add-comprehensive-error-logging-and-user-friendly-error-messages-in-the-appointmentform-component-frontend-src-components-appointmentform-tsx-to-capture-and-display-installation-related-errors-with-actionable-feedback",
+      "featureTitle": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component (frontend/src/components/AppointmentForm.tsx) to capture and display installation-related errors with actionable feedback",
       "files": [
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/components/AppointmentForm.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -32,18 +34,20 @@
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
         "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-43"
+        "REQ-123"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-herosection-component-to-include-a-background-image-showing-dental-equipment-and-a-patient-doctor-interaction-scene-as-the-hero-banner-background",
-      "featureTitle": "Update HeroSection component to include a background image showing dental equipment and a patient-doctor interaction scene as the hero banner background",
+      "featureId": "feature-add-retry-logic-and-graceful-degradation-in-the-appointment-booking-mutation-hook-frontend-src-hooks-usequeries-ts-to-handle-transient-installation-or-network-errors-with-exponential-backoff-and-maximum-retry-attempts",
+      "featureTitle": "Add retry logic and graceful degradation in the appointment booking mutation hook (frontend/src/hooks/useQueries.ts) to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
       "files": [
-        "frontend/src/components/HeroSection.tsx"
+        "frontend/src/components/AppointmentForm.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -51,18 +55,19 @@
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
         "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-44"
+        "REQ-125"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-dental-equipment-and-patient-care-imagery-to-the-servicessection-component-displaying-relevant-contextual-photos-within-or-alongside-the-service-cards",
-      "featureTitle": "Add dental equipment and patient care imagery to the ServicesSection component, displaying relevant contextual photos within or alongside the service cards",
+      "featureId": "feature-verify-that-the-internet-identity-authentication-and-actor-initialization-in-useactor-hook-frontend-src-hooks-useactor-ts-properly-handles-edge-cases-where-authentication-tokens-expire-or-become-invalid-during-form-submission-preventing-installation-errors",
+      "featureTitle": "Verify that the Internet Identity authentication and actor initialization in useActor hook (frontend/src/hooks/useActor.ts) properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
       "files": [
-        "frontend/src/components/ServicesSection.tsx"
+        "frontend/src/components/AppointmentForm.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -70,51 +75,11 @@
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
         "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-45"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-photo-gallery-or-image-showcase-to-the-whychooseussection-component-showing-dental-machinery-clinic-interior-with-modern-equipment-and-patient-doctor-interactions",
-      "featureTitle": "Add a photo gallery or image showcase to the WhyChooseUsSection component showing dental machinery, clinic interior with modern equipment, and patient-doctor interactions",
-      "files": [
-        "frontend/src/components/WhyChooseUsSection.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-46"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-reference-all-generated-images-as-static-assets-from-frontend-public-assets-generated-directory-in-the-respective-components-ensuring-proper-image-loading-and-optimization",
-      "featureTitle": "Reference all generated images as static assets from frontend/public/assets/generated directory in the respective components, ensuring proper image loading and optimization",
-      "files": [
-        "frontend/src/components/DoctorsSection.tsx",
-        "frontend/src/components/HeroSection.tsx",
-        "frontend/src/components/ServicesSection.tsx",
-        "frontend/src/components/WhyChooseUsSection.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-47"
+        "REQ-126"
       ],
       "confidence": "high"
     }

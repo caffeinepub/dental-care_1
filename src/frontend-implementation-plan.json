@@ -1,123 +1,88 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add dental equipment photos, patient-doctor images, and team section with 3 doctors",
+  "title": "Fix installation error during appointment booking",
   "requirements": [
     {
-      "id": "REQ-42",
-      "summary": "Create DoctorsSection component displaying three dental professionals with profile cards",
+      "id": "REQ-122",
+      "summary": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
       "acceptanceCriteria": [
-        "DoctorsSection component displays exactly 3 doctor profile cards",
-        "First doctor is Dr. Anas Jadla",
-        "Second doctor is Dr. Farhan Bangra",
-        "Third doctor is Dr. Jainul Aabedin",
-        "Each card shows doctor name and a profile photo placeholder",
-        "Section uses consistent styling matching the Oraa Care Smile design system"
+        "Installation errors no longer occur during appointment booking operations",
+        "Users can successfully submit appointment forms without encountering installation-related failures",
+        "Error messages related to installation are eliminated from the user experience",
+        "Backend canister remains in running state during appointment operations"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/DoctorsSection.tsx",
-          "operation": "create",
-          "description": "Create DoctorsSection component that displays three doctor profile cards in a responsive grid layout. Each card includes the doctor's name, professional title/specialization, and profile image from frontend/public/assets/generated/doctor-anas-jadla.dim_400x400.png, frontend/public/assets/generated/doctor-farhan-bangra.dim_400x400.png, and frontend/public/assets/generated/doctor-jainul-aabedin.dim_400x400.png. Use consistent styling with the existing design system (cards, shadows, spacing). Include a section heading 'Meet Our Expert Dentists' or similar. Ensure responsive grid layout that adapts to mobile, tablet, and desktop viewports."
-        }
-      ]
-    },
-    {
-      "id": "REQ-43",
-      "summary": "Add DoctorsSection to HomePage between WhyChooseUsSection and TestimonialsSection",
-      "acceptanceCriteria": [
-        "DoctorsSection is rendered on the homepage",
-        "Section appears after Why Choose Us and before Testimonials",
-        "Section integrates smoothly with page flow and responsive layout"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
+          "path": "frontend/src/components/AppointmentForm.tsx",
           "operation": "modify",
-          "description": "Import the DoctorsSection component and add it to the HomePage render sequence. Position it after WhyChooseUsSection and before TestimonialsSection. Ensure proper spacing and integration with the existing page flow. The updated rendering order should be: HeroSection, ServicesSection, WhyChooseUsSection, DoctorsSection, TestimonialsSection, ContactSection."
-        }
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "summary": "Update HeroSection with professional dental office background image showing equipment and patient-doctor interaction",
-      "acceptanceCriteria": [
-        "Hero section displays a professional dental office background image",
-        "Background image includes visible dental equipment",
-        "Background image shows patient-doctor interaction",
-        "Image maintains visual hierarchy with overlay text remaining readable"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/HeroSection.tsx",
-          "operation": "modify",
-          "description": "Update the HeroSection background to use the generated hero banner image at frontend/public/assets/generated/hero-dental-office.dim_1920x800.png. Ensure the background image is properly sized and positioned. Add a semi-transparent overlay if needed to maintain text readability over the background. Update background styling to use the new image while preserving the existing text hierarchy and CTA buttons. Test that the image loads correctly and maintains proper aspect ratio across different screen sizes."
-        }
-      ]
-    },
-    {
-      "id": "REQ-45",
-      "summary": "Add dental equipment and patient care imagery to ServicesSection cards",
-      "acceptanceCriteria": [
-        "Services section displays multiple dental equipment images",
-        "At least one image shows a patient with a dentist",
-        "Images are contextually relevant to the services being showcased",
-        "Images maintain professional quality and healthcare aesthetic"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/ServicesSection.tsx",
-          "operation": "modify",
-          "description": "Update the ServicesSection to include contextual images for dental services. Add the following images to relevant service cards: frontend/public/assets/generated/service-cleaning.dim_600x400.png for teeth cleaning/checkup services, frontend/public/assets/generated/service-root-canal.dim_600x400.png for root canal services, and frontend/public/assets/generated/service-implants.dim_600x400.png for implant services. Additionally, incorporate frontend/public/assets/generated/dental-equipment-1.dim_800x600.png, frontend/public/assets/generated/dental-equipment-2.dim_800x600.png, frontend/public/assets/generated/patient-doctor-exam.dim_800x600.png, and frontend/public/assets/generated/patient-doctor-consultation.dim_800x600.png as decorative or background elements within the section. Ensure images are properly sized, maintain aspect ratios, and include alt text for accessibility. Images should enhance the service cards without overwhelming the text content."
-        }
-      ]
-    },
-    {
-      "id": "REQ-46",
-      "summary": "Add photo gallery to WhyChooseUsSection showcasing dental equipment and patient-doctor interactions",
-      "acceptanceCriteria": [
-        "Why Choose Us section includes multiple professional photos",
-        "Photos showcase dental equipment and technology",
-        "At least one photo shows patient-doctor interaction",
-        "Images support the messaging about modern technology and expert doctors"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/WhyChooseUsSection.tsx",
-          "operation": "modify",
-          "description": "Enhance WhyChooseUsSection by adding a photo gallery or image showcase. Incorporate the following images: frontend/public/assets/generated/dental-equipment-2.dim_800x600.png to showcase modern equipment, frontend/public/assets/generated/dental-equipment-3.dim_800x600.png to highlight sterilization and hygiene setup, and frontend/public/assets/generated/patient-doctor-consultation.dim_800x600.png to show patient care interaction. Consider adding a grid layout alongside or below the existing feature cards, or integrate images within the feature cards themselves. Use the clinic-interior.dim_1200x600.png from existing assets if it complements the new images. Ensure images support the key messages about expert doctors, modern technology, and patient care. Include proper alt text and maintain responsive behavior."
-        }
-      ]
-    },
-    {
-      "id": "REQ-47",
-      "summary": "Ensure all components reference generated images as static assets with proper loading and optimization",
-      "acceptanceCriteria": [
-        "All components reference images from /assets/generated/ path",
-        "Images load correctly from the public directory",
-        "Image references include appropriate alt text for accessibility",
-        "Images are optimized for web display with appropriate dimensions"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/HeroSection.tsx",
-          "operation": "modify",
-          "description": "Verify that the hero background image reference uses the correct path /assets/generated/hero-dental-office.dim_1920x800.png (relative to the public directory). Ensure the image element or CSS background-image property includes appropriate alt text or aria-label for accessibility. Confirm the image loads properly and is optimized for web display with the correct dimensions (1920x800)."
+          "description": "Add comprehensive error boundary and actor state validation before form submission. Ensure the actor is fully initialized and available before enabling the submit button. Add detailed error logging for installation-related failures with user-friendly error messages displayed in the UI. Include checks for actor availability throughout the booking mutation flow."
         },
         {
-          "path": "frontend/src/components/DoctorsSection.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Verify all doctor profile images use paths /assets/generated/doctor-anas-jadla.dim_400x400.png, /assets/generated/doctor-farhan-bangra.dim_400x400.png, and /assets/generated/doctor-jainul-aabedin.dim_400x400.png. Ensure each image element includes descriptive alt text (e.g., 'Dr. Anas Jadla - Dental Professional'). Confirm images are properly sized at 400x400 and load correctly from the public assets directory."
+          "description": "Enhance the appointment booking mutation to include retry logic with exponential backoff for transient network or installation errors. Add proper error categorization to distinguish between installation errors, network failures, and validation errors. Ensure mutations properly handle actor unavailability states."
+        }
+      ]
+    },
+    {
+      "id": "REQ-123",
+      "summary": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component to capture and display installation-related errors with actionable feedback",
+      "acceptanceCriteria": [
+        "Installation errors are caught and logged with detailed stack traces",
+        "User-facing error messages provide clear guidance on what went wrong",
+        "Error messages are displayed in English in the appointment form UI",
+        "Console logs include sufficient diagnostic information for debugging"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AppointmentForm.tsx",
+          "operation": "modify",
+          "description": "Implement detailed error logging with console output including stack traces, error types, and actor state information. Add user-facing error message display with clear, actionable feedback in English. Create error categories for installation errors, network failures, and validation errors with specific messages for each. Display errors prominently in the form UI with retry suggestions."
+        }
+      ]
+    },
+    {
+      "id": "REQ-125",
+      "summary": "Add retry logic and graceful degradation in the appointment booking mutation hook to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
+      "acceptanceCriteria": [
+        "Failed appointment submissions automatically retry up to 3 times",
+        "Exponential backoff delays are applied between retry attempts",
+        "Users see a loading indicator during retry attempts",
+        "After maximum retries, a clear error message is displayed"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Implement retry logic in the appointment booking mutation with a maximum of 3 retry attempts. Add exponential backoff delays (e.g., 1s, 2s, 4s) between retry attempts. Update the mutation to track retry state and count. Ensure the loading state reflects retry attempts so users see appropriate loading indicators. After exhausting retries, return a clear error message indicating the failure."
         },
         {
-          "path": "frontend/src/components/ServicesSection.tsx",
+          "path": "frontend/src/components/AppointmentForm.tsx",
           "operation": "modify",
-          "description": "Verify all service and equipment images use correct paths from /assets/generated/ including service-cleaning.dim_600x400.png, service-root-canal.dim_600x400.png, service-implants.dim_600x400.png, dental-equipment-1.dim_800x600.png, dental-equipment-2.dim_800x600.png, patient-doctor-exam.dim_800x600.png, and patient-doctor-consultation.dim_800x600.png. Ensure each image includes contextually appropriate alt text describing the service or equipment shown. Confirm proper dimensions and loading behavior."
+          "description": "Update the form UI to display retry attempt count and status during mutation retries. Show a loading spinner or progress indicator that reflects the current retry attempt. Display appropriate messages like 'Retrying... (Attempt 2 of 3)' to keep users informed. After all retries fail, display the final error message with actionable guidance."
+        }
+      ]
+    },
+    {
+      "id": "REQ-126",
+      "summary": "Verify that the Internet Identity authentication and actor initialization in useActor hook properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
+      "acceptanceCriteria": [
+        "Expired authentication tokens are detected before form submission",
+        "Users are prompted to re-authenticate when tokens are invalid",
+        "Actor initialization completes successfully before enabling form submission",
+        "Token refresh or re-authentication is handled automatically when possible"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useActor.ts",
+          "operation": "modify",
+          "description": "Add validation to detect expired or invalid authentication tokens before actor operations. Implement token expiry checking logic and handle edge cases where tokens become invalid during operation. Add error handling to prompt users for re-authentication when token issues are detected. Ensure actor initialization fully completes and is verified before operations proceed."
         },
         {
-          "path": "frontend/src/components/WhyChooseUsSection.tsx",
+          "path": "frontend/src/components/AppointmentForm.tsx",
           "operation": "modify",
-          "description": "Verify all images reference correct paths from /assets/generated/ including dental-equipment-2.dim_800x600.png, dental-equipment-3.dim_800x600.png, and patient-doctor-consultation.dim_800x600.png. Ensure descriptive alt text is included for each image (e.g., 'Modern dental equipment in clinic', 'Sterilization and hygiene setup'). Confirm images load properly and display at optimized dimensions."
+          "description": "Add pre-submission validation to check actor authentication state and token validity. Disable form submission if the actor is not fully initialized or authentication is invalid. Display appropriate messages to users when re-authentication is required. Integrate with the useActor hook's authentication state to handle token expiry gracefully."
         }
       ]
     }

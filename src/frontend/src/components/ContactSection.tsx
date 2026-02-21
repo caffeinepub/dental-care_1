@@ -2,8 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone, Clock, Mail } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 export default function ContactSection() {
+  const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation({ threshold: 0.2 });
+  const { ref: mapRef, isVisible: mapVisible } = useScrollAnimation({ threshold: 0.2 });
+
   return (
     <section id="contact" className="bg-muted/30 py-20">
       <div className="container">
@@ -16,7 +20,10 @@ export default function ContactSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Contact Information */}
-          <Card className="h-full">
+          <Card 
+            ref={cardsRef as React.RefObject<HTMLDivElement>}
+            className={`h-full ${cardsVisible ? 'animate-fade-in' : 'opacity-0'}`}
+          >
             <CardHeader>
               <CardTitle>Get In Touch</CardTitle>
             </CardHeader>
@@ -96,7 +103,10 @@ export default function ContactSection() {
           </Card>
 
           {/* Google Maps */}
-          <Card className="h-full">
+          <Card 
+            ref={mapRef as React.RefObject<HTMLDivElement>}
+            className={`h-full ${mapVisible ? 'animate-fade-in-delay-200' : 'opacity-0'}`}
+          >
             <CardHeader>
               <CardTitle>Find Us</CardTitle>
             </CardHeader>

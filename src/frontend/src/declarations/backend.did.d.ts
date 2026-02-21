@@ -11,17 +11,70 @@ import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export interface Appointment {
-  'serviceType' : string,
+  'serviceType' : ServiceType,
   'contactInfo' : string,
   'date' : Time,
   'patientName' : string,
 }
+export type ServiceType = { 'PediatricExamAndCleaning' : null } |
+  { 'PeriodontalScaling' : null } |
+  { 'BotoxConsultForMigraines' : null } |
+  { 'Extraction' : null } |
+  { 'InvisalignConsult' : null } |
+  { 'HygieneAndExam' : null } |
+  { 'Hygiene' : null } |
+  { 'BotoxConsultForCosmetic' : null } |
+  { 'FirstExamAndXray' : null } |
+  { 'CrownAndExam' : null } |
+  { 'ExtractionConsult' : null };
 export type Time = bigint;
+export interface UserProfile { 'name' : string }
+export type UserRole = { 'admin' : null } |
+  { 'user' : null } |
+  { 'guest' : null };
+export interface _CaffeineStorageCreateCertificateResult {
+  'method' : string,
+  'blob_hash' : string,
+}
+export interface _CaffeineStorageRefillInformation {
+  'proposed_top_up_amount' : [] | [bigint],
+}
+export interface _CaffeineStorageRefillResult {
+  'success' : [] | [boolean],
+  'topped_up_amount' : [] | [bigint],
+}
 export interface _SERVICE {
-  'book' : ActorMethod<[string, string, Time, string], undefined>,
+  '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
+  '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
+  '_caffeineStorageConfirmBlobDeletion' : ActorMethod<
+    [Array<Uint8Array>],
+    undefined
+  >,
+  '_caffeineStorageCreateCertificate' : ActorMethod<
+    [string],
+    _CaffeineStorageCreateCertificateResult
+  >,
+  '_caffeineStorageRefillCashier' : ActorMethod<
+    [[] | [_CaffeineStorageRefillInformation]],
+    _CaffeineStorageRefillResult
+  >,
+  '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'book' : ActorMethod<[string, string, Time, ServiceType], undefined>,
   'cancel' : ActorMethod<[bigint], undefined>,
   'getAll' : ActorMethod<[], Array<Appointment>>,
-  'searchByService' : ActorMethod<[string], Array<Appointment>>,
+  'getAllAppointments' : ActorMethod<[], Array<Appointment>>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getPastAppointments' : ActorMethod<[], Array<Appointment>>,
+  'getUpcoming' : ActorMethod<[], Array<Appointment>>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'searchByPatient' : ActorMethod<[string], Array<Appointment>>,
+  'searchByService' : ActorMethod<[ServiceType], Array<Appointment>>,
+  'serviceTypeToText' : ActorMethod<[ServiceType], string>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

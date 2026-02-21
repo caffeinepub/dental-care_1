@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Sparkles, Heart, Smile, Braces, Baby, Stethoscope, ArrowRight } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const services = [
   {
@@ -60,7 +61,62 @@ const services = [
   },
 ];
 
+function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
+  const { ref, isVisible } = useScrollAnimation({ threshold: 0.2 });
+  const Icon = service.icon;
+  
+  return (
+    <Card 
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className={`text-center hover:shadow-xl hover:scale-105 transition-all duration-300 group overflow-hidden ${
+        isVisible ? 'animate-slide-up' : 'opacity-0'
+      }`}
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={service.image} 
+          alt={`${service.title} - Professional dental service`}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
+        <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full ${service.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
+          <Icon className={`w-8 h-8 ${service.color}`} />
+        </div>
+      </div>
+      <CardHeader>
+        <CardTitle className="text-xl mb-2">{service.title}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <CardDescription className="text-muted-foreground">
+          {service.description}
+        </CardDescription>
+        <div className="flex flex-col gap-2">
+          <Link to="/services/$serviceId" params={{ serviceId: service.id }}>
+            <Button 
+              variant="outline"
+              className="w-full group/btn hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              Learn More
+              <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
+          <Link to="/booking">
+            <Button 
+              className="w-full"
+            >
+              Book Now
+            </Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function ServicesSection() {
+  const { ref: equipmentRef, isVisible: equipmentVisible } = useScrollAnimation({ threshold: 0.2 });
+
   return (
     <section id="services" className="container py-20">
       <div className="text-center mb-12">
@@ -71,72 +127,32 @@ export default function ServicesSection() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {services.map((service, index) => {
-          const Icon = service.icon;
-          return (
-            <Card 
-              key={index} 
-              className="text-center hover:shadow-lg hover:scale-105 transition-all duration-300 group overflow-hidden"
-            >
-              <div className="relative h-48 overflow-hidden">
-                <img 
-                  src={service.image} 
-                  alt={`${service.title} - Professional dental service`}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-                <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full ${service.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
-                  <Icon className={`w-8 h-8 ${service.color}`} />
-                </div>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-xl mb-2">{service.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <CardDescription className="text-muted-foreground">
-                  {service.description}
-                </CardDescription>
-                <div className="flex flex-col gap-2">
-                  <Link to="/services/$serviceId" params={{ serviceId: service.id }}>
-                    <Button 
-                      variant="outline"
-                      className="w-full group/btn hover:bg-primary hover:text-primary-foreground transition-colors"
-                    >
-                      Learn More
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
-                  <Link to="/booking">
-                    <Button 
-                      className="w-full"
-                    >
-                      Book Now
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {services.map((service, index) => (
+          <ServiceCard key={index} service={service} index={index} />
+        ))}
       </div>
 
       {/* Additional Equipment Showcase */}
-      <div className="mt-16">
-        <div className="text-center mb-8">
+      <div className="mt-16" ref={equipmentRef as React.RefObject<HTMLDivElement>}>
+        <div className={`text-center mb-8 ${equipmentVisible ? 'animate-fade-in' : 'opacity-0'}`}>
           <h3 className="text-2xl md:text-3xl font-bold mb-3">State-of-the-Art Equipment</h3>
           <p className="text-muted-foreground max-w-xl mx-auto">
             We use the latest dental technology to ensure the best treatment outcomes
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+          <div className={`relative overflow-hidden rounded-lg shadow-lg group ${
+            equipmentVisible ? 'animate-fade-in-delay-200' : 'opacity-0'
+          }`}>
             <img 
               src="/assets/generated/dental-equipment-2.dim_800x600.png" 
               alt="Modern dental equipment and technology"
               className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
-          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+          <div className={`relative overflow-hidden rounded-lg shadow-lg group ${
+            equipmentVisible ? 'animate-fade-in-delay-400' : 'opacity-0'
+          }`}>
             <img 
               src="/assets/generated/patient-doctor-consultation.dim_800x600.png" 
               alt="Patient consultation with dentist"

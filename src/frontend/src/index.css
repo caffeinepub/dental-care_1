@@ -3,107 +3,310 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --radius: 0.5rem;
-        /* Healthcare blue color scheme - Light mode */
-        --background: 0.99 0 0;
-        --foreground: 0.20 0.02 240;
-        --card: 1 0 0;
-        --card-foreground: 0.20 0.02 240;
-        --popover: 1 0 0;
-        --popover-foreground: 0.20 0.02 240;
-        --primary: 0.55 0.18 230;
-        --primary-foreground: 0.99 0 0;
-        --secondary: 0.92 0.03 230;
-        --secondary-foreground: 0.20 0.02 240;
-        --muted: 0.96 0.01 240;
-        --muted-foreground: 0.50 0.02 240;
-        --accent: 0.88 0.05 230;
-        --accent-foreground: 0.20 0.02 240;
-        --destructive: 0.58 0.24 25;
-        --destructive-foreground: 0.99 0 0;
-        --border: 0.90 0.02 240;
-        --input: 0.90 0.02 240;
-        --ring: 0.55 0.18 230;
-        --chart-1: 0.55 0.18 230;
-        --chart-2: 0.60 0.16 210;
-        --chart-3: 0.65 0.14 250;
-        --chart-4: 0.50 0.20 200;
-        --chart-5: 0.70 0.12 270;
-        --sidebar: 0.99 0 0;
-        --sidebar-foreground: 0.20 0.02 240;
-        --sidebar-primary: 0.55 0.18 230;
-        --sidebar-primary-foreground: 0.99 0 0;
-        --sidebar-accent: 0.96 0.01 240;
-        --sidebar-accent-foreground: 0.20 0.02 240;
-        --sidebar-border: 0.90 0.02 240;
-        --sidebar-ring: 0.55 0.18 230;
-    }
+  :root {
+    --background: oklch(98% 0.01 240);
+    --foreground: oklch(20% 0.02 240);
+    --card: oklch(100% 0 0);
+    --card-foreground: oklch(20% 0.02 240);
+    --popover: oklch(100% 0 0);
+    --popover-foreground: oklch(20% 0.02 240);
+    --primary: oklch(55% 0.18 240);
+    --primary-foreground: oklch(98% 0.01 240);
+    --secondary: oklch(92% 0.02 240);
+    --secondary-foreground: oklch(20% 0.02 240);
+    --muted: oklch(94% 0.01 240);
+    --muted-foreground: oklch(45% 0.02 240);
+    --accent: oklch(92% 0.02 240);
+    --accent-foreground: oklch(20% 0.02 240);
+    --destructive: oklch(55% 0.22 25);
+    --destructive-foreground: oklch(98% 0.01 240);
+    --border: oklch(88% 0.02 240);
+    --input: oklch(88% 0.02 240);
+    --ring: oklch(55% 0.18 240);
+    --radius: 0.5rem;
+    --chart-1: oklch(60% 0.18 220);
+    --chart-2: oklch(65% 0.16 180);
+    --chart-3: oklch(70% 0.14 140);
+    --chart-4: oklch(65% 0.18 280);
+    --chart-5: oklch(60% 0.20 320);
+  }
 
-    .dark {
-        /* Healthcare blue color scheme - Dark mode */
-        --background: 0.15 0.02 240;
-        --foreground: 0.96 0.01 240;
-        --card: 0.20 0.03 240;
-        --card-foreground: 0.96 0.01 240;
-        --popover: 0.18 0.02 240;
-        --popover-foreground: 0.96 0.01 240;
-        --primary: 0.60 0.18 230;
-        --primary-foreground: 0.15 0.02 240;
-        --secondary: 0.25 0.04 230;
-        --secondary-foreground: 0.96 0.01 240;
-        --muted: 0.25 0.03 240;
-        --muted-foreground: 0.65 0.05 240;
-        --accent: 0.30 0.06 230;
-        --accent-foreground: 0.96 0.01 240;
-        --destructive: 0.62 0.22 25;
-        --destructive-foreground: 0.96 0.01 240;
-        --border: 0.28 0.04 240;
-        --input: 0.28 0.04 240;
-        --ring: 0.60 0.18 230;
-        --chart-1: 0.60 0.18 230;
-        --chart-2: 0.65 0.16 210;
-        --chart-3: 0.70 0.14 250;
-        --chart-4: 0.55 0.20 200;
-        --chart-5: 0.75 0.12 270;
-        --sidebar: 0.18 0.02 240;
-        --sidebar-foreground: 0.96 0.01 240;
-        --sidebar-primary: 0.60 0.18 230;
-        --sidebar-primary-foreground: 0.96 0.01 240;
-        --sidebar-accent: 0.25 0.03 240;
-        --sidebar-accent-foreground: 0.96 0.01 240;
-        --sidebar-border: 0.28 0.04 240;
-        --sidebar-ring: 0.60 0.18 230;
-    }
-
-    * {
-        @apply border-border;
-    }
-    
-    body {
-        @apply bg-background text-foreground;
-        font-feature-settings: "rlig" 1, "calt" 1;
-    }
-    
-    html {
-        scroll-behavior: smooth;
-    }
+  .dark {
+    --background: oklch(18% 0.02 240);
+    --foreground: oklch(95% 0.01 240);
+    --card: oklch(20% 0.02 240);
+    --card-foreground: oklch(95% 0.01 240);
+    --popover: oklch(20% 0.02 240);
+    --popover-foreground: oklch(95% 0.01 240);
+    --primary: oklch(65% 0.18 240);
+    --primary-foreground: oklch(18% 0.02 240);
+    --secondary: oklch(28% 0.02 240);
+    --secondary-foreground: oklch(95% 0.01 240);
+    --muted: oklch(28% 0.02 240);
+    --muted-foreground: oklch(65% 0.02 240);
+    --accent: oklch(28% 0.02 240);
+    --accent-foreground: oklch(95% 0.01 240);
+    --destructive: oklch(55% 0.22 25);
+    --destructive-foreground: oklch(95% 0.01 240);
+    --border: oklch(32% 0.02 240);
+    --input: oklch(32% 0.02 240);
+    --ring: oklch(65% 0.18 240);
+    --chart-1: oklch(65% 0.18 220);
+    --chart-2: oklch(70% 0.16 180);
+    --chart-3: oklch(75% 0.14 140);
+    --chart-4: oklch(70% 0.18 280);
+    --chart-5: oklch(65% 0.20 320);
+  }
 }
 
 @layer base {
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-bold;
-    }
-    
-    h1 {
-        @apply text-4xl md:text-5xl;
-    }
-    
-    h2 {
-        @apply text-3xl md:text-4xl;
-    }
-    
-    h3 {
-        @apply text-2xl md:text-3xl;
-    }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animation Keyframes */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb, 59, 130, 246), 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 8px rgba(var(--primary-rgb, 59, 130, 246), 0);
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes form-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slide-in-error {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes dropdown-content {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes calendar-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes button-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb, 59, 130, 246), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(var(--primary-rgb, 59, 130, 246), 0);
+  }
+}
+
+@keyframes success-celebration {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  50% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes success-icon {
+  0% {
+    transform: scale(0) rotate(-180deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.3) rotate(180deg);
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.animate-fade-in-delay-200 {
+  opacity: 0;
+  animation: fade-in 0.8s ease-out 0.2s forwards;
+}
+
+.animate-fade-in-delay-400 {
+  opacity: 0;
+  animation: fade-in 0.8s ease-out 0.4s forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s ease-out forwards;
+}
+
+.animate-slide-left {
+  animation: slide-left 0.8s ease-out forwards;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2.5s ease-in-out infinite;
+}
+
+.animate-pulse-subtle:hover {
+  animation: none;
+}
+
+.animate-page-fade-in {
+  animation: page-fade-in 0.4s ease-out forwards;
+}
+
+.animate-form-entrance {
+  animation: form-entrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-slide-in-error {
+  animation: slide-in-error 0.3s ease-out forwards;
+}
+
+.animate-dropdown-content {
+  animation: dropdown-content 0.2s ease-out forwards;
+}
+
+.animate-calendar-slide {
+  animation: calendar-slide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-button-pulse:not(:disabled):hover {
+  animation: button-pulse 1.5s ease-in-out infinite;
+}
+
+.animate-success-celebration {
+  animation: success-celebration 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-success-icon {
+  animation: success-icon 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Form field group animations */
+.form-field-group {
+  transition: all 0.3s ease;
+}
+
+.form-field-group:focus-within {
+  transform: translateX(4px);
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+  
+  .form-field-group:focus-within {
+    transform: none;
+  }
 }

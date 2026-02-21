@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 17,
+  "projectStateVersion": 55,
   "summary": "Dental hospital website inspired by https://oraacaresmile.com/ with professional design, online appointment booking, service showcase, testimonials, and contact integration. Content in US English for international audience.",
   "architectural_notes": [
     "Website designed for dental hospital/clinic targeting patient trust and easy appointment booking",
@@ -11,11 +11,18 @@
     "Design inspiration from https://oraacaresmile.com/ for visual style and user experience",
     "Services should link to a dedicated detail page within the same site, not opening in new tabs",
     "Website needs high-quality dental equipment and patient consultation imagery to build trust and showcase facility",
-    "Doctors section should highlight credentials and specializations of Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin"
+    "Doctors section should highlight credentials and specializations of Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin",
+    "Animations should be added to key UI elements (hero section, service cards, testimonials, etc.) using CSS transitions/animations or React animation libraries for smooth user experience"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Professional dental office hero banner showing modern dental equipment and a dentist consulting with a patient (hero-dental-office.dim_1920x800.png)\n- Close-up photo of advanced dental equipment and technology in a modern clinic setting (dental-equipment-1.dim_800x600.png)\n- Dentist examining a patient using modern dental tools (patient-doctor-exam.dim_800x600.png)\n- Modern dental chair and equipment setup in a bright clinic room (dental-equipment-2.dim_800x600.png)\n- Friendly dentist showing dental x-ray results to a smiling patient (patient-doctor-consultation.dim_800x600.png)\n- Sterilization equipment and hygiene setup in dental clinic (dental-equipment-3.dim_800x600.png)\n- Professional headshot of Dr. Anas Jadla in dental coat (doctor-anas-jadla.dim_400x400.png)\n- Professional headshot of Dr. Farhan Bangra in dental coat (doctor-farhan-bangra.dim_400x400.png)\n- Professional headshot of Dr. Jainul Aabedin in dental coat (doctor-jainul-aabedin.dim_400x400.png)\n- Dental service illustration showing teeth cleaning procedure (service-cleaning.dim_600x400.png)\n- Dental service illustration showing root canal treatment (service-root-canal.dim_600x400.png)\n- Dental service illustration showing dental implant procedure (service-implants.dim_600x400.png)",
+  "known_issues": [
+    "Services section not visible or rendering on deployed website despite being implemented",
+    "Services page crashes with white screen when opened",
+    "Backend canister (63qpd-iqaaa-aaaah-qrmga-cai) enters stopped state preventing appointment booking functionality from working",
+    "Admin panel displays 'Unauthorized: Only admins can view all appointments' error preventing appointment viewing even after authentication",
+    "Appointment form service type dropdown and date picker have visibility issues due to background interference, making options difficult to read and select",
+    "Installation/installing error occurs during appointment booking or other operations"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-a-hero-section-with-headline-ek-behtar-muskurahat-ki-shuruat-yahan-se-hoti-hai-subheadline-advanced-technology-aur-dard-mukt-painless-treatment-ke-saath-aapka-apna-dental-clinic-and-a-prominent-abhi-appointment-book-karein-call-to-action-button-that-navigates-to-the-appointment-booking-interface",
@@ -384,6 +391,534 @@
         "REQ-47"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-fade-in-animations-to-the-herosection-component-for-the-headline-subheadline-and-cta-buttons-with-staggered-delays-using-css-transitions-or-framer-motion",
+      "title": "Add fade-in animations to the HeroSection component for the headline, subheadline, and CTA buttons with staggered delays, using CSS transitions or Framer Motion",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-fade-in-and-slide-up-animations-to-the-servicessection-service-cards-making-them-animate-into-view-as-the-user-scrolls-down",
+      "title": "Add scroll-triggered fade-in and slide-up animations to the ServicesSection service cards, making them animate into view as the user scrolls down",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-hover-scale-and-shadow-animations-to-all-service-cards-in-servicessection-increasing-size-and-shadow-depth-on-hover",
+      "title": "Add hover scale and shadow animations to all service cards in ServicesSection, increasing size and shadow depth on hover",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-animations-to-the-whychooseussection-feature-cards-making-them-fade-in-and-slide-in-from-the-left-as-they-enter-the-viewport",
+      "title": "Add scroll-triggered animations to the WhyChooseUsSection feature cards, making them fade in and slide in from the left as they enter the viewport",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-fade-in-animations-to-the-photo-gallery-in-whychooseussection-making-images-appear-progressively-as-the-user-scrolls",
+      "title": "Add scroll-triggered fade-in animations to the photo gallery in WhyChooseUsSection, making images appear progressively as the user scrolls",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-fade-in-and-slide-up-animations-to-the-doctorssection-profile-cards",
+      "title": "Add scroll-triggered fade-in and slide-up animations to the DoctorsSection profile cards",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-hover-scale-and-glow-animations-to-doctor-profile-cards-in-doctorssection-increasing-card-size-slightly-and-adding-a-subtle-glow-effect-on-hover",
+      "title": "Add hover scale and glow animations to doctor profile cards in DoctorsSection, increasing card size slightly and adding a subtle glow effect on hover",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-testimonialssection-carousel-with-smooth-slide-transitions-fade-effects-and-auto-play-functionality-with-pause-on-hover",
+      "title": "Enhance the TestimonialsSection carousel with smooth slide transitions, fade effects, and auto-play functionality with pause on hover",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-fade-in-animation-to-the-contactsection-information-cards-and-map",
+      "title": "Add scroll-triggered fade-in animation to the ContactSection information cards and map",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-pulse-animation-to-all-cta-buttons-book-appointment-contact-buttons-throughout-the-website-to-draw-user-attention",
+      "title": "Add pulse animation to all CTA buttons (Book Appointment, Contact buttons) throughout the website to draw user attention",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-smooth-page-transition-animation-when-navigating-to-servicedetailpage-and-bookingpage",
+      "title": "Add smooth page transition animation when navigating to ServiceDetailPage and BookingPage",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-loading-state-animations-to-the-appointmentform-submit-button-showing-a-spinner-or-loading-indicator-during-form-submission",
+      "title": "Add loading state animations to the AppointmentForm submit button, showing a spinner or loading indicator during form submission",
+      "reqIds": [
+        "REQ-59"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-intersection-observer-or-scroll-animation-library-like-framer-motion-aos-or-react-spring-to-handle-scroll-triggered-animations-efficiently-across-all-sections",
+      "title": "Implement intersection observer or scroll animation library (like Framer Motion, AOS, or React Spring) to handle scroll-triggered animations efficiently across all sections",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-standalone-servicespage-component-at-frontend-src-pages-servicespage-tsx-that-displays-all-6-dental-services-check-up-cleaning-root-canal-treatment-dental-implants-teeth-whitening-braces-aligners-pediatric-dentistry-in-a-dedicated-page-layout-with-comprehensive-service-information-including-icons-images-descriptions-procedures-benefits-and-duration-for-each-service",
+      "title": "Create a new standalone ServicesPage component at frontend/src/pages/ServicesPage.tsx that displays all 6 dental services (Check-up & Cleaning, Root Canal Treatment, Dental Implants, Teeth Whitening, Braces & Aligners, Pediatric Dentistry) in a dedicated page layout with comprehensive service information including icons, images, descriptions, procedures, benefits, and duration for each service",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-route-services-to-the-tanstack-router-configuration-in-frontend-src-app-tsx-that-renders-the-servicespage-component-making-it-accessible-as-a-separate-page-from-the-homepage",
+      "title": "Add a new route /services to the TanStack Router configuration in frontend/src/App.tsx that renders the ServicesPage component, making it accessible as a separate page from the homepage",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-header-component-navigation-links-to-include-a-services-link-that-navigates-to-the-new-services-page-route-instead-of-scrolling-to-the-services-section-on-the-homepage",
+      "title": "Update the Header component navigation links to include a 'Services' link that navigates to the new /services page route instead of scrolling to the services section on the homepage",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-homepage-component-to-either-remove-the-servicessection-component-or-convert-it-to-a-brief-services-preview-that-links-to-the-full-services-page-ensuring-the-homepage-does-not-duplicate-the-complete-services-content",
+      "title": "Update the HomePage component to either remove the ServicesSection component or convert it to a brief services preview that links to the full /services page, ensuring the homepage does not duplicate the complete services content",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-fade-in-and-slide-up-animations-to-the-servicespage-service-cards-using-the-usescrollanimation-hook-consistent-with-animation-patterns-used-throughout-the-site",
+      "title": "Add scroll-triggered fade-in and slide-up animations to the ServicesPage service cards using the useScrollAnimation hook, consistent with animation patterns used throughout the site",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-all-service-cards-on-the-servicespage-link-to-their-respective-servicedetailpage-routes-services-serviceid-for-users-who-want-to-view-individual-service-details",
+      "title": "Ensure all service cards on the ServicesPage link to their respective ServiceDetailPage routes (/services/:serviceId) for users who want to view individual service details",
+      "reqIds": [
+        "REQ-66"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-audit-the-current-servicespage-component-at-frontend-src-pages-servicespage-tsx-to-identify-all-dental-services-currently-displayed-and-compare-against-a-comprehensive-list-of-dental-services-typically-offered-by-a-full-service-dental-clinic",
+      "title": "Audit the current ServicesPage component at frontend/src/pages/ServicesPage.tsx to identify all dental services currently displayed and compare against a comprehensive list of dental services typically offered by a full-service dental clinic",
+      "reqIds": [
+        "REQ-67"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-expand-the-servicespage-component-to-include-additional-dental-services-beyond-the-existing-6-services-check-up-cleaning-root-canal-treatment-dental-implants-teeth-whitening-braces-aligners-pediatric-dentistry-adding-services-such-as-gum-disease-treatment-tooth-extraction-dental-crowns-bridges-dentures-full-partial-oral-surgery-emergency-dental-care-cosmetic-dentistry-dental-veneers-preventive-care-and-tmj-treatment",
+      "title": "Expand the ServicesPage component to include additional dental services beyond the existing 6 services (Check-up & Cleaning, Root Canal Treatment, Dental Implants, Teeth Whitening, Braces & Aligners, Pediatric Dentistry), adding services such as: Gum Disease Treatment, Tooth Extraction, Dental Crowns & Bridges, Dentures (Full & Partial), Oral Surgery, Emergency Dental Care, Cosmetic Dentistry, Dental Veneers, Preventive Care, and TMJ Treatment",
+      "reqIds": [
+        "REQ-68"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-corresponding-service-detail-content-for-each-newly-added-service-in-the-servicedetailpage-component-s-service-data-structure-including-comprehensive-procedure-descriptions-benefits-lists-duration-information-and-special-features-for-each-service",
+      "title": "Create corresponding service detail content for each newly added service in the ServiceDetailPage component's service data structure, including comprehensive procedure descriptions, benefits lists, duration information, and special features for each service",
+      "reqIds": [
+        "REQ-69"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-appointmentform-component-s-service-type-dropdown-to-include-all-newly-added-dental-services-as-selectable-options-ensuring-the-backend-appointment-booking-system-can-handle-all-service-types",
+      "title": "Update the AppointmentForm component's service type dropdown to include all newly added dental services as selectable options, ensuring the backend appointment booking system can handle all service types",
+      "reqIds": [
+        "REQ-70"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-fade-in-and-slide-up-animations-to-all-newly-added-service-cards-on-servicespage-using-the-usescrollanimation-hook-maintaining-consistency-with-existing-service-card-animations",
+      "title": "Add scroll-triggered fade-in and slide-up animations to all newly added service cards on ServicesPage using the useScrollAnimation hook, maintaining consistency with existing service card animations",
+      "reqIds": [
+        "REQ-71"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-and-fix-why-the-servicessection-component-is-not-rendering-on-the-homepage-despite-being-implemented-in-the-codebase",
+      "title": "Investigate and fix why the ServicesSection component is not rendering on the HomePage despite being implemented in the codebase",
+      "reqIds": [
+        "REQ-72"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-homepage-component-in-frontend-src-pages-homepage-tsx-properly-imports-and-renders-the-servicessection-component-between-herosection-and-whychooseussection",
+      "title": "Verify that the HomePage component in frontend/src/pages/HomePage.tsx properly imports and renders the ServicesSection component between HeroSection and WhyChooseUsSection",
+      "reqIds": [
+        "REQ-73"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-white-screen-crash-that-occurs-when-navigating-to-the-services-route-by-inspecting-the-servicespage-component-for-runtime-errors-null-reference-errors-missing-imports-or-incorrect-data-structures",
+      "title": "Debug and fix the white screen crash that occurs when navigating to the /services route by inspecting the ServicesPage component for runtime errors, null reference errors, missing imports, or incorrect data structures",
+      "reqIds": [
+        "REQ-77"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-all-service-data-in-servicespage-tsx-includes-required-fields-id-title-description-duration-icon-and-that-no-service-entries-have-undefined-or-null-values-that-could-cause-rendering-failures",
+      "title": "Verify that all service data in ServicesPage.tsx includes required fields (id, title, description, duration, icon) and that no service entries have undefined or null values that could cause rendering failures",
+      "reqIds": [
+        "REQ-78"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-servicespage-component-properly-handles-the-usescrollanimation-hook-and-that-animation-setup-does-not-cause-component-mounting-failures-or-render-blocking",
+      "title": "Ensure the ServicesPage component properly handles the useScrollAnimation hook and that animation setup does not cause component mounting failures or render blocking",
+      "reqIds": [
+        "REQ-79"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-any-missing-dental-services-to-the-servicespage-that-are-currently-absent-ensuring-comprehensive-coverage-of-all-dental-treatments-mentioned-in-the-appointment-booking-form-16-services-total",
+      "title": "Add any missing dental services to the ServicesPage that are currently absent, ensuring comprehensive coverage of all dental treatments mentioned in the appointment booking form (16 services total)",
+      "reqIds": [
+        "REQ-80"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-wrap-critical-sections-of-the-servicespage-component-rendering-logic-in-error-boundaries-or-try-catch-blocks-to-prevent-full-page-crashes-and-provide-graceful-error-handling",
+      "title": "Wrap critical sections of the ServicesPage component rendering logic in error boundaries or try-catch blocks to prevent full page crashes and provide graceful error handling",
+      "reqIds": [
+        "REQ-81"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-hero-section-background-image-in-herosection-component-frontend-src-components-herosection-tsx-with-a-new-background-image-that-provides-better-contrast-with-the-white-text-overlay-ensuring-the-headline-and-subheadline-are-clearly-readable",
+      "title": "Replace the hero section background image in HeroSection component (frontend/src/components/HeroSection.tsx) with a new background image that provides better contrast with the white text overlay, ensuring the headline and subheadline are clearly readable",
+      "reqIds": [
+        "REQ-82"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-herosection-component-in-frontend-src-components-herosection-tsx-to-display-two-separate-hero-images-side-by-side-or-in-a-rotating-carousel-format-one-featuring-dental-clinic-imagery-patient-doctor-interaction-dental-equipment-and-one-with-promotional-text-overlay-displaying-messages-like-best-smile-with-us-and-20-off",
+      "title": "Update the HeroSection component in frontend/src/components/HeroSection.tsx to display two separate hero images side by side or in a rotating carousel format: one featuring dental clinic imagery (patient-doctor interaction, dental equipment) and one with promotional text overlay displaying messages like 'Best Smile With Us' and '20% Off'",
+      "reqIds": [
+        "REQ-83"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-reference-the-two-new-hero-images-as-static-assets-from-the-frontend-public-assets-generated-directory-in-the-herosection-component-ensuring-proper-image-loading-optimization-and-responsive-sizing",
+      "title": "Reference the two new hero images as static assets from the frontend/public/assets/generated directory in the HeroSection component, ensuring proper image loading, optimization, and responsive sizing",
+      "reqIds": [
+        "REQ-84"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-herosection-component-in-frontend-src-components-herosection-tsx-to-wrap-both-hero-images-clinic-imagery-and-promotional-20-off-banner-in-separate-bordered-container-boxes-with-visible-spacing-between-them",
+      "title": "Update the HeroSection component in frontend/src/components/HeroSection.tsx to wrap both hero images (clinic imagery and promotional '20% Off' banner) in separate bordered container boxes with visible spacing between them",
+      "reqIds": [
+        "REQ-85"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-black-background-to-the-promotional-image-container-the-one-displaying-20-off-text-in-the-herosection-component-to-make-it-stand-out-and-ensure-the-promotional-content-is-highlighted",
+      "title": "Add a black background to the promotional image container (the one displaying '20% Off' text) in the HeroSection component to make it stand out and ensure the promotional content is highlighted",
+      "reqIds": [
+        "REQ-86"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-background-image-from-the-promotional-20-off-container-in-the-herosection-component-frontend-src-components-herosection-tsx-and-replace-it-with-a-sky-blue-solid-color-or-gradient-background-with-lighter-blue-at-the-top-transitioning-to-a-slightly-darker-blue-at-the-bottom",
+      "title": "Remove the background image from the promotional '20% Off' container in the HeroSection component (frontend/src/components/HeroSection.tsx) and replace it with a sky blue solid color or gradient background, with lighter blue at the top transitioning to a slightly darker blue at the bottom",
+      "reqIds": [
+        "REQ-87"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-the-appointmentform-component-in-frontend-src-components-appointmentform-tsx-with-modern-attractive-styling-and-enhanced-animations-to-improve-visual-appeal-and-user-experience-replacing-the-current-form-design-with-a-more-polished-professional-appearance",
+      "title": "Redesign the AppointmentForm component in frontend/src/components/AppointmentForm.tsx with modern, attractive styling and enhanced animations to improve visual appeal and user experience, replacing the current form design with a more polished, professional appearance",
+      "reqIds": [
+        "REQ-89"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-entrance-animations-to-the-appointmentform-when-the-bookingpage-loads-including-fade-in-and-slide-up-effects-for-the-form-container-to-create-a-smooth-initial-presentation",
+      "title": "Add entrance animations to the AppointmentForm when the BookingPage loads, including fade-in and slide-up effects for the form container to create a smooth initial presentation",
+      "reqIds": [
+        "REQ-90"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-appointmentform-component-in-frontend-src-components-appointmentform-tsx-to-replace-the-current-rectangular-box-shaped-form-container-with-a-rounded-circular-shape-design-by-applying-increased-border-radius-values-e-g-rounded-3xl-or-custom-border-radius-2rem-3rem-to-the-main-form-container-element",
+      "title": "Update the AppointmentForm component in frontend/src/components/AppointmentForm.tsx to replace the current rectangular/box-shaped form container with a rounded/circular shape design by applying increased border-radius values (e.g., rounded-3xl or custom border-radius: 2rem-3rem) to the main form container element",
+      "reqIds": [
+        "REQ-91"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-visual-appearance-of-the-appointmentform-component-with-improved-styling-including-refined-color-schemes-better-spacing-enhanced-typography-subtle-shadows-or-gradients-and-polished-form-field-designs-to-create-a-more-attractive-and-modern-aesthetic",
+      "title": "Enhance the visual appearance of the AppointmentForm component with improved styling including refined color schemes, better spacing, enhanced typography, subtle shadows or gradients, and polished form field designs to create a more attractive and modern aesthetic",
+      "reqIds": [
+        "REQ-92"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-adminpage-component-at-frontend-src-pages-adminpage-tsx-that-displays-a-comprehensive-list-of-all-appointments-from-the-backend-showing-patient-name-contact-information-preferred-date-and-time-service-type-and-appointment-status-in-a-table-or-card-layout",
+      "title": "Create a new AdminPage component at frontend/src/pages/AdminPage.tsx that displays a comprehensive list of all appointments from the backend, showing patient name, contact information, preferred date and time, service type, and appointment status in a table or card layout",
+      "reqIds": [
+        "REQ-93"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-route-admin-to-the-tanstack-router-configuration-in-frontend-src-app-tsx-that-renders-the-adminpage-component",
+      "title": "Add a new route /admin to the TanStack Router configuration in frontend/src/App.tsx that renders the AdminPage component",
+      "reqIds": [
+        "REQ-94"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-react-query-hook-useallappointments-in-frontend-src-hooks-usequeries-ts-that-fetches-all-appointments-from-the-backend-using-the-getallappointments-method-with-proper-error-handling-and-loading-states",
+      "title": "Create a React Query hook useAllAppointments() in frontend/src/hooks/useQueries.ts that fetches all appointments from the backend using the getAllAppointments() method, with proper error handling and loading states",
+      "reqIds": [
+        "REQ-96"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-navigation-link-to-the-admin-page-in-the-header-component-frontend-src-components-header-tsx-labeled-admin-that-navigates-to-the-admin-route-making-it-easily-accessible-from-the-main-navigation-menu",
+      "title": "Add a navigation link to the admin page in the Header component (frontend/src/components/Header.tsx) labeled 'Admin' that navigates to the /admin route, making it easily accessible from the main navigation menu",
+      "reqIds": [
+        "REQ-97"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-scroll-triggered-fade-in-animations-to-the-adminpage-appointment-list-using-the-usescrollanimation-hook-consistent-with-animation-patterns-used-throughout-the-site",
+      "title": "Add scroll-triggered fade-in animations to the AdminPage appointment list using the useScrollAnimation hook, consistent with animation patterns used throughout the site",
+      "reqIds": [
+        "REQ-98"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-filtering-and-sorting-capabilities-to-the-adminpage-allowing-appointments-to-be-filtered-by-service-type-date-range-or-patient-name-and-sorted-by-date-ascending-descending",
+      "title": "Add filtering and sorting capabilities to the AdminPage, allowing appointments to be filtered by service type, date range, or patient name, and sorted by date (ascending/descending)",
+      "reqIds": [
+        "REQ-99"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-adminpage-component-in-frontend-src-pages-adminpage-tsx-to-properly-handle-authentication-state-and-display-appointments-when-the-user-has-admin-privileges-removing-the-only-admin-can-see-all-appointments-blocking-message",
+      "title": "Update the AdminPage component in frontend/src/pages/AdminPage.tsx to properly handle authentication state and display appointments when the user has admin privileges, removing the 'only admin can see all appointments' blocking message",
+      "reqIds": [
+        "REQ-103"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-useallappointments-hook-in-frontend-src-hooks-usequeries-ts-to-properly-handle-the-authenticated-actor-instance-and-error-states-when-fetching-appointments",
+      "title": "Update the useAllAppointments() hook in frontend/src/hooks/useQueries.ts to properly handle the authenticated actor instance and error states when fetching appointments",
+      "reqIds": [
+        "REQ-105"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-proper-internet-identity-authentication-check-in-adminpage-component-to-ensure-users-are-logged-in-before-attempting-to-fetch-appointments-displaying-a-login-prompt-if-not-authenticated",
+      "title": "Add proper Internet Identity authentication check in AdminPage component to ensure users are logged in before attempting to fetch appointments, displaying a login prompt if not authenticated",
+      "reqIds": [
+        "REQ-106"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-adminpage-component-in-frontend-src-pages-adminpage-tsx-to-handle-the-successful-appointments-data-response-and-display-appointments-in-the-table-without-showing-the-unauthorized-error-message",
+      "title": "Update the AdminPage component in frontend/src/pages/AdminPage.tsx to handle the successful appointments data response and display appointments in the table without showing the 'Unauthorized' error message",
+      "reqIds": [
+        "REQ-108"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-useallappointments-hook-in-frontend-src-hooks-usequeries-ts-properly-passes-the-authenticated-actor-to-the-backend-getallappointments-call-and-handles-error-responses-appropriately",
+      "title": "Verify that the useAllAppointments() hook in frontend/src/hooks/useQueries.ts properly passes the authenticated actor to the backend getAllAppointments() call and handles error responses appropriately",
+      "reqIds": [
+        "REQ-109"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-login-form-component-at-frontend-src-components-adminloginform-tsx-that-captures-username-and-password-inputs-with-validation-styled-consistently-with-the-existing-appointmentform-design-patterns",
+      "title": "Create a new login form component at frontend/src/components/AdminLoginForm.tsx that captures username and password inputs with validation, styled consistently with the existing AppointmentForm design patterns",
+      "reqIds": [
+        "REQ-110"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-adminpage-component-in-frontend-src-pages-adminpage-tsx-to-display-the-adminloginform-when-the-user-is-not-authenticated-and-only-show-the-appointments-table-after-successful-login-verification",
+      "title": "Update the AdminPage component in frontend/src/pages/AdminPage.tsx to display the AdminLoginForm when the user is not authenticated, and only show the appointments table after successful login verification",
+      "reqIds": [
+        "REQ-111"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-frontend-authentication-logic-in-the-adminloginform-component-that-validates-username-anas-and-password-anas-2020-exactly-case-sensitive-displaying-appropriate-error-messages-for-invalid-credentials",
+      "title": "Implement frontend authentication logic in the AdminLoginForm component that validates username 'ANAS' and password 'Anas@2020' exactly (case-sensitive), displaying appropriate error messages for invalid credentials",
+      "reqIds": [
+        "REQ-112"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-logout-button-to-the-adminpage-header-or-navigation-area-that-clears-the-admin-authentication-state-and-returns-the-user-to-the-login-form",
+      "title": "Add a logout button to the AdminPage header or navigation area that clears the admin authentication state and returns the user to the login form",
+      "reqIds": [
+        "REQ-113"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-store-the-admin-authentication-state-in-sessionstorage-or-localstorage-after-successful-login-and-verify-this-state-on-adminpage-mount-to-maintain-login-across-page-refreshes",
+      "title": "Store the admin authentication state in sessionStorage or localStorage after successful login, and verify this state on AdminPage mount to maintain login across page refreshes",
+      "reqIds": [
+        "REQ-114"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-appointmentform-component-in-frontend-src-components-appointmentform-tsx-to-apply-a-white-background-color-to-the-service-type-dropdown-menu-when-opened-ensuring-all-service-options-are-clearly-visible-and-easy-to-select-against-a-solid-white-background-instead-of-showing-background-content-interference",
+      "title": "Update the AppointmentForm component in frontend/src/components/AppointmentForm.tsx to apply a white background color to the service type dropdown menu when opened, ensuring all service options are clearly visible and easy to select against a solid white background instead of showing background content interference",
+      "reqIds": [
+        "REQ-115"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-appointmentform-component-in-frontend-src-components-appointmentform-tsx-to-apply-a-white-background-color-to-the-date-picker-calendar-popup-when-opened-ensuring-all-dates-are-clearly-visible-and-easy-to-select-against-a-solid-white-background-instead-of-showing-background-content-interference",
+      "title": "Update the AppointmentForm component in frontend/src/components/AppointmentForm.tsx to apply a white background color to the date picker calendar popup when opened, ensuring all dates are clearly visible and easy to select against a solid white background instead of showing background content interference",
+      "reqIds": [
+        "REQ-116"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-actor-not-installed-error-that-occurs-when-users-attempt-to-book-appointments-through-the-appointmentform-component-in-frontend-src-components-appointmentform-tsx",
+      "title": "Debug and fix the 'actor not installed' error that occurs when users attempt to book appointments through the AppointmentForm component in frontend/src/components/AppointmentForm.tsx",
+      "reqIds": [
+        "REQ-117"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-appointmentform-component-in-frontend-src-components-appointmentform-tsx-to-add-proper-error-handling-and-loading-states-that-wait-for-actor-initialization-before-enabling-the-form-submit-button",
+      "title": "Update the AppointmentForm component in frontend/src/components/AppointmentForm.tsx to add proper error handling and loading states that wait for actor initialization before enabling the form submit button",
+      "reqIds": [
+        "REQ-119"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-defensive-null-checks-and-error-boundaries-in-the-appointment-booking-mutation-logic-in-frontend-src-hooks-usequeries-ts-to-handle-cases-where-the-actor-is-undefined-or-not-yet-initialized",
+      "title": "Add defensive null checks and error boundaries in the appointment booking mutation logic in frontend/src/hooks/useQueries.ts to handle cases where the actor is undefined or not yet initialized",
+      "reqIds": [
+        "REQ-121"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-resolve-the-installation-error-that-occurs-when-users-attempt-to-book-appointments-or-perform-other-operations-in-the-application",
+      "title": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
+      "reqIds": [
+        "REQ-122"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-error-logging-and-user-friendly-error-messages-in-the-appointmentform-component-frontend-src-components-appointmentform-tsx-to-capture-and-display-installation-related-errors-with-actionable-feedback",
+      "title": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component (frontend/src/components/AppointmentForm.tsx) to capture and display installation-related errors with actionable feedback",
+      "reqIds": [
+        "REQ-123"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-retry-logic-and-graceful-degradation-in-the-appointment-booking-mutation-hook-frontend-src-hooks-usequeries-ts-to-handle-transient-installation-or-network-errors-with-exponential-backoff-and-maximum-retry-attempts",
+      "title": "Add retry logic and graceful degradation in the appointment booking mutation hook (frontend/src/hooks/useQueries.ts) to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
+      "reqIds": [
+        "REQ-125"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-internet-identity-authentication-and-actor-initialization-in-useactor-hook-frontend-src-hooks-useactor-ts-properly-handles-edge-cases-where-authentication-tokens-expire-or-become-invalid-during-form-submission-preventing-installation-errors",
+      "title": "Verify that the Internet Identity authentication and actor initialization in useActor hook (frontend/src/hooks/useActor.ts) properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
+      "reqIds": [
+        "REQ-126"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -477,6 +1012,206 @@
       "id": "AR-15",
       "summary": "Create a doctors section featuring 3 doctors: Dr. Anas Jadla, Dr. Farhan Bangra, and Dr. Jainul Aabedin",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Add animations throughout the website to enhance visual appeal and user experience",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Add all dental services to the services section (ensure comprehensive service coverage)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Check and fix any CSS or styling issues that might be causing the ServicesSection to be hidden or have zero height/width",
+      "reqIds": [
+        "REQ-74"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Verify that all service card images referenced in ServicesSection are accessible from the frontend/public/assets/generated directory and render correctly",
+      "reqIds": [
+        "REQ-75"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Check browser console for JavaScript errors or React rendering errors that might prevent ServicesSection from mounting",
+      "reqIds": [
+        "REQ-76"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Fix white screen crash when opening services page",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Change hero section background image because text color is blending with the image colors",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Add two separate hero images to hero section: one with imagery and one with promotional text (e.g., 'best smile with us' and '20% off')",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Update hero section to place both images in separate boxes with space between them, and add black background to the promotional '20% off' image for highlighting",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Remove background image from the promotional '20% off' container and replace with a sky blue gradient (lighter at top, darker at bottom)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Make testimonials/reviews auto-slide continuously",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Redesign appointment form with super animations and attractive modern styling to replace current design",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Update the TestimonialsSection component in frontend/src/components/TestimonialsSection.tsx to enable continuous auto-play functionality for the testimonials carousel, making reviews automatically slide/transition in a loop without requiring user interaction",
+      "reqIds": [
+        "REQ-88"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Change appointment form shape from rectangular box to rounded/circular shape and improve visual appearance",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Add an admin page/feature where all appointments can be viewed",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-35",
+      "summary": "Add a backend query method getAllAppointments() in backend/main.mo that returns all appointments stored in the system, ensuring the frontend can fetch the complete appointments list",
+      "reqIds": [
+        "REQ-95"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Deploy the current version of the dental hospital website to the Internet Computer production network, making it publicly accessible with a stable canister URL that users can visit",
+      "reqIds": [
+        "REQ-100"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "Verify that the backend canister stability issue (canister entering stopped state) is resolved before production deployment, ensuring the appointment booking system remains operational",
+      "reqIds": [
+        "REQ-101"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Ensure all generated images in frontend/public/assets/generated directory are included in the production build and accessible via the deployed canister URL",
+      "reqIds": [
+        "REQ-102"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Fix admin panel display issue showing 'only admin can see all appointments' error when accessing the admin page",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-41",
+      "summary": "Verify the backend getAllAppointments() method in backend/main.mo correctly implements role-based access control, ensuring it returns appointment data when called by authenticated admin users",
+      "reqIds": [
+        "REQ-104"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-42",
+      "summary": "Fix admin panel authentication error showing 'Unauthorized: Only admins can view all appointments' message",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Update the backend getAllAppointments() method in backend/main.mo to remove or modify the admin-only authorization check that is currently blocking all users from viewing appointments, allowing authenticated users to access the appointments list",
+      "reqIds": [
+        "REQ-107"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-44",
+      "summary": "Add username/password authentication to admin panel with username 'ANAS' and password 'Anas@2020'",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-45",
+      "summary": "Fix appointment form service type dropdown menu background to white for better visibility and make date picker background white as well",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-46",
+      "summary": "Fix 'actor not installed' error occurring when booking appointments",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "Verify that the useActor hook in frontend/src/hooks/useActor.ts correctly initializes the backend actor with proper authentication and authorization token before any appointment mutations are executed",
+      "reqIds": [
+        "REQ-118"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-50",
+      "summary": "Verify that the backend canister (63qpd-iqaaa-aaaah-qrmga-cai) is running and accessible, and that the createAppointment method in backend/main.mo is properly deployed and callable from the frontend",
+      "reqIds": [
+        "REQ-120"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-53",
+      "summary": "Verify that the backend canister (63qpd-iqaaa-aaaah-qrmga-cai) dependencies and Motoko module imports are correctly configured and that no missing or broken dependencies are causing installation failures",
+      "reqIds": [
+        "REQ-124"
+      ],
       "status": "pending"
     }
   ],
