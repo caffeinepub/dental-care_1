@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Lock, User, Loader2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 interface AdminLoginFormProps {
   onLoginSuccess: () => void;
@@ -19,6 +20,7 @@ interface LoginFormData {
 export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) {
   const [error, setError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { loginAdmin } = useAdminAuth();
 
   const {
     register,
@@ -33,10 +35,10 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
     // Simulate a brief delay for better UX
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    // Validate credentials (case-sensitive)
-    if (data.username === 'ANAS' && data.password === 'Anas@2020') {
-      // Store authentication state in sessionStorage
-      sessionStorage.setItem('admin_authenticated', 'true');
+    // Validate credentials using the hook
+    const success = loginAdmin(data.username, data.password);
+    
+    if (success) {
       onLoginSuccess();
     } else {
       setError('Invalid username or password. Please try again.');

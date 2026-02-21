@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useAllAppointments, useGetCallerUserProfile, useSaveCallerUserProfile } from '@/hooks/useQueries';
 import { useInternetIdentity } from '@/hooks/useInternetIdentity';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,16 +39,8 @@ export default function AdminPage() {
   const isAuthenticated = !!identity;
   const isLoggingIn = loginStatus === 'logging-in';
 
-  // Admin authentication state (separate from Internet Identity)
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-
-  // Check sessionStorage on mount
-  useEffect(() => {
-    const adminAuth = sessionStorage.getItem('admin_authenticated');
-    if (adminAuth === 'true') {
-      setIsAdminAuthenticated(true);
-    }
-  }, []);
+  // Admin authentication using custom hook
+  const { isAuthenticated: isAdminAuthenticated, logoutAdmin } = useAdminAuth();
 
   const { data: userProfile, isLoading: profileLoading, isFetched: profileFetched } = useGetCallerUserProfile();
   const { mutate: saveProfile, isPending: isSavingProfile } = useSaveCallerUserProfile();
@@ -112,12 +105,11 @@ export default function AdminPage() {
   };
 
   const handleAdminLoginSuccess = () => {
-    setIsAdminAuthenticated(true);
+    // Authentication state is managed by useAdminAuth hook
   };
 
   const handleAdminLogout = () => {
-    sessionStorage.removeItem('admin_authenticated');
-    setIsAdminAuthenticated(false);
+    logoutAdmin();
   };
 
   // Show Internet Identity login prompt if not authenticated
@@ -449,13 +441,14 @@ export default function AdminPage() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline" className="font-normal">
+                            <div className="flex items-center gap-2">
+                              <Stethoscope className="w-4 h-4 text-muted-foreground" />
                               {serviceTypeToText(appointment.serviceType)}
-                            </Badge>
+                            </div>
                           </TableCell>
                           <TableCell>
                             <Badge variant={isPast ? 'secondary' : 'default'}>
-                              {isPast ? 'Past' : 'Upcoming'}
+                              {isPast ? 'Completed' : 'Upcoming'}
                             </Badge>
                           </TableCell>
                         </TableRow>

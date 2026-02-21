@@ -1,13 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Fix installation errors that occur during appointment booking operations.
+**Goal:** Add admin authentication system with hardcoded credentials to protect the admin dashboard.
 
 **Planned changes:**
-- Debug and resolve installation errors that prevent users from booking appointments
-- Add comprehensive error logging and user-friendly error messages in the AppointmentForm component
-- Verify backend canister dependencies and Motoko module imports are correctly configured
-- Add retry logic with exponential backoff in the appointment booking mutation hook
-- Verify Internet Identity authentication and actor initialization properly handle edge cases like expired tokens
+- Implement admin login form that validates username 'ANAS' and password 'Anas@2020'
+- Protect admin dashboard route to require authentication before displaying appointment data
+- Add session persistence for admin authentication across page refreshes
+- Add logout functionality to clear admin session
+- Display error messages for incorrect login credentials
 
-**User-visible outcome:** Users can successfully book appointments without encountering installation errors, with clear error messages and automatic retry attempts if transient issues occur.
+**User-visible outcome:** Admin users can log in with hardcoded credentials to access the appointment dashboard, with their session persisting across page refreshes and the ability to log out.

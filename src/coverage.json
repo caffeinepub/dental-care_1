@@ -1,81 +1,54 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T18:55:05.445Z",
+  "generatedAt": "2026-02-21T03:34:39.138Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 5,
-    "implemented": 4,
+    "total": 2,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-122",
-        "summary": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
+        "id": "REQ-1",
+        "summary": "Implement admin login system with hardcoded username 'ANAS' and password 'Anas@2020' that validates credentials and grants access to the admin dashboard",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/AppointmentForm.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/AdminLoginForm.tsx",
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/hooks/useAdminAuth.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/AppointmentForm.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/AdminLoginForm.tsx",
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/hooks/useAdminAuth.ts"
         ]
       },
       {
-        "id": "REQ-123",
-        "summary": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component (frontend/src/components/AppointmentForm.tsx) to capture and display installation-related errors with actionable feedback",
+        "id": "REQ-2",
+        "summary": "Protect admin dashboard route to require authentication before displaying appointment data",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/AppointmentForm.tsx"
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/components/Header.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/AppointmentForm.tsx"
-        ]
-      },
-      {
-        "id": "REQ-124",
-        "summary": "Verify that the backend canister (63qpd-iqaaa-aaaah-qrmga-cai) dependencies and Motoko module imports are correctly configured and that no missing or broken dependencies are causing installation failures",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-125",
-        "summary": "Add retry logic and graceful degradation in the appointment booking mutation hook (frontend/src/hooks/useQueries.ts) to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/AppointmentForm.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/AppointmentForm.tsx"
-        ]
-      },
-      {
-        "id": "REQ-126",
-        "summary": "Verify that the Internet Identity authentication and actor initialization in useActor hook (frontend/src/hooks/useActor.ts) properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useActor.ts",
-          "frontend/src/components/AppointmentForm.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/AppointmentForm.tsx"
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/components/Header.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/AppointmentForm.tsx",
-    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/components/AdminLoginForm.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/hooks/useAdminAuth.ts",
+    "frontend/src/pages/AdminPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

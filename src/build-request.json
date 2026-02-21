@@ -1,102 +1,56 @@
 {
   "kind": "build_request",
-  "title": "Fix installation error during appointment booking",
-  "priority": "high",
+  "title": "Add admin authentication system with hardcoded credentials",
+  "projectName": "Smile Dental Care",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-122",
-      "text": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
-      "target": "both",
+      "id": "REQ-1",
+      "text": "Implement admin login system with hardcoded username 'ANAS' and password 'Anas@2020' that validates credentials and grants access to the admin dashboard",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-final"
         ],
         "quotes": [
-          "ab instaling vala problem aa raha hai"
+          "But isme admin pass vala system to lagao user name ANAS And password Anas@2020"
         ]
       },
       "acceptanceCriteria": [
-        "Installation errors no longer occur during appointment booking operations",
-        "Users can successfully submit appointment forms without encountering installation-related failures",
-        "Error messages related to installation are eliminated from the user experience",
-        "Backend canister remains in running state during appointment operations"
+        "Admin login form accepts username 'ANAS' and password 'Anas@2020'",
+        "Incorrect credentials display an error message",
+        "Successful login redirects to admin dashboard",
+        "Admin session persists across page refreshes",
+        "Logout functionality clears admin session"
       ]
     },
     {
-      "id": "REQ-123",
-      "text": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component (frontend/src/components/AppointmentForm.tsx) to capture and display installation-related errors with actionable feedback",
+      "id": "REQ-2",
+      "text": "Protect admin dashboard route to require authentication before displaying appointment data",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-final"
         ]
       },
       "acceptanceCriteria": [
-        "Installation errors are caught and logged with detailed stack traces",
-        "User-facing error messages provide clear guidance on what went wrong",
-        "Error messages are displayed in English in the appointment form UI",
-        "Console logs include sufficient diagnostic information for debugging"
-      ]
-    },
-    {
-      "id": "REQ-124",
-      "text": "Verify that the backend canister (63qpd-iqaaa-aaaah-qrmga-cai) dependencies and Motoko module imports are correctly configured and that no missing or broken dependencies are causing installation failures",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All Motoko module imports in backend/main.mo are valid and accessible",
-        "Backend canister compiles without dependency resolution errors",
-        "No missing package or module errors appear in deployment logs",
-        "Backend canister initialization completes successfully"
-      ]
-    },
-    {
-      "id": "REQ-125",
-      "text": "Add retry logic and graceful degradation in the appointment booking mutation hook (frontend/src/hooks/useQueries.ts) to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Failed appointment submissions automatically retry up to 3 times",
-        "Exponential backoff delays are applied between retry attempts",
-        "Users see a loading indicator during retry attempts",
-        "After maximum retries, a clear error message is displayed"
-      ]
-    },
-    {
-      "id": "REQ-126",
-      "text": "Verify that the Internet Identity authentication and actor initialization in useActor hook (frontend/src/hooks/useActor.ts) properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Expired authentication tokens are detected before form submission",
-        "Users are prompted to re-authenticate when tokens are invalid",
-        "Actor initialization completes successfully before enabling form submission",
-        "Token refresh or re-authentication is handled automatically when possible"
+        "Unauthenticated users see login form instead of appointment data",
+        "Authenticated admin users can view all appointments",
+        "Admin authentication status is checked on page load"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the Internet Identity authentication flow in frontend/src/hooks/useInternetIdentity.ts",
-    "Preserve existing appointment booking data structure and backend API contract",
-    "Maintain compatibility with the existing backend canister deployment (63qpd-iqaaa-aaaah-qrmga-cai)"
+    "Do not modify backend authentication logic or Internet Identity integration",
+    "Keep existing AdminLoginForm.tsx implementation with hardcoded credentials",
+    "Maintain current admin dashboard functionality after login"
   ],
   "nonGoals": [
-    "Redesigning the appointment form UI or changing its visual appearance",
-    "Adding new appointment fields or modifying the appointment data model",
-    "Implementing alternative authentication mechanisms beyond Internet Identity",
-    "Changing the backend canister ID or redeploying to a new canister"
+    "Database-backed user authentication system",
+    "Password hashing or encryption",
+    "Multiple admin user support",
+    "Password reset functionality",
+    "Role-based permissions beyond admin/user distinction"
   ],
   "imageRequirements": {
     "required": [],

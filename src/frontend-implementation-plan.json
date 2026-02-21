@@ -1,88 +1,54 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix installation error during appointment booking",
+  "title": "Add admin authentication system with hardcoded credentials",
   "requirements": [
     {
-      "id": "REQ-122",
-      "summary": "Debug and resolve the installation error that occurs when users attempt to book appointments or perform other operations in the application",
+      "id": "REQ-1",
+      "summary": "Implement admin login system with hardcoded credentials that validates username 'ANAS' and password 'Anas@2020', grants access to admin dashboard, and manages session persistence",
       "acceptanceCriteria": [
-        "Installation errors no longer occur during appointment booking operations",
-        "Users can successfully submit appointment forms without encountering installation-related failures",
-        "Error messages related to installation are eliminated from the user experience",
-        "Backend canister remains in running state during appointment operations"
+        "Admin login form accepts username 'ANAS' and password 'Anas@2020'",
+        "Incorrect credentials display an error message",
+        "Successful login redirects to admin dashboard",
+        "Admin session persists across page refreshes",
+        "Logout functionality clears admin session"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/AppointmentForm.tsx",
+          "path": "frontend/src/components/AdminLoginForm.tsx",
           "operation": "modify",
-          "description": "Add comprehensive error boundary and actor state validation before form submission. Ensure the actor is fully initialized and available before enabling the submit button. Add detailed error logging for installation-related failures with user-friendly error messages displayed in the UI. Include checks for actor availability throughout the booking mutation flow."
+          "description": "Ensure the component validates hardcoded credentials (username: 'ANAS', password: 'Anas@2020'), stores authentication state in sessionStorage, displays error messages for incorrect credentials, and triggers redirect to admin dashboard on successful login. Add logout button that clears session and returns to login form."
         },
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Enhance the appointment booking mutation to include retry logic with exponential backoff for transient network or installation errors. Add proper error categorization to distinguish between installation errors, network failures, and validation errors. Ensure mutations properly handle actor unavailability states."
+          "description": "Integrate AdminLoginForm component to protect admin dashboard access. Check sessionStorage for admin authentication on page load. Display AdminLoginForm when user is not authenticated. Show appointment table only after successful admin login. Add logout button that clears sessionStorage and returns to login form."
+        },
+        {
+          "path": "frontend/src/hooks/useAdminAuth.ts",
+          "operation": "create",
+          "description": "Create custom hook to manage admin authentication state with sessionStorage persistence. Export functions: checkIsAdminAuthenticated(), loginAdmin(username, password), logoutAdmin(). Use 'adminAuthenticated' key in sessionStorage. Provide state management for auth status that components can subscribe to."
         }
       ]
     },
     {
-      "id": "REQ-123",
-      "summary": "Add comprehensive error logging and user-friendly error messages in the AppointmentForm component to capture and display installation-related errors with actionable feedback",
+      "id": "REQ-2",
+      "summary": "Protect admin dashboard route to require authentication before displaying appointment data",
       "acceptanceCriteria": [
-        "Installation errors are caught and logged with detailed stack traces",
-        "User-facing error messages provide clear guidance on what went wrong",
-        "Error messages are displayed in English in the appointment form UI",
-        "Console logs include sufficient diagnostic information for debugging"
+        "Unauthenticated users see login form instead of appointment data",
+        "Authenticated admin users can view all appointments",
+        "Admin authentication status is checked on page load"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/AppointmentForm.tsx",
+          "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Implement detailed error logging with console output including stack traces, error types, and actor state information. Add user-facing error message display with clear, actionable feedback in English. Create error categories for installation errors, network failures, and validation errors with specific messages for each. Display errors prominently in the form UI with retry suggestions."
-        }
-      ]
-    },
-    {
-      "id": "REQ-125",
-      "summary": "Add retry logic and graceful degradation in the appointment booking mutation hook to handle transient installation or network errors, with exponential backoff and maximum retry attempts",
-      "acceptanceCriteria": [
-        "Failed appointment submissions automatically retry up to 3 times",
-        "Exponential backoff delays are applied between retry attempts",
-        "Users see a loading indicator during retry attempts",
-        "After maximum retries, a clear error message is displayed"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Implement retry logic in the appointment booking mutation with a maximum of 3 retry attempts. Add exponential backoff delays (e.g., 1s, 2s, 4s) between retry attempts. Update the mutation to track retry state and count. Ensure the loading state reflects retry attempts so users see appropriate loading indicators. After exhausting retries, return a clear error message indicating the failure."
+          "description": "Add authentication check on component mount using useAdminAuth hook. Conditionally render AdminLoginForm when not authenticated, or appointment management interface when authenticated. Verify authentication state persists across page refreshes by reading from sessionStorage on initial load."
         },
         {
-          "path": "frontend/src/components/AppointmentForm.tsx",
+          "path": "frontend/src/components/Header.tsx",
           "operation": "modify",
-          "description": "Update the form UI to display retry attempt count and status during mutation retries. Show a loading spinner or progress indicator that reflects the current retry attempt. Display appropriate messages like 'Retrying... (Attempt 2 of 3)' to keep users informed. After all retries fail, display the final error message with actionable guidance."
-        }
-      ]
-    },
-    {
-      "id": "REQ-126",
-      "summary": "Verify that the Internet Identity authentication and actor initialization in useActor hook properly handles edge cases where authentication tokens expire or become invalid during form submission, preventing installation errors",
-      "acceptanceCriteria": [
-        "Expired authentication tokens are detected before form submission",
-        "Users are prompted to re-authenticate when tokens are invalid",
-        "Actor initialization completes successfully before enabling form submission",
-        "Token refresh or re-authentication is handled automatically when possible"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useActor.ts",
-          "operation": "modify",
-          "description": "Add validation to detect expired or invalid authentication tokens before actor operations. Implement token expiry checking logic and handle edge cases where tokens become invalid during operation. Add error handling to prompt users for re-authentication when token issues are detected. Ensure actor initialization fully completes and is verified before operations proceed."
-        },
-        {
-          "path": "frontend/src/components/AppointmentForm.tsx",
-          "operation": "modify",
-          "description": "Add pre-submission validation to check actor authentication state and token validity. Disable form submission if the actor is not fully initialized or authentication is invalid. Display appropriate messages to users when re-authentication is required. Integrate with the useActor hook's authentication state to handle token expiry gracefully."
+          "description": "Add conditional logout button in header navigation when admin is authenticated and currently viewing admin page. Use useAdminAuth hook to check authentication status. Button should call logoutAdmin() and optionally navigate away from admin page."
         }
       ]
     }
