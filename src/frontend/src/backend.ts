@@ -141,7 +141,7 @@ export interface backendInterface {
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<void>;
+    book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<bigint>;
     cancel(appointmentId: bigint): Promise<void>;
     getAll(): Promise<Array<Appointment>>;
     getAllAppointments(): Promise<Array<Appointment>>;
@@ -276,7 +276,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async book(arg0: string, arg1: string, arg2: Time, arg3: ServiceType): Promise<void> {
+    async book(arg0: string, arg1: string, arg2: Time, arg3: ServiceType): Promise<bigint> {
         if (this.processError) {
             try {
                 const result = await this.actor.book(arg0, arg1, arg2, to_candid_ServiceType_n10(this._uploadFile, this._downloadFile, arg3));

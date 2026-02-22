@@ -62,7 +62,7 @@ export interface _SERVICE {
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'book' : ActorMethod<[string, string, Time, ServiceType], undefined>,
+  'book' : ActorMethod<[string, string, Time, ServiceType], bigint>,
   'cancel' : ActorMethod<[bigint], undefined>,
   'getAll' : ActorMethod<[], Array<Appointment>>,
   'getAllAppointments' : ActorMethod<[], Array<Appointment>>,

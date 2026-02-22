@@ -14,10 +14,12 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CalendarIcon, Loader2, CheckCircle2, Sparkles, AlertCircle, RefreshCw, Clock, Phone as PhoneIcon } from 'lucide-react';
+import { CalendarIcon, Loader2, CheckCircle2, Sparkles, AlertCircle, RefreshCw, Clock, WifiOff } from 'lucide-react';
 import { format, getDay } from 'date-fns';
 import { useActor } from '@/hooks/useActor';
 import { useBookAppointment, useGetClinicOpen, useGetOpeningHours } from '@/hooks/useQueries';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { NetworkStatusIndicator } from '@/components/NetworkStatusIndicator';
 import { toast } from 'sonner';
 import { ServiceType } from '../backend';
 
@@ -117,12 +119,13 @@ function AppointmentForm() {
 
   const bookMutation = useBookAppointment();
   const { data: clinicOpen, isLoading: clinicOpenLoading } = useGetClinicOpen();
+  const { isOnline, isChecking, checkConnectivity } = useNetworkStatus();
   
   // Get day name for selected date
   const selectedDayName = date ? daysOfWeek[getDay(date)] : '';
   const { data: openingHours, isLoading: openingHoursLoading } = useGetOpeningHours(selectedDayName);
 
-  // Track initialization time with faster timeout detection (5 seconds instead of 30)
+  // Track initialization time with timeout detection (30 seconds as per requirements)
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     let startTime = Date.now();
@@ -133,12 +136,12 @@ function AppointmentForm() {
         const elapsed = Date.now() - startTime;
         setInitializationTime(elapsed);
         
-        // Set timeout flag after 5 seconds (reduced from 30)
-        if (elapsed > 5000) {
+        // Set timeout flag after 30 seconds
+        if (elapsed > 30000) {
           setConnectionTimeout(true);
           clearInterval(intervalId);
         }
-      }, 500); // Check more frequently (500ms instead of 1s)
+      }, 1000);
 
       timeoutId = intervalId;
     } else if (actor) {
@@ -155,11 +158,21 @@ function AppointmentForm() {
   }, [actorFetching, actor]);
 
   // Memoized retry handler
-  const handleRetry = useCallback(() => {
+  const handleRetry = useCallback(async () => {
     setConnectionTimeout(false);
     setInitializationTime(0);
+    
+    // Check network connectivity first
+    const isConnected = await checkConnectivity();
+    if (!isConnected) {
+      toast.error('No internet connection', {
+        description: 'Please check your network connection and try again.',
+      });
+      return;
+    }
+    
     window.location.reload();
-  }, []);
+  }, [checkConnectivity]);
 
   // Memoized form submission handler
   const onSubmit = useCallback((data: AppointmentFormData) => {
@@ -169,6 +182,14 @@ function AppointmentForm() {
     }
     if (!selectedService) {
       toast.error('Please select a service');
+      return;
+    }
+
+    // Check network connectivity first
+    if (!isOnline) {
+      toast.error('No internet connection', {
+        description: 'Please check your network connection and try again.',
+      });
       return;
     }
 
@@ -219,7 +240,8 @@ function AppointmentForm() {
         serviceType: backendServiceType,
         onRetry: (attempt, error) => {
           setBookingRetryAttempt(attempt);
-          toast.loading(`Retrying... (Attempt ${attempt} of 3)`, {
+          const delays = [2, 4, 8];
+          toast.loading(`Retrying... (Attempt ${attempt} of 3, waiting ${delays[attempt - 1]}s)`, {
             id: 'booking-progress',
             description: 'Please wait while we process your request.',
           });
@@ -274,11 +296,14 @@ function AppointmentForm() {
         },
       }
     );
-  }, [date, selectedService, actor, actorFetching, connectionTimeout, bookMutation, reset, clinicOpen]);
+  }, [date, selectedService, actor, actorFetching, connectionTimeout, bookMutation, reset, clinicOpen, isOnline]);
 
   // Memoized computed values
   const isActorReady = useMemo(() => !actorFetching && !!actor, [actorFetching, actor]);
-  const isFormDisabled = useMemo(() => !isActorReady || bookMutation.isPending || clinicOpen === false, [isActorReady, bookMutation.isPending, clinicOpen]);
+  const isFormDisabled = useMemo(() => 
+    !isActorReady || bookMutation.isPending || clinicOpen === false || !isOnline, 
+    [isActorReady, bookMutation.isPending, clinicOpen, isOnline]
+  );
   const showConnectionError = useMemo(() => connectionTimeout && !actor, [connectionTimeout, actor]);
 
   if (showSuccess) {
@@ -296,6 +321,24 @@ function AppointmentForm() {
             <CardDescription className="text-base text-muted-foreground">
               Fill out the form below and we will get back to you as soon as possible
             </CardDescription>
+            
+            {/* Network Status Indicator */}
+            {(!isOnline || isChecking) && (
+              <div className="flex justify-center">
+                <NetworkStatusIndicator />
+              </div>
+            )}
+            
+            {/* Offline Alert */}
+            {!isOnline && !isChecking && (
+              <Alert variant="destructive" className="mt-4">
+                <WifiOff className="h-4 w-4" />
+                <AlertTitle>No Internet Connection</AlertTitle>
+                <AlertDescription>
+                  You are currently offline. Please check your internet connection to book an appointment.
+                </AlertDescription>
+              </Alert>
+            )}
             
             {/* Clinic Closed Alert */}
             {!clinicOpenLoading && clinicOpen === false && (
@@ -342,6 +385,14 @@ function AppointmentForm() {
                   </Button>
                 </AlertDescription>
               </Alert>
+            )}
+            
+            {/* Retry Attempt Indicator */}
+            {bookingRetryAttempt > 0 && (
+              <div className="flex items-center justify-center gap-2 text-sm text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/20 rounded-xl p-3">
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                <span>Retrying booking request... (Attempt {bookingRetryAttempt} of 3)</span>
+              </div>
             )}
           </div>
         </CardHeader>
@@ -468,7 +519,7 @@ function AppointmentForm() {
               </Label>
               <Textarea
                 id="additionalNotes"
-                placeholder="Any specific concerns or requirements..."
+                placeholder="Any specific concerns or requirements?"
                 {...register('additionalNotes')}
                 disabled={isFormDisabled}
                 className="min-h-[100px] text-base resize-none"
@@ -479,35 +530,22 @@ function AppointmentForm() {
             <Button
               type="submit"
               disabled={isFormDisabled}
-              className="w-full h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {bookMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {bookingRetryAttempt > 0
-                    ? `Retrying... (${bookingRetryAttempt}/3)`
-                    : 'Booking...'}
+                  Booking...
                 </>
-              ) : clinicOpen === false ? (
-                'Clinic Closed - Booking Unavailable'
+              ) : !isOnline ? (
+                <>
+                  <WifiOff className="mr-2 h-5 w-5" />
+                  No Connection
+                </>
               ) : (
                 'Book Appointment'
               )}
             </Button>
-
-            {/* Contact Information */}
-            <div className="text-center pt-4 border-t">
-              <p className="text-sm text-muted-foreground mb-2">
-                Need immediate assistance?
-              </p>
-              <a
-                href="tel:+916352174912"
-                className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
-              >
-                <PhoneIcon className="w-4 h-4" />
-                +91 635-217-4912
-              </a>
-            </div>
           </form>
         </CardContent>
       </Card>
@@ -515,4 +553,4 @@ function AppointmentForm() {
   );
 }
 
-export default AppointmentForm;
+export default memo(AppointmentForm);

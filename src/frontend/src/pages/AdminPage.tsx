@@ -1,8 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useAllAppointments, useGetCallerUserProfile, useSaveCallerUserProfile, useGetClinicOpen, useSetClinicOpen, useGetAllOpeningHours, useSetOpeningHours } from '@/hooks/useQueries';
-import { useInternetIdentity } from '@/hooks/useInternetIdentity';
+import { useAllAppointments, useGetClinicOpen, useSetClinicOpen, useGetAllOpeningHours, useSetOpeningHours } from '@/hooks/useQueries';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { useActor } from '@/hooks/useActor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,14 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, Lock, LogOut, Power, Clock, Save, Mail } from 'lucide-react';
+import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, LogOut, Power, Clock, Save, Mail } from 'lucide-react';
 import { format } from 'date-fns';
 import { ServiceType } from '../backend';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import AdminLoginForm from '@/components/AdminLoginForm';
-import AccessDeniedScreen from '@/components/AccessDeniedScreen';
 import { toast } from 'sonner';
 
 // Map backend ServiceType enum to user-friendly names
@@ -41,16 +37,9 @@ function serviceTypeToText(serviceType: ServiceType): string {
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function AdminPage() {
-  const { login, loginStatus, identity } = useInternetIdentity();
-  const isAuthenticated = !!identity;
-  const isLoggingIn = loginStatus === 'logging-in';
-
   // Admin authentication using custom hook
   const { isAuthenticated: isAdminAuthenticated, logoutAdmin } = useAdminAuth();
 
-  const { actor } = useActor();
-  const { data: userProfile, isLoading: profileLoading, isFetched: profileFetched } = useGetCallerUserProfile();
-  const { mutate: saveProfile, isPending: isSavingProfile } = useSaveCallerUserProfile();
   const { data: appointments, isLoading: appointmentsLoading, error } = useAllAppointments();
   
   // Clinic status and opening hours
@@ -64,31 +53,10 @@ export default function AdminPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [profileName, setProfileName] = useState('');
   const [editingHours, setEditingHours] = useState<Record<string, { openTime: string; closeTime: string }>>({});
-  const [isAdminUser, setIsAdminUser] = useState<boolean | null>(null);
 
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation<HTMLDivElement>();
   const { ref: tableRef, isVisible: tableVisible } = useScrollAnimation<HTMLDivElement>({ threshold: 0.05 });
-
-  const showProfileSetup = isAuthenticated && !profileLoading && profileFetched && userProfile === null;
-
-  // Check if user is admin
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (actor && identity) {
-        try {
-          const isAdmin = await actor.isCallerAdmin();
-          setIsAdminUser(isAdmin);
-        } catch (error) {
-          console.error('[AdminPage] Error checking admin status:', error);
-          setIsAdminUser(false);
-        }
-      }
-    };
-
-    checkAdminStatus();
-  }, [actor, identity]);
 
   // Initialize editing hours from backend data
   useEffect(() => {
@@ -142,14 +110,9 @@ export default function AdminPage() {
     return filtered;
   }, [appointments, searchName, filterService, sortOrder, startDate, endDate]);
 
-  const handleSaveProfile = () => {
-    if (profileName.trim()) {
-      saveProfile({ name: profileName.trim() });
-    }
-  };
-
   const handleAdminLoginSuccess = () => {
-    console.log('[AdminPage] Admin login successful, component will re-render with updated auth state');
+    // Force re-render after successful login
+    window.location.reload();
   };
 
   const handleToggleClinicOpen = () => {
@@ -213,110 +176,9 @@ export default function AdminPage() {
     }));
   };
 
-  // Show Internet Identity login if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-xl">
-          <CardHeader className="space-y-1 text-center">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Lock className="w-8 h-8 text-primary" />
-            </div>
-            <CardTitle className="text-2xl font-bold">Admin Access Required</CardTitle>
-            <p className="text-muted-foreground">
-              Please authenticate with Internet Identity to access the admin panel
-            </p>
-          </CardHeader>
-          <CardContent>
-            <Button
-              onClick={login}
-              disabled={isLoggingIn}
-              className="w-full"
-              size="lg"
-            >
-              {isLoggingIn ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Authenticating...
-                </>
-              ) : (
-                'Login with Internet Identity'
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Show profile setup dialog if user doesn't have a profile
-  if (showProfileSetup) {
-    return (
-      <Dialog open={true}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Welcome! Set Up Your Profile</DialogTitle>
-            <DialogDescription>
-              Please enter your name to complete your profile setup.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="profile-name">Your Name</Label>
-              <Input
-                id="profile-name"
-                placeholder="Enter your full name"
-                value={profileName}
-                onChange={(e) => setProfileName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && profileName.trim()) {
-                    handleSaveProfile();
-                  }
-                }}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              onClick={handleSaveProfile}
-              disabled={!profileName.trim() || isSavingProfile}
-              className="w-full"
-            >
-              {isSavingProfile ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                'Continue'
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
   // Show admin login form if not admin authenticated
   if (!isAdminAuthenticated) {
     return <AdminLoginForm onLoginSuccess={handleAdminLoginSuccess} />;
-  }
-
-  // Check if user has admin role
-  if (isAdminUser === false) {
-    return <AccessDeniedScreen />;
-  }
-
-  // Show loading while checking admin status
-  if (isAdminUser === null) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-          <p className="text-lg font-medium text-muted-foreground">Verifying admin access...</p>
-        </div>
-      </div>
-    );
   }
 
   // Show error state
@@ -326,7 +188,6 @@ export default function AdminPage() {
         <Card className="w-full max-w-2xl shadow-xl border-destructive">
           <CardHeader>
             <CardTitle className="text-destructive flex items-center gap-2">
-              <Lock className="w-6 h-6" />
               Error Loading Appointments
             </CardTitle>
           </CardHeader>
@@ -410,7 +271,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <Badge variant="outline" className="gap-1">
               <User className="w-3 h-3" />
-              {userProfile?.name || 'Admin'}
+              Admin
             </Badge>
             <Badge variant="outline" className="gap-1">
               <Calendar className="w-3 h-3" />
@@ -500,9 +361,9 @@ export default function AdminPage() {
                       <span className="text-sm text-muted-foreground">:00</span>
                     </div>
                     <Button
-                      size="sm"
                       onClick={() => handleSaveOpeningHours(day)}
                       disabled={isSettingOpeningHours}
+                      size="sm"
                       className="gap-2"
                     >
                       <Save className="w-4 h-4" />
@@ -515,31 +376,38 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
-        {/* Filters */}
-        <Card className="mb-6 shadow-lg">
+        {/* Appointments Section */}
+        <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Search className="w-5 h-5" />
-              Search & Filter Appointments
+              <Calendar className="w-5 h-5" />
+              Appointments Management
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="space-y-2">
-                <Label htmlFor="search-name">Patient Name</Label>
+                <Label htmlFor="search-name" className="flex items-center gap-2">
+                  <Search className="w-4 h-4" />
+                  Search by Name
+                </Label>
                 <Input
                   id="search-name"
-                  placeholder="Search by name..."
+                  placeholder="Patient name..."
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="filter-service">Service Type</Label>
+                <Label htmlFor="filter-service" className="flex items-center gap-2">
+                  <Stethoscope className="w-4 h-4" />
+                  Filter by Service
+                </Label>
                 <Select value={filterService} onValueChange={setFilterService}>
                   <SelectTrigger id="filter-service">
-                    <SelectValue />
+                    <SelectValue placeholder="All services" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Services</SelectItem>
@@ -573,21 +441,13 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
+            {/* Sort Controls */}
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm text-muted-foreground">
+                Showing {filteredAppointments.length} of {appointments?.length || 0} appointments
+              </p>
               <Button
                 variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearchName('');
-                  setFilterService('all');
-                  setStartDate('');
-                  setEndDate('');
-                }}
-              >
-                Clear Filters
-              </Button>
-              <Button
-                variant="ghost"
                 size="sm"
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                 className="gap-2"
@@ -596,72 +456,34 @@ export default function AdminPage() {
                 Sort by Date ({sortOrder === 'asc' ? 'Oldest First' : 'Newest First'})
               </Button>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Appointments Table */}
-        <Card
-          ref={tableRef}
-          className={`shadow-lg transition-all duration-700 ${
-            tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
-        >
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Appointments ({filteredAppointments.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {filteredAppointments.length === 0 ? (
-              <div className="text-center py-12">
-                <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium text-muted-foreground">No appointments found</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {searchName || filterService !== 'all' || startDate || endDate
-                    ? 'Try adjusting your filters'
-                    : 'No appointments have been booked yet'}
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
+            {/* Appointments Table */}
+            <div
+              ref={tableRef}
+              className={`transition-all duration-700 ${
+                tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}
+            >
+              <div className="rounded-lg border overflow-hidden">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[180px]">
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4" />
-                          Patient Name
-                        </div>
-                      </TableHead>
-                      <TableHead className="w-[200px]">
-                        <div className="flex items-center gap-2">
-                          <Mail className="w-4 h-4" />
-                          Contact Info
-                        </div>
-                      </TableHead>
-                      <TableHead className="w-[150px]">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          Date
-                        </div>
-                      </TableHead>
-                      <TableHead className="w-[100px]">Time</TableHead>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <Stethoscope className="w-4 h-4" />
-                          Service
-                        </div>
-                      </TableHead>
+                    <TableRow className="bg-muted/50">
+                      <TableHead className="font-semibold">Patient Name</TableHead>
+                      <TableHead className="font-semibold">Contact Info</TableHead>
+                      <TableHead className="font-semibold">Date & Time</TableHead>
+                      <TableHead className="font-semibold">Service Type</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredAppointments.map((appointment, index) => {
-                      const appointmentDate = new Date(Number(appointment.date) / 1000000);
-                      const isPast = appointmentDate < new Date();
-
-                      return (
-                        <TableRow key={index} className={isPast ? 'opacity-60' : ''}>
+                    {filteredAppointments.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                          No appointments found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredAppointments.map((appointment, index) => (
+                        <TableRow key={index} className="hover:bg-muted/30 transition-colors">
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
                               <User className="w-4 h-4 text-muted-foreground" />
@@ -669,29 +491,35 @@ export default function AdminPage() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Phone className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-sm">{appointment.contactInfo}</span>
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2 text-sm">
+                                <Phone className="w-3 h-3 text-muted-foreground" />
+                                {appointment.contactInfo.includes('@') ? (
+                                  <Mail className="w-3 h-3 text-muted-foreground" />
+                                ) : null}
+                                <span className="text-muted-foreground">{appointment.contactInfo}</span>
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
-                            {format(appointmentDate, 'MMM dd, yyyy')}
+                            <div className="flex items-center gap-2">
+                              <Calendar className="w-4 h-4 text-muted-foreground" />
+                              {format(new Date(Number(appointment.date) / 1000000), 'PPp')}
+                            </div>
                           </TableCell>
                           <TableCell>
-                            {format(appointmentDate, 'hh:mm a')}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={isPast ? 'outline' : 'default'}>
+                            <Badge variant="outline" className="gap-1">
+                              <Stethoscope className="w-3 h-3" />
                               {serviceTypeToText(appointment.serviceType)}
                             </Badge>
                           </TableCell>
                         </TableRow>
-                      );
-                    })}
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
-            )}
+            </div>
           </CardContent>
         </Card>
       </div>

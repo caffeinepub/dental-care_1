@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Relocate admin panel access from main navigation to a subtle, fixed bottom-right corner position.
+**Goal:** Simplify admin panel authentication to use only username and password without verification steps.
 
 **Planned changes:**
-- Remove admin panel link from the main header navigation
-- Add a small, discreet button/icon fixed in the bottom-right corner of all pages
-- Style the corner element with low visual prominence (reduced opacity, small size)
-- Make the element slightly more visible on hover for interactivity feedback
-- Ensure the corner element remains accessible across all viewport sizes
+- Remove any verification or multi-step authentication process from admin login
+- Ensure login form displays only username and password fields
+- Grant admin access immediately upon successful credential validation (username: 6352174912, password: 63521)
+- Streamline authentication to complete in a single step with immediate feedback
 
-**User-visible outcome:** Admin panel access is moved to a subtle bottom-right corner position that is visible but not prominent, while main visitors see a cleaner navigation without the admin link.
+**User-visible outcome:** Admin users can log in directly with username and password only, accessing the admin panel immediately without any verification steps or additional processing screens.

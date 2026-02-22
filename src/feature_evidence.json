@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-move-the-admin-panel-link-from-the-main-navigation-to-a-subtle-fixed-position-in-the-bottom-right-corner-of-the-website-that-is-visible-but-not-prominent",
-      "featureTitle": "Move the admin panel link from the main navigation to a subtle, fixed position in the bottom-right corner of the website that is visible but not prominent",
+      "featureId": "feature-remove-any-verification-or-multi-step-authentication-process-from-the-admin-login-flow-the-admin-panel-should-authenticate-using-only-username-and-password-credentials",
+      "featureTitle": "Remove any verification or multi-step authentication process from the admin login flow. The admin panel should authenticate using only username and password credentials.",
       "files": [
-        "frontend/src/components/Layout.tsx"
+        "frontend/src/components/AdminLoginForm.tsx",
+        "frontend/src/pages/AdminPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -22,10 +23,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-style-the-bottom-corner-admin-access-element-to-be-discreet-use-minimal-visual-emphasis-such-as-small-icon-size-reduced-opacity-or-subtle-coloring-that-blends-with-the-page-footer-area",
-      "featureTitle": "Style the bottom corner admin access element to be discreet - use minimal visual emphasis such as small icon size, reduced opacity, or subtle coloring that blends with the page footer area",
+      "featureId": "feature-ensure-that-admin-access-is-granted-only-when-both-the-username-and-password-match-the-actual-stored-credentials-username-6352174912-password-63521-invalid-credentials-should-be-rejected",
+      "featureTitle": "Ensure that admin access is granted only when both the username and password match the actual stored credentials (username: 6352174912, password: 63521). Invalid credentials should be rejected.",
       "files": [
-        "frontend/src/components/Layout.tsx"
+        "frontend/src/components/AdminLoginForm.tsx",
+        "frontend/src/hooks/useAdminAuth.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -38,6 +40,28 @@
       ],
       "testIds": [
         "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-streamline-the-authentication-process-to-be-direct-and-simple-with-no-additional-processing-steps-or-complexity-beyond-credential-validation",
+      "featureTitle": "Streamline the authentication process to be direct and simple with no additional processing steps or complexity beyond credential validation.",
+      "files": [
+        "frontend/src/components/AdminLoginForm.tsx",
+        "frontend/src/hooks/useAdminAuth.ts",
+        "frontend/src/pages/AdminPage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

@@ -1,45 +1,73 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Move admin panel to subtle bottom corner access",
+  "title": "Simplify admin panel authentication to username and password only",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Move admin panel link from main navigation to a subtle fixed bottom-right corner button",
+      "summary": "Remove any verification or multi-step authentication process from the admin login flow. The admin panel should authenticate using only username and password credentials.",
       "acceptanceCriteria": [
-        "Admin panel access is removed from the main header navigation",
-        "A small, subtle button or icon appears fixed in the bottom-right corner of all pages",
-        "The corner element is visible but designed to be inconspicuous (small size, low opacity, or minimal styling)",
-        "Clicking the corner element navigates to the admin login/panel",
-        "The corner element remains accessible on all viewport sizes"
+        "Admin login form displays only username and password fields",
+        "No verification step or additional authentication screens appear after entering credentials",
+        "Admin panel opens immediately upon successful username/password validation"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Header.tsx",
+          "path": "frontend/src/components/AdminLoginForm.tsx",
           "operation": "modify",
-          "description": "Remove the admin panel link from the main navigation menu. Identify and remove any navigation items, links, or buttons that direct users to the admin panel or admin login page from the header component."
+          "description": "Simplify the admin login form to display only username and password input fields. Remove any multi-step authentication UI, verification prompts, or additional authentication screens. Ensure the form directly calls the useAdminAuth login function with username and password, and navigates to the admin panel immediately upon successful authentication without intermediate steps."
         },
         {
-          "path": "frontend/src/components/Layout.tsx",
+          "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Add a fixed bottom-right corner admin access button component. Create a small, subtle button positioned with fixed positioning (bottom-right corner, e.g., bottom-4 right-4) that navigates to the admin page when clicked. The button should be rendered alongside Header, Outlet, and Footer to appear on all pages."
+          "description": "Review and simplify the authentication flow on the admin page. Ensure that once the user successfully logs in via AdminLoginForm, they are immediately granted access to the admin panel without additional verification screens, loading states, or processing steps. Remove any conditional rendering that might show intermediate authentication screens after login."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Style the bottom corner admin access element to be discreet with minimal visual emphasis",
+      "summary": "Ensure that admin access is granted only when both the username and password match the actual stored credentials (username: 6352174912, password: 63521). Invalid credentials should be rejected.",
       "acceptanceCriteria": [
-        "The admin access element has low visual prominence (e.g., opacity 0.3-0.5 on normal state)",
-        "Element size is small enough to not draw attention but large enough to be clickable",
-        "On hover, the element becomes more visible to confirm it is interactive",
-        "The styling matches the overall design but remains subtle"
+        "Login succeeds only when username exactly matches 6352174912 and password exactly matches 63521",
+        "Any mismatch in username or password displays an error message",
+        "Partial matches or incorrect credentials do not grant access"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Layout.tsx",
+          "path": "frontend/src/hooks/useAdminAuth.ts",
           "operation": "modify",
-          "description": "Style the admin corner button with discreet design: use small size (e.g., w-10 h-10 or w-12 h-12), low opacity (opacity-30 to opacity-50), subtle colors that blend with the background, rounded corners, and a simple icon (e.g., settings or shield icon). Add hover state that increases opacity (hover:opacity-100) and potentially adds a subtle shadow or scale effect to confirm interactivity. Ensure the button has proper z-index to stay above other content and is touch-friendly on mobile devices."
+          "description": "Review and ensure the login function performs exact string matching for both username (6352174912) and password (63521). The validation logic must reject any partial matches, case variations, or incorrect credentials. Ensure the error handling provides clear feedback when credentials don't match, and that the sessionStorage-based authentication state is only set when both credentials are exactly correct."
+        },
+        {
+          "path": "frontend/src/components/AdminLoginForm.tsx",
+          "operation": "modify",
+          "description": "Ensure the form validation and error display properly show rejection messages when credentials are invalid. Display clear error feedback to the user when username or password doesn't match the stored credentials, and prevent form submission or navigation until exact matches are provided."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Streamline the authentication process to be direct and simple with no additional processing steps or complexity beyond credential validation.",
+      "acceptanceCriteria": [
+        "Authentication flow completes in a single step after submitting credentials",
+        "No loading states, intermediate screens, or unnecessary processing delays",
+        "User sees immediate feedback (success or error) after credential submission"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useAdminAuth.ts",
+          "operation": "modify",
+          "description": "Streamline the login function to perform synchronous credential validation without async delays, network calls, or processing steps. Remove any artificial loading states or delays. The authentication state should be updated immediately in sessionStorage upon successful validation, enabling instant feedback to the user."
+        },
+        {
+          "path": "frontend/src/components/AdminLoginForm.tsx",
+          "operation": "modify",
+          "description": "Remove any loading spinners, progress indicators, or delayed state transitions from the login form. Ensure the form provides immediate feedback (success or error) after credential submission. Upon successful validation, navigate directly to the admin panel without intermediate screens or processing delays."
+        },
+        {
+          "path": "frontend/src/pages/AdminPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the admin page renders immediately once authentication is confirmed, without showing loading states, verification screens, or processing overlays. Remove any unnecessary conditional rendering that might delay access to the admin panel after successful login."
         }
       ]
     }

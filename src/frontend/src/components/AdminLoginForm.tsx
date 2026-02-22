@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Lock, User, Loader2, AlertCircle } from 'lucide-react';
+import { Lock, User, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 
@@ -19,7 +19,6 @@ interface LoginFormData {
 
 export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) {
   const [error, setError] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { loginAdmin } = useAdminAuth();
 
   const {
@@ -28,12 +27,8 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = (data: LoginFormData) => {
     setError('');
-    setIsSubmitting(true);
-
-    // Simulate a brief delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 500));
 
     // Validate credentials using the hook
     const success = loginAdmin(data.username, data.password);
@@ -43,8 +38,6 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
     } else {
       setError('Invalid username or password. Please try again.');
     }
-
-    setIsSubmitting(false);
   };
 
   return (
@@ -80,7 +73,7 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
                 type="text"
                 placeholder="Enter username"
                 className="h-12 text-base rounded-xl"
-                disabled={isSubmitting}
+                autoComplete="username"
                 {...register('username', {
                   required: 'Username is required',
                 })}
@@ -102,7 +95,7 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
                 type="password"
                 placeholder="Enter password"
                 className="h-12 text-base rounded-xl"
-                disabled={isSubmitting}
+                autoComplete="current-password"
                 {...register('password', {
                   required: 'Password is required',
                 })}
@@ -116,18 +109,10 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
 
             <Button
               type="submit"
-              disabled={isSubmitting}
               className="w-full h-12 text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
               size="lg"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Signing In...
-                </>
-              ) : (
-                'Sign In'
-              )}
+              Sign In
             </Button>
           </form>
         </CardContent>

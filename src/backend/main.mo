@@ -146,7 +146,7 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  public shared ({ caller }) func book(patientName : Text, contactInfo : Text, date : Time.Time, serviceType : ServiceType) : async () {
+  public shared ({ caller }) func book(patientName : Text, contactInfo : Text, date : Time.Time, serviceType : ServiceType) : async Nat {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can book appointments");
     };
@@ -156,8 +156,10 @@ actor {
       date;
       serviceType;
     };
-    appointments.add(nextAppointmentId, appointment);
+    let appointmentId = nextAppointmentId;
+    appointments.add(appointmentId, appointment);
     nextAppointmentId += 1;
+    appointmentId;
   };
 
   public shared ({ caller }) func cancel(appointmentId : Nat) : async () {

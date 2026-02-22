@@ -212,19 +212,20 @@ export function useSetOpeningHours() {
   });
 }
 
-// Helper function to implement exponential backoff retry logic with faster timeouts
+// Helper function to implement exponential backoff retry logic with configurable timeout
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
+  timeoutMs: number = 30000,
   onRetry?: (attempt: number, error: Error) => void
 ): Promise<T> {
   let lastError: Error;
   
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      // Add timeout to each attempt (5 seconds)
+      // Add timeout to each attempt (30 seconds as per requirements)
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Request timeout')), 5000);
+        setTimeout(() => reject(new Error('Request timeout - the booking request took too long to complete')), timeoutMs);
       });
       
       return await Promise.race([fn(), timeoutPromise]);
@@ -251,8 +252,8 @@ async function retryWithBackoff<T>(
         onRetry(attempt + 1, lastError);
       }
       
-      // Exponential backoff: 500ms, 1s, 2s (faster than before)
-      const delay = Math.pow(2, attempt) * 500;
+      // Exponential backoff: 2s, 4s, 8s as per requirements
+      const delay = Math.pow(2, attempt + 1) * 1000;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
@@ -279,7 +280,7 @@ export function useBookAppointment() {
 
       const timestamp = BigInt(data.date.getTime() * 1000000);
 
-      // Use retry logic with exponential backoff
+      // Use retry logic with exponential backoff and 30-second timeout
       return await retryWithBackoff(
         async () => {
           try {
@@ -295,6 +296,7 @@ export function useBookAppointment() {
           }
         },
         3, // Max 3 retries
+        30000, // 30 second timeout per attempt
         data.onRetry
       );
     },

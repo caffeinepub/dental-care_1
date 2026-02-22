@@ -1,58 +1,74 @@
 {
   "kind": "build_request",
-  "title": "Move admin panel to subtle bottom corner access",
-  "priority": "normal",
+  "title": "Simplify admin panel authentication to username and password only",
+  "projectName": "Annaya Dental Care",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Move the admin panel link from the main navigation to a subtle, fixed position in the bottom-right corner of the website that is visible but not prominent",
+      "text": "Remove any verification or multi-step authentication process from the admin login flow. The admin panel should authenticate using only username and password credentials.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-last"
         ],
         "quotes": [
-          "admin panel ko website ke last me bilkul corner par har kisi ko na dikhe vaise rakho but visble ho"
+          "no veryfy only usr and pass dalo opne ho jana chahiye"
         ]
       },
       "acceptanceCriteria": [
-        "Admin panel access is removed from the main header navigation",
-        "A small, subtle button or icon appears fixed in the bottom-right corner of all pages",
-        "The corner element is visible but designed to be inconspicuous (small size, low opacity, or minimal styling)",
-        "Clicking the corner element navigates to the admin login/panel",
-        "The corner element remains accessible on all viewport sizes"
+        "Admin login form displays only username and password fields",
+        "No verification step or additional authentication screens appear after entering credentials",
+        "Admin panel opens immediately upon successful username/password validation"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Style the bottom corner admin access element to be discreet - use minimal visual emphasis such as small icon size, reduced opacity, or subtle coloring that blends with the page footer area",
+      "text": "Ensure that admin access is granted only when both the username and password match the actual stored credentials (username: 6352174912, password: 63521). Invalid credentials should be rejected.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-last"
         ],
         "quotes": [
-          "har kisi ko na dikhe vaise rakho but visble ho"
+          "bur real user name and real pass ho tab hi"
         ]
       },
       "acceptanceCriteria": [
-        "The admin access element has low visual prominence (e.g., opacity 0.3-0.5 on normal state)",
-        "Element size is small enough to not draw attention but large enough to be clickable",
-        "On hover, the element becomes more visible to confirm it is interactive",
-        "The styling matches the overall design but remains subtle"
+        "Login succeeds only when username exactly matches 6352174912 and password exactly matches 63521",
+        "Any mismatch in username or password displays an error message",
+        "Partial matches or incorrect credentials do not grant access"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Streamline the authentication process to be direct and simple with no additional processing steps or complexity beyond credential validation.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "koi jyada prosses nahi"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Authentication flow completes in a single step after submitting credentials",
+        "No loading states, intermediate screens, or unnecessary processing delays",
+        "User sees immediate feedback (success or error) after credential submission"
       ]
     }
   ],
   "constraints": [
-    "Do not change the admin authentication logic or access control",
-    "Maintain the existing admin panel functionality and features",
-    "Keep the admin login form and dashboard pages unchanged"
+    "Maintain the existing hardcoded credentials (username: 6352174912, password: 63521)",
+    "Preserve session storage-based authentication state management",
+    "Do not modify backend authentication logic"
   ],
   "nonGoals": [
-    "Changing admin panel functionality or features",
-    "Modifying the admin authentication system",
-    "Adding new admin capabilities",
-    "Changing the main navigation structure beyond removing the admin link"
+    "Implementing Internet Identity integration for admin access",
+    "Adding password reset or recovery functionality",
+    "Creating multi-factor authentication",
+    "Changing the admin credentials to different values"
   ],
   "imageRequirements": {
     "required": [],

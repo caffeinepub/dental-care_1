@@ -41,7 +41,7 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<void>;
+    book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<bigint>;
     cancel(appointmentId: bigint): Promise<void>;
     getAll(): Promise<Array<Appointment>>;
     getAllAppointments(): Promise<Array<Appointment>>;
