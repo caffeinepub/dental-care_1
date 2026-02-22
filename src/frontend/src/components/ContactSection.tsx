@@ -80,10 +80,10 @@ export default function ContactSection() {
                   <Clock className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-1">Clinic Hours</h3>
+                  <h3 className="font-semibold mb-1">Working Hours</h3>
                   <p className="text-muted-foreground">
-                    Monday - Saturday: 9 AM - 8 PM<br />
-                    Sunday: Closed
+                    Monday - Saturday<br />
+                    9:00 AM - 8:00 PM
                   </p>
                 </div>
               </div>
@@ -91,38 +91,41 @@ export default function ContactSection() {
               {/* WhatsApp Button */}
               <div className="pt-4">
                 <Button 
-                  className="w-full bg-green-600 hover:bg-green-700 text-white hover:scale-105 transition-all"
+                  className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white"
                   size="lg"
-                  onClick={() => window.open('https://wa.me/916352174912', '_blank')}
+                  asChild
                 >
-                  <SiWhatsapp className="w-5 h-5 mr-2" />
-                  Chat on WhatsApp
+                  <a 
+                    href="https://wa.me/916352174912" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2"
+                  >
+                    <SiWhatsapp className="w-5 h-5" />
+                    Chat on WhatsApp
+                  </a>
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Google Maps */}
+          {/* Map */}
           <Card 
             ref={mapRef as React.RefObject<HTMLDivElement>}
-            className={`h-full ${mapVisible ? 'animate-fade-in-delay-200' : 'opacity-0'}`}
+            className={`h-full ${mapVisible ? 'animate-fade-in' : 'opacity-0'}`}
+            style={{ animationDelay: '200ms' }}
           >
-            <CardHeader>
-              <CardTitle>Find Us</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-[4/3] rounded-lg overflow-hidden">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2412648718453!2d-73.98784368459395!3d40.74844097932847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Clinic Location"
-                />
-              </div>
+            <CardContent className="p-0 h-full min-h-[400px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.9876543210123!2d72.5714!3d23.0225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDAxJzIxLjAiTiA3MsKwMzQnMTcuMCJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0, minHeight: '400px' }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Annaya Dental Care Location"
+              />
             </CardContent>
           </Card>
         </div>

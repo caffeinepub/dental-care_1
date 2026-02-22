@@ -82,6 +82,26 @@ export default function TestimonialsSection() {
         </div>
       </div>
 
+      {/* Treatment Results Showcase */}
+      <div className="max-w-3xl mx-auto mb-12">
+        <Card className="overflow-hidden border-2 shadow-lg">
+          <CardContent className="p-0">
+            <div className="relative">
+              <img 
+                src="/assets/2021-06-18 (1).webp" 
+                alt="Before and after dental treatment results"
+                className="w-full h-auto object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                <p className="text-white text-center font-semibold text-lg">
+                  Real Treatment Results - Transform Your Smile
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="max-w-5xl mx-auto">
         <Carousel
           setApi={setApi}

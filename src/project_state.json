@@ -1,37 +1,45 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Smile Dental Care - A dental appointment booking system with admin authentication",
-  "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
-  "existing_features": [
-    {
-      "id": "feature-implement-admin-login-system-with-hardcoded-username-anas-and-password-anas-2020-that-validates-credentials-and-grants-access-to-the-admin-dashboard",
-      "title": "Implement admin login system with hardcoded username 'ANAS' and password 'Anas@2020' that validates credentials and grants access to the admin dashboard",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-protect-admin-dashboard-route-to-require-authentication-before-displaying-appointment-data",
-      "title": "Protect admin dashboard route to require authentication before displaying appointment data",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    }
+  "summary": "Dental care website with admin panel for managing clinic settings",
+  "architectural_notes": [
+    "Admin panel authentication required",
+    "Clinic schedule management system needed"
   ],
+  "known_issues": [
+    "Previous admin settings panel build failed - attempting simpler approach"
+  ],
+  "isFixRequest": false,
+  "existing_features": [],
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add admin login system with username 'ANAS' and password 'Anas@2020'",
+      "summary": "Admin panel with clinic schedule controls (on/off, date/time settings)",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Admin panel feature to change website services",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Set admin credentials: username 'ANAS', password 'Anas@2020'",
+      "reqIds": [],
+      "status": "in_progress"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Update the hardcoded admin credentials in the frontend authentication hook to use username 'ANAS' and password 'Anas@2020'",
+      "reqIds": [
+        "REQ-1"
+      ],
       "status": "pending"
     }
   ],
-  "projectName": "Smile Dental Care",
+  "projectName": "Annaya Dental Care",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

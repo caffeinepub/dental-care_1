@@ -1,56 +1,35 @@
 {
   "kind": "build_request",
-  "title": "Add admin authentication system with hardcoded credentials",
-  "projectName": "Smile Dental Care",
+  "title": "Update admin credentials to ANAS/Anas@2020",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Implement admin login system with hardcoded username 'ANAS' and password 'Anas@2020' that validates credentials and grants access to the admin dashboard",
+      "text": "Update the hardcoded admin credentials in the frontend authentication hook to use username 'ANAS' and password 'Anas@2020'",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-10"
         ],
         "quotes": [
-          "But isme admin pass vala system to lagao user name ANAS And password Anas@2020"
+          "admin panel me user name ANAS rakho aur pass Anas@2020 rakho"
         ]
       },
       "acceptanceCriteria": [
-        "Admin login form accepts username 'ANAS' and password 'Anas@2020'",
-        "Incorrect credentials display an error message",
-        "Successful login redirects to admin dashboard",
-        "Admin session persists across page refreshes",
-        "Logout functionality clears admin session"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Protect admin dashboard route to require authentication before displaying appointment data",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Unauthenticated users see login form instead of appointment data",
-        "Authenticated admin users can view all appointments",
-        "Admin authentication status is checked on page load"
+        "Admin login form accepts username 'ANAS' with password 'Anas@2020'",
+        "Previous credentials no longer work",
+        "Session storage and authentication state management remain unchanged"
       ]
     }
   ],
   "constraints": [
-    "Do not modify backend authentication logic or Internet Identity integration",
-    "Keep existing AdminLoginForm.tsx implementation with hardcoded credentials",
-    "Maintain current admin dashboard functionality after login"
+    "Do not modify the authentication flow or session management logic",
+    "Keep the existing AdminLoginForm component interface unchanged"
   ],
   "nonGoals": [
-    "Database-backed user authentication system",
-    "Password hashing or encryption",
-    "Multiple admin user support",
-    "Password reset functionality",
-    "Role-based permissions beyond admin/user distinction"
+    "Implementing database-backed user management",
+    "Adding user registration or password reset features",
+    "Creating multiple admin accounts"
   ],
   "imageRequirements": {
     "required": [],

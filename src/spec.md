@@ -1,13 +1,9 @@
 # Specification
 
 ## Summary
-**Goal:** Add admin authentication system with hardcoded credentials to protect the admin dashboard.
+**Goal:** Update admin panel login credentials to use the new username and password.
 
 **Planned changes:**
-- Implement admin login form that validates username 'ANAS' and password 'Anas@2020'
-- Protect admin dashboard route to require authentication before displaying appointment data
-- Add session persistence for admin authentication across page refreshes
-- Add logout functionality to clear admin session
-- Display error messages for incorrect login credentials
+- Change hardcoded admin credentials to username 'ANAS' and password 'Anas@2020'
 
-**User-visible outcome:** Admin users can log in with hardcoded credentials to access the appointment dashboard, with their session persisting across page refreshes and the ability to log out.
+**User-visible outcome:** Admin users will log in using the new credentials (ANAS/Anas@2020) to access the admin panel.

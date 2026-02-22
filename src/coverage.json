@@ -1,42 +1,23 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-21T03:34:39.138Z",
+  "generatedAt": "2026-02-22T07:29:34.105Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 1,
+    "implemented": 0,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Implement admin login system with hardcoded username 'ANAS' and password 'Anas@2020' that validates credentials and grants access to the admin dashboard",
-        "status": "implemented",
+        "summary": "Update the hardcoded admin credentials in the frontend authentication hook to use username 'ANAS' and password 'Anas@2020'",
+        "status": "missing",
         "plannedFiles": [
-          "frontend/src/components/AdminLoginForm.tsx",
-          "frontend/src/pages/AdminPage.tsx",
           "frontend/src/hooks/useAdminAuth.ts"
         ],
-        "matchedFiles": [
-          "frontend/src/components/AdminLoginForm.tsx",
-          "frontend/src/pages/AdminPage.tsx",
-          "frontend/src/hooks/useAdminAuth.ts"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Protect admin dashboard route to require authentication before displaying appointment data",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/AdminPage.tsx",
-          "frontend/src/components/Header.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/AdminPage.tsx",
-          "frontend/src/components/Header.tsx"
-        ]
+        "matchedFiles": []
       }
     ]
   },
@@ -45,10 +26,6 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/AdminLoginForm.tsx",
-    "frontend/src/components/Header.tsx",
-    "frontend/src/hooks/useAdminAuth.ts",
-    "frontend/src/pages/AdminPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

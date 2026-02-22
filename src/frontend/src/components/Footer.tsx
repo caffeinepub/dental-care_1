@@ -4,7 +4,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   const appIdentifier = typeof window !== 'undefined' 
     ? encodeURIComponent(window.location.hostname) 
-    : 'satya-dental-care';
+    : 'annaya-dental-care';
 
   return (
     <footer className="border-t border-border/40 bg-muted/30 mt-20">
@@ -15,7 +15,7 @@ export default function Footer() {
               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                 <span className="text-2xl">🦷</span>
               </div>
-              <span className="font-bold text-xl">Satya Dental Care</span>
+              <span className="font-bold text-xl">Annaya Dental Care</span>
             </div>
             <p className="text-sm text-muted-foreground">
               Advanced technology and pain-free treatment at your trusted dental clinic.
@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-border/40 text-center space-y-2">
-          <p className="text-sm text-muted-foreground">© {currentYear} Satya Dental Care</p>
+          <p className="text-sm text-muted-foreground">© {currentYear} Annaya Dental Care</p>
           <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
             Built with <Heart className="w-4 h-4 text-red-500 fill-red-500 inline" /> using{' '}
             <a 

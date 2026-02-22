@@ -22,12 +22,12 @@ export default function HeroSection() {
       <div className="container px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           
-          {/* First Hero Image Box - Clinic Scene with Main Content */}
+          {/* First Hero Image Box - Reception Area with Main Content */}
           <Card className="relative overflow-hidden border-2 shadow-xl">
             <div 
               className="relative flex items-center justify-center min-h-[400px] lg:min-h-[600px]"
               style={{
-                backgroundImage: 'url(/assets/generated/hero-clinic-scene.dim_1200x600.png)',
+                backgroundImage: 'url(/assets/2021-06-18.webp)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}

@@ -1,54 +1,21 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add admin authentication system with hardcoded credentials",
+  "title": "Update Admin Credentials to ANAS/Anas@2020",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Implement admin login system with hardcoded credentials that validates username 'ANAS' and password 'Anas@2020', grants access to admin dashboard, and manages session persistence",
+      "summary": "Update the hardcoded admin credentials in the frontend authentication hook to use username 'ANAS' and password 'Anas@2020'",
       "acceptanceCriteria": [
-        "Admin login form accepts username 'ANAS' and password 'Anas@2020'",
-        "Incorrect credentials display an error message",
-        "Successful login redirects to admin dashboard",
-        "Admin session persists across page refreshes",
-        "Logout functionality clears admin session"
+        "Admin login form accepts username 'ANAS' with password 'Anas@2020'",
+        "Previous credentials no longer work",
+        "Session storage and authentication state management remain unchanged"
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/components/AdminLoginForm.tsx",
-          "operation": "modify",
-          "description": "Ensure the component validates hardcoded credentials (username: 'ANAS', password: 'Anas@2020'), stores authentication state in sessionStorage, displays error messages for incorrect credentials, and triggers redirect to admin dashboard on successful login. Add logout button that clears session and returns to login form."
-        },
-        {
-          "path": "frontend/src/pages/AdminPage.tsx",
-          "operation": "modify",
-          "description": "Integrate AdminLoginForm component to protect admin dashboard access. Check sessionStorage for admin authentication on page load. Display AdminLoginForm when user is not authenticated. Show appointment table only after successful admin login. Add logout button that clears sessionStorage and returns to login form."
-        },
         {
           "path": "frontend/src/hooks/useAdminAuth.ts",
-          "operation": "create",
-          "description": "Create custom hook to manage admin authentication state with sessionStorage persistence. Export functions: checkIsAdminAuthenticated(), loginAdmin(username, password), logoutAdmin(). Use 'adminAuthenticated' key in sessionStorage. Provide state management for auth status that components can subscribe to."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Protect admin dashboard route to require authentication before displaying appointment data",
-      "acceptanceCriteria": [
-        "Unauthenticated users see login form instead of appointment data",
-        "Authenticated admin users can view all appointments",
-        "Admin authentication status is checked on page load"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Add authentication check on component mount using useAdminAuth hook. Conditionally render AdminLoginForm when not authenticated, or appointment management interface when authenticated. Verify authentication state persists across page refreshes by reading from sessionStorage on initial load."
-        },
-        {
-          "path": "frontend/src/components/Header.tsx",
-          "operation": "modify",
-          "description": "Add conditional logout button in header navigation when admin is authenticated and currently viewing admin page. Use useAdminAuth hook to check authentication status. Button should call logoutAdmin() and optionally navigate away from admin page."
+          "description": "Update the hardcoded ADMIN_USERNAME constant from 'admin' to 'ANAS' and ADMIN_PASSWORD constant from 'admin123' to 'Anas@2020' in the useAdminAuth hook. Do not modify any other logic including the login function, sessionStorage handling, or state management."
         }
       ]
     }

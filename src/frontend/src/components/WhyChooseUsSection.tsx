@@ -35,16 +35,16 @@ const features = [
 
 const galleryImages = [
   {
-    src: '/assets/generated/dental-equipment-2.dim_800x600.png',
-    alt: 'Modern dental equipment in clinic',
+    src: '/assets/2021-06-17.webp',
+    alt: 'Modern dental treatment room with equipment',
   },
   {
-    src: '/assets/generated/dental-equipment-3.dim_800x600.png',
-    alt: 'Sterilization and hygiene setup',
+    src: '/assets/2021-06-17 (1).webp',
+    alt: 'Comfortable patient treatment area',
   },
   {
-    src: '/assets/generated/patient-doctor-consultation.dim_800x600.png',
-    alt: 'Patient care and consultation',
+    src: '/assets/2021-06-17 (2).webp',
+    alt: 'Advanced dental equipment and sterilization setup',
   },
 ];
 
