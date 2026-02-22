@@ -89,6 +89,10 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface OpeningHours {
+    closeTime: bigint;
+    openTime: bigint;
+}
 export type Time = bigint;
 export interface _CaffeineStorageRefillInformation {
     proposed_top_up_amount?: bigint;
@@ -141,8 +145,11 @@ export interface backendInterface {
     cancel(appointmentId: bigint): Promise<void>;
     getAll(): Promise<Array<Appointment>>;
     getAllAppointments(): Promise<Array<Appointment>>;
+    getAllOpeningHours(): Promise<Array<[string, OpeningHours]>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getClinicOpen(): Promise<boolean>;
+    getOpeningHours(day: string): Promise<OpeningHours | null>;
     getPastAppointments(): Promise<Array<Appointment>>;
     getUpcoming(): Promise<Array<Appointment>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
@@ -151,8 +158,10 @@ export interface backendInterface {
     searchByPatient(patientName: string): Promise<Array<Appointment>>;
     searchByService(serviceType: ServiceType): Promise<Array<Appointment>>;
     serviceTypeToText(serviceType: ServiceType): Promise<string>;
+    setClinicOpen(isOpen: boolean): Promise<void>;
+    setOpeningHoursForDay(day: string, openTime: bigint, closeTime: bigint): Promise<void>;
 }
-import type { Appointment as _Appointment, ServiceType as _ServiceType, Time as _Time, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { Appointment as _Appointment, OpeningHours as _OpeningHours, ServiceType as _ServiceType, Time as _Time, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -323,6 +332,20 @@ export class Backend implements backendInterface {
             return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getAllOpeningHours(): Promise<Array<[string, OpeningHours]>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllOpeningHours();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllOpeningHours();
+            return result;
+        }
+    }
     async getCallerUserProfile(): Promise<UserProfile | null> {
         if (this.processError) {
             try {
@@ -349,6 +372,34 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getCallerUserRole();
             return from_candid_UserRole_n18(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getClinicOpen(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getClinicOpen();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getClinicOpen();
+            return result;
+        }
+    }
+    async getOpeningHours(arg0: string): Promise<OpeningHours | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getOpeningHours(arg0);
+                return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getOpeningHours(arg0);
+            return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
         }
     }
     async getPastAppointments(): Promise<Array<Appointment>> {
@@ -463,6 +514,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async setClinicOpen(arg0: boolean): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setClinicOpen(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setClinicOpen(arg0);
+            return result;
+        }
+    }
+    async setOpeningHoursForDay(arg0: string, arg1: bigint, arg2: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setOpeningHoursForDay(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setOpeningHoursForDay(arg0, arg1, arg2);
+            return result;
+        }
+    }
 }
 function from_candid_Appointment_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Appointment): Appointment {
     return from_candid_record_n14(_uploadFile, _downloadFile, value);
@@ -477,6 +556,9 @@ function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: Externa
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
 function from_candid_opt_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_OpeningHours]): OpeningHours | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {

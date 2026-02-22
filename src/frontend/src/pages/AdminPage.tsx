@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useAllAppointments, useGetCallerUserProfile, useSaveCallerUserProfile } from '@/hooks/useQueries';
+import { useAllAppointments, useGetCallerUserProfile, useSaveCallerUserProfile, useGetClinicOpen, useSetClinicOpen, useGetAllOpeningHours, useSetOpeningHours } from '@/hooks/useQueries';
 import { useInternetIdentity } from '@/hooks/useInternetIdentity';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useActor } from '@/hooks/useActor';
@@ -11,11 +11,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, Lock, LogOut } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, Lock, LogOut, Power, Clock, Save, Mail } from 'lucide-react';
 import { format } from 'date-fns';
 import { ServiceType } from '../backend';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import AdminLoginForm from '@/components/AdminLoginForm';
+import AccessDeniedScreen from '@/components/AccessDeniedScreen';
+import { toast } from 'sonner';
 
 // Map backend ServiceType enum to user-friendly names
 function serviceTypeToText(serviceType: ServiceType): string {
@@ -35,6 +38,8 @@ function serviceTypeToText(serviceType: ServiceType): string {
   return mapping[serviceType] || 'Unknown Service';
 }
 
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
 export default function AdminPage() {
   const { login, loginStatus, identity } = useInternetIdentity();
   const isAuthenticated = !!identity;
@@ -47,6 +52,12 @@ export default function AdminPage() {
   const { data: userProfile, isLoading: profileLoading, isFetched: profileFetched } = useGetCallerUserProfile();
   const { mutate: saveProfile, isPending: isSavingProfile } = useSaveCallerUserProfile();
   const { data: appointments, isLoading: appointmentsLoading, error } = useAllAppointments();
+  
+  // Clinic status and opening hours
+  const { data: clinicOpen, isLoading: clinicOpenLoading } = useGetClinicOpen();
+  const { mutate: setClinicOpen, isPending: isSettingClinicOpen } = useSetClinicOpen();
+  const { data: openingHours, isLoading: openingHoursLoading } = useGetAllOpeningHours();
+  const { mutate: setOpeningHours, isPending: isSettingOpeningHours } = useSetOpeningHours();
 
   const [searchName, setSearchName] = useState('');
   const [filterService, setFilterService] = useState<string>('all');
@@ -54,47 +65,44 @@ export default function AdminPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [profileName, setProfileName] = useState('');
+  const [editingHours, setEditingHours] = useState<Record<string, { openTime: string; closeTime: string }>>({});
+  const [isAdminUser, setIsAdminUser] = useState<boolean | null>(null);
 
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation<HTMLDivElement>();
   const { ref: tableRef, isVisible: tableVisible } = useScrollAnimation<HTMLDivElement>({ threshold: 0.05 });
 
   const showProfileSetup = isAuthenticated && !profileLoading && profileFetched && userProfile === null;
 
-  // Log component mount and state changes
+  // Check if user is admin
   useEffect(() => {
-    console.log('[AdminPage] ===== COMPONENT STATE UPDATE =====');
-    console.log('[AdminPage] Component state:', {
-      timestamp: new Date().toISOString(),
-      isAuthenticated,
-      isAdminAuthenticated,
-      hasActor: !!actor,
-      principal: identity?.getPrincipal().toString() || 'none',
-      appointmentsLoading,
-      hasAppointments: !!appointments,
-      appointmentsCount: appointments?.length || 0,
-      error: error ? (error instanceof Error ? error.message : String(error)) : null,
-      errorStack: error instanceof Error ? error.stack : undefined,
-      sessionStorage: {
-        adminAuth: sessionStorage.getItem('admin_authenticated'),
-        caffeineToken: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
-      },
-    });
-  }, [isAuthenticated, isAdminAuthenticated, actor, identity, appointmentsLoading, appointments, error]);
+    const checkAdminStatus = async () => {
+      if (actor && identity) {
+        try {
+          const isAdmin = await actor.isCallerAdmin();
+          setIsAdminUser(isAdmin);
+        } catch (error) {
+          console.error('[AdminPage] Error checking admin status:', error);
+          setIsAdminUser(false);
+        }
+      }
+    };
 
-  // Log when ready to fetch appointments
+    checkAdminStatus();
+  }, [actor, identity]);
+
+  // Initialize editing hours from backend data
   useEffect(() => {
-    if (isAuthenticated && isAdminAuthenticated && actor) {
-      console.log('[AdminPage] ===== READY TO FETCH APPOINTMENTS =====');
-      console.log('[AdminPage] All conditions met for fetching:', {
-        timestamp: new Date().toISOString(),
-        actorAvailable: !!actor,
-        principal: identity?.getPrincipal().toString(),
-        adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
-        caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
-        actorMethods: actor ? Object.keys(actor).filter(k => typeof (actor as any)[k] === 'function').slice(0, 10) : [],
+    if (openingHours && openingHours.length > 0) {
+      const hoursMap: Record<string, { openTime: string; closeTime: string }> = {};
+      openingHours.forEach(([day, hours]) => {
+        hoursMap[day] = {
+          openTime: String(Number(hours.openTime)),
+          closeTime: String(Number(hours.closeTime)),
+        };
       });
+      setEditingHours(hoursMap);
     }
-  }, [isAuthenticated, isAdminAuthenticated, actor, identity]);
+  }, [openingHours]);
 
   // Filter and sort appointments
   const filteredAppointments = useMemo(() => {
@@ -142,8 +150,67 @@ export default function AdminPage() {
 
   const handleAdminLoginSuccess = () => {
     console.log('[AdminPage] Admin login successful, component will re-render with updated auth state');
-    // The component will automatically re-render when isAdminAuthenticated changes
-    // No additional action needed here
+  };
+
+  const handleToggleClinicOpen = () => {
+    const newStatus = !clinicOpen;
+    setClinicOpen(newStatus, {
+      onSuccess: () => {
+        toast.success(newStatus ? 'Clinic is now open for bookings' : 'Clinic is now closed for bookings');
+      },
+      onError: (error) => {
+        toast.error('Failed to update clinic status', {
+          description: error instanceof Error ? error.message : 'Unknown error',
+        });
+      },
+    });
+  };
+
+  const handleSaveOpeningHours = (day: string) => {
+    const hours = editingHours[day];
+    if (!hours) return;
+
+    const openTime = parseInt(hours.openTime, 10);
+    const closeTime = parseInt(hours.closeTime, 10);
+
+    if (isNaN(openTime) || isNaN(closeTime)) {
+      toast.error('Invalid time values');
+      return;
+    }
+
+    if (openTime >= closeTime) {
+      toast.error('Opening time must be before closing time');
+      return;
+    }
+
+    if (openTime < 0 || openTime > 23 || closeTime < 0 || closeTime > 23) {
+      toast.error('Hours must be between 0 and 23');
+      return;
+    }
+
+    setOpeningHours(
+      { day, openTime, closeTime },
+      {
+        onSuccess: () => {
+          toast.success(`Updated hours for ${day}`);
+        },
+        onError: (error) => {
+          toast.error('Failed to update hours', {
+            description: error instanceof Error ? error.message : 'Unknown error',
+          });
+        },
+      }
+    );
+  };
+
+  const handleHoursChange = (day: string, field: 'openTime' | 'closeTime', value: string) => {
+    setEditingHours((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [field]: value,
+      },
+    }));
   };
 
   // Show Internet Identity login if not authenticated
@@ -235,6 +302,23 @@ export default function AdminPage() {
     return <AdminLoginForm onLoginSuccess={handleAdminLoginSuccess} />;
   }
 
+  // Check if user has admin role
+  if (isAdminUser === false) {
+    return <AccessDeniedScreen />;
+  }
+
+  // Show loading while checking admin status
+  if (isAdminUser === null) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
+          <p className="text-lg font-medium text-muted-foreground">Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Show error state
   if (error) {
     return (
@@ -254,17 +338,6 @@ export default function AdminPage() {
               <p className="text-sm text-muted-foreground">
                 You may not have the required permissions. Please contact the system administrator.
               </p>
-            </div>
-            
-            <div className="bg-muted rounded-lg p-4 space-y-2">
-              <p className="font-semibold text-sm">Debug Information:</p>
-              <div className="text-xs font-mono space-y-1">
-                <p><span className="text-muted-foreground">Principal:</span> {identity?.getPrincipal().toString()}</p>
-                <p><span className="text-muted-foreground">Admin Auth (Frontend):</span> {isAdminAuthenticated ? 'true' : 'false'}</p>
-                <p><span className="text-muted-foreground">Actor Available:</span> {actor ? 'Yes' : 'No'}</p>
-                <p><span className="text-muted-foreground">Session Storage (admin_authenticated):</span> {sessionStorage.getItem('admin_authenticated') || 'null'}</p>
-                <p><span className="text-muted-foreground">Session Storage (caffeineAdminToken):</span> {sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent'}</p>
-              </div>
             </div>
 
             <div className="flex gap-2">
@@ -294,12 +367,12 @@ export default function AdminPage() {
   }
 
   // Show loading state
-  if (appointmentsLoading) {
+  if (appointmentsLoading || clinicOpenLoading || openingHoursLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-          <p className="text-lg font-medium text-muted-foreground">Loading appointments...</p>
+          <p className="text-lg font-medium text-muted-foreground">Loading admin panel...</p>
         </div>
       </div>
     );
@@ -319,7 +392,7 @@ export default function AdminPage() {
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
               <p className="text-muted-foreground">
-                Manage appointments and patient information
+                Manage appointments, clinic status, and operating hours
               </p>
             </div>
             <Button
@@ -346,12 +419,108 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {/* Clinic Status Control */}
+        <Card className="mb-6 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Power className="w-5 h-5" />
+              Clinic Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="font-medium">
+                  Clinic is currently {clinicOpen ? 'OPEN' : 'CLOSED'} for new bookings
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {clinicOpen
+                    ? 'Patients can book appointments online'
+                    : 'New appointment bookings are disabled'}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Label htmlFor="clinic-status" className="text-sm font-medium">
+                  {clinicOpen ? 'Open' : 'Closed'}
+                </Label>
+                <Switch
+                  id="clinic-status"
+                  checked={clinicOpen || false}
+                  onCheckedChange={handleToggleClinicOpen}
+                  disabled={isSettingClinicOpen}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Operating Hours Management */}
+        <Card className="mb-6 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              Operating Hours
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {daysOfWeek.map((day) => {
+                const hours = editingHours[day];
+                return (
+                  <div key={day} className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
+                    <div className="w-28 font-medium">{day}</div>
+                    <div className="flex items-center gap-2 flex-1">
+                      <Label htmlFor={`${day}-open`} className="text-sm w-12">
+                        Open:
+                      </Label>
+                      <Input
+                        id={`${day}-open`}
+                        type="number"
+                        min="0"
+                        max="23"
+                        value={hours?.openTime || '9'}
+                        onChange={(e) => handleHoursChange(day, 'openTime', e.target.value)}
+                        className="w-20"
+                      />
+                      <span className="text-sm text-muted-foreground">:00</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-1">
+                      <Label htmlFor={`${day}-close`} className="text-sm w-12">
+                        Close:
+                      </Label>
+                      <Input
+                        id={`${day}-close`}
+                        type="number"
+                        min="0"
+                        max="23"
+                        value={hours?.closeTime || '17'}
+                        onChange={(e) => handleHoursChange(day, 'closeTime', e.target.value)}
+                        className="w-20"
+                      />
+                      <span className="text-sm text-muted-foreground">:00</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => handleSaveOpeningHours(day)}
+                      disabled={isSettingOpeningHours}
+                      className="gap-2"
+                    >
+                      <Save className="w-4 h-4" />
+                      Save
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Filters */}
         <Card className="mb-6 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Search className="w-5 h-5" />
-              Search & Filter
+              Search & Filter Appointments
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -459,24 +628,25 @@ export default function AdminPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>
+                      <TableHead className="w-[180px]">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4" />
                           Patient Name
                         </div>
                       </TableHead>
-                      <TableHead>
+                      <TableHead className="w-[200px]">
                         <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4" />
-                          Contact
+                          <Mail className="w-4 h-4" />
+                          Contact Info
                         </div>
                       </TableHead>
-                      <TableHead>
+                      <TableHead className="w-[150px]">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4" />
-                          Date & Time
+                          Date
                         </div>
                       </TableHead>
+                      <TableHead className="w-[100px]">Time</TableHead>
                       <TableHead>
                         <div className="flex items-center gap-2">
                           <Stethoscope className="w-4 h-4" />
@@ -492,17 +662,23 @@ export default function AdminPage() {
 
                       return (
                         <TableRow key={index} className={isPast ? 'opacity-60' : ''}>
-                          <TableCell className="font-medium">{appointment.patientName}</TableCell>
-                          <TableCell>{appointment.contactInfo}</TableCell>
-                          <TableCell>
-                            <div className="flex flex-col">
-                              <span className="font-medium">
-                                {format(appointmentDate, 'MMM dd, yyyy')}
-                              </span>
-                              <span className="text-sm text-muted-foreground">
-                                {format(appointmentDate, 'hh:mm a')}
-                              </span>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              <User className="w-4 h-4 text-muted-foreground" />
+                              {appointment.patientName}
                             </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Phone className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm">{appointment.contactInfo}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {format(appointmentDate, 'MMM dd, yyyy')}
+                          </TableCell>
+                          <TableCell>
+                            {format(appointmentDate, 'hh:mm a')}
                           </TableCell>
                           <TableCell>
                             <Badge variant={isPast ? 'outline' : 'default'}>

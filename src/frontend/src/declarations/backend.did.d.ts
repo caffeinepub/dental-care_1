@@ -16,6 +16,7 @@ export interface Appointment {
   'date' : Time,
   'patientName' : string,
 }
+export interface OpeningHours { 'closeTime' : bigint, 'openTime' : bigint }
 export type ServiceType = { 'PediatricExamAndCleaning' : null } |
   { 'PeriodontalScaling' : null } |
   { 'BotoxConsultForMigraines' : null } |
@@ -65,8 +66,11 @@ export interface _SERVICE {
   'cancel' : ActorMethod<[bigint], undefined>,
   'getAll' : ActorMethod<[], Array<Appointment>>,
   'getAllAppointments' : ActorMethod<[], Array<Appointment>>,
+  'getAllOpeningHours' : ActorMethod<[], Array<[string, OpeningHours]>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getClinicOpen' : ActorMethod<[], boolean>,
+  'getOpeningHours' : ActorMethod<[string], [] | [OpeningHours]>,
   'getPastAppointments' : ActorMethod<[], Array<Appointment>>,
   'getUpcoming' : ActorMethod<[], Array<Appointment>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
@@ -75,6 +79,8 @@ export interface _SERVICE {
   'searchByPatient' : ActorMethod<[string], Array<Appointment>>,
   'searchByService' : ActorMethod<[ServiceType], Array<Appointment>>,
   'serviceTypeToText' : ActorMethod<[ServiceType], string>,
+  'setClinicOpen' : ActorMethod<[boolean], undefined>,
+  'setOpeningHoursForDay' : ActorMethod<[string, bigint, bigint], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

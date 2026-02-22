@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Phone, LogOut } from 'lucide-react';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { Menu, X, Phone } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', href: '/', type: 'route' as const },
@@ -10,7 +9,6 @@ const navLinks = [
   { name: 'About', href: '#about', type: 'scroll' as const },
   { name: 'Testimonials', href: '#testimonials', type: 'scroll' as const },
   { name: 'Contact', href: '#contact', type: 'scroll' as const },
-  { name: 'Admin', href: '/admin', type: 'route' as const },
 ];
 
 export default function Header() {
@@ -18,10 +16,6 @@ export default function Header() {
   const [activeSection, setActiveSection] = useState('home');
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated: isAdminAuthenticated, logoutAdmin } = useAdminAuth();
-
-  const isOnAdminPage = location.pathname === '/admin';
-  const showAdminLogout = isOnAdminPage && isAdminAuthenticated;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,11 +65,6 @@ export default function Header() {
     }
   };
 
-  const handleAdminLogout = () => {
-    logoutAdmin();
-    navigate({ to: '/' });
-  };
-
   const isActiveLink = (link: typeof navLinks[0]) => {
     if (link.type === 'route') {
       return location.pathname === link.href;
@@ -113,23 +102,12 @@ export default function Header() {
             <Phone className="w-4 h-4" />
             +91 635-217-4912
           </a>
-          {showAdminLogout ? (
-            <Button 
-              onClick={handleAdminLogout}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              Admin Logout
-            </Button>
-          ) : (
-            <Button 
-              onClick={() => navigate({ to: '/booking' })}
-              className="animate-pulse-subtle hover:animate-none"
-            >
-              Book Appointment
-            </Button>
-          )}
+          <Button 
+            onClick={() => navigate({ to: '/booking' })}
+            className="animate-pulse-subtle hover:animate-none"
+          >
+            Book Appointment
+          </Button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -162,29 +140,15 @@ export default function Header() {
               <Phone className="w-4 h-4" />
               +91 635-217-4912
             </a>
-            {showAdminLogout ? (
-              <Button 
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  handleAdminLogout();
-                }}
-                variant="outline"
-                className="w-full flex items-center justify-center gap-2"
-              >
-                <LogOut className="w-4 h-4" />
-                Admin Logout
-              </Button>
-            ) : (
-              <Button 
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  navigate({ to: '/booking' });
-                }}
-                className="w-full"
-              >
-                Book Appointment
-              </Button>
-            )}
+            <Button 
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate({ to: '/booking' });
+              }}
+              className="w-full"
+            >
+              Book Appointment
+            </Button>
           </nav>
         </div>
       )}

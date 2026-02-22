@@ -1,19 +1,24 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Admin authentication system with appointment management dashboard",
-  "architectural_notes": [
-    "Admin authentication with hardcoded credentials (USER/PASS)",
-    "Admin panel dashboard for viewing appointments and settings"
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-change-admin-login-credentials-to-username-user-and-password-pass-in-the-authentication-system",
-      "title": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
+      "id": "feature-move-the-admin-panel-link-from-the-main-navigation-to-a-subtle-fixed-position-in-the-bottom-right-corner-of-the-website-that-is-visible-but-not-prominent",
+      "title": "Move the admin panel link from the main navigation to a subtle, fixed position in the bottom-right corner of the website that is visible but not prominent",
       "reqIds": [
         "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-style-the-bottom-corner-admin-access-element-to-be-discreet-use-minimal-visual-emphasis-such-as-small-icon-size-reduced-opacity-or-subtle-coloring-that-blends-with-the-page-footer-area",
+      "title": "Style the bottom corner admin access element to be discreet - use minimal visual emphasis such as small icon size, reduced opacity, or subtle coloring that blends with the page footer area",
+      "reqIds": [
+        "REQ-2"
       ],
       "version": 1
     }
@@ -21,43 +26,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Admin login with username 'USER' and password 'PASS'",
+      "summary": "Move admin panel to bottom corner of website, make it subtle/hidden but still visible",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Sign-in process for admin authentication",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Admin panel showing all settings and received appointments",
-      "reqIds": [
-        "AR-1",
-        "AR-2"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Implement a sign-in process that requires authentication before accessing the admin panel",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Ensure the admin panel displays all settings and all received appointments after successful login",
-      "reqIds": [
-        "REQ-3"
-      ],
       "status": "pending"
     }
   ],
-  "projectName": "Annaya Dental Admin",
+  "projectName": "Move admin panel to subtle bottom corner access",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

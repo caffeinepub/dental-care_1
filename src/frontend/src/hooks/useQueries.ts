@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { useInternetIdentity } from './useInternetIdentity';
-import type { Appointment, ServiceType, UserProfile } from '../backend';
+import type { Appointment, ServiceType, UserProfile, OpeningHours } from '../backend';
 
 export function useGetAllAppointments() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -10,46 +10,23 @@ export function useGetAllAppointments() {
   return useQuery<Appointment[]>({
     queryKey: ['appointments'],
     queryFn: async () => {
-      console.log('[useGetAllAppointments] ===== FETCHING APPOINTMENTS (getAll) =====');
-      console.log('[useGetAllAppointments] Query state:', {
-        timestamp: new Date().toISOString(),
-        hasActor: !!actor,
-        actorFetching,
-        hasIdentity: !!identity,
-        principal: identity?.getPrincipal().toString(),
-        adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
-        caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
-      });
-
       if (!actor) {
-        console.error('[useGetAllAppointments] Actor not available');
         throw new Error('Actor not available');
       }
       
-      console.log('[useGetAllAppointments] Calling actor.getAll()...');
       try {
         const result = await actor.getAll();
-        console.log('[useGetAllAppointments] ===== SUCCESS =====');
-        console.log('[useGetAllAppointments] Successfully fetched appointments:', {
-          count: result.length,
-          timestamp: new Date().toISOString(),
-        });
         return result;
       } catch (error) {
-        console.error('[useGetAllAppointments] ===== ERROR =====');
-        console.error('[useGetAllAppointments] Error fetching appointments:', {
-          error,
-          errorMessage: error instanceof Error ? error.message : String(error),
-          errorStack: error instanceof Error ? error.stack : undefined,
-          principal: identity?.getPrincipal().toString(),
-          adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
-          caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
-        });
+        console.error('[useGetAllAppointments] Error fetching appointments:', error);
         throw error;
       }
     },
     enabled: !!actor && !actorFetching && !!identity,
-    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 }
 
@@ -60,49 +37,23 @@ export function useAllAppointments() {
   return useQuery<Appointment[]>({
     queryKey: ['allAppointments'],
     queryFn: async () => {
-      console.log('[useAllAppointments] ===== FETCHING ALL APPOINTMENTS (getAllAppointments) =====');
-      console.log('[useAllAppointments] Query state:', {
-        timestamp: new Date().toISOString(),
-        hasActor: !!actor,
-        actorFetching,
-        hasIdentity: !!identity,
-        principal: identity?.getPrincipal().toString(),
-        adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
-        caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
-      });
-
       if (!actor) {
-        console.error('[useAllAppointments] Actor not available');
         throw new Error('Actor not available');
       }
       
-      console.log('[useAllAppointments] Calling actor.getAllAppointments()...');
-      console.log('[useAllAppointments] Actor methods available:', Object.keys(actor).filter(k => typeof (actor as any)[k] === 'function'));
-      
       try {
         const result = await actor.getAllAppointments();
-        console.log('[useAllAppointments] ===== SUCCESS =====');
-        console.log('[useAllAppointments] Successfully fetched all appointments:', {
-          count: result.length,
-          timestamp: new Date().toISOString(),
-        });
         return result;
       } catch (error) {
-        console.error('[useAllAppointments] ===== ERROR =====');
-        console.error('[useAllAppointments] Error fetching all appointments:', {
-          error,
-          errorMessage: error instanceof Error ? error.message : String(error),
-          errorStack: error instanceof Error ? error.stack : undefined,
-          errorName: error instanceof Error ? error.name : undefined,
-          principal: identity?.getPrincipal().toString(),
-          adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
-          caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
-        });
+        console.error('[useAllAppointments] Error fetching all appointments:', error);
         throw error;
       }
     },
     enabled: !!actor && !actorFetching && !!identity,
-    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 }
 
@@ -117,7 +68,10 @@ export function useSearchAppointmentsByService(serviceType: ServiceType) {
       return actor.searchByService(serviceType);
     },
     enabled: !!actor && !actorFetching && !!identity && !!serviceType,
-    retry: false,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 }
 
@@ -128,33 +82,21 @@ export function useGetCallerUserProfile() {
   const query = useQuery<UserProfile | null>({
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
-      console.log('[useGetCallerUserProfile] Fetching user profile:', {
-        timestamp: new Date().toISOString(),
-        hasActor: !!actor,
-        actorFetching,
-        hasIdentity: !!identity,
-        principal: identity?.getPrincipal().toString(),
-      });
-
       if (!actor) throw new Error('Actor not available');
       
       try {
         const result = await actor.getCallerUserProfile();
-        console.log('[useGetCallerUserProfile] Successfully fetched user profile:', {
-          hasProfile: !!result,
-          profileName: result?.name,
-        });
         return result;
       } catch (error) {
-        console.error('[useGetCallerUserProfile] Error fetching user profile:', {
-          error,
-          errorMessage: error instanceof Error ? error.message : String(error),
-        });
+        console.error('[useGetCallerUserProfile] Error fetching user profile:', error);
         throw error;
       }
     },
     enabled: !!actor && !actorFetching && !!identity,
-    retry: false,
+    staleTime: 10 * 60 * 1000, // 10 minutes - user profile changes infrequently
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   // Return custom state that properly reflects actor dependency
@@ -171,21 +113,12 @@ export function useSaveCallerUserProfile() {
 
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
-      console.log('[useSaveCallerUserProfile] Saving user profile:', {
-        timestamp: new Date().toISOString(),
-        profileName: profile.name,
-      });
-
       if (!actor) throw new Error('Actor not available');
       
       try {
         await actor.saveCallerUserProfile(profile);
-        console.log('[useSaveCallerUserProfile] Successfully saved user profile');
       } catch (error) {
-        console.error('[useSaveCallerUserProfile] Error saving user profile:', {
-          error,
-          errorMessage: error instanceof Error ? error.message : String(error),
-        });
+        console.error('[useSaveCallerUserProfile] Error saving user profile:', error);
         throw error;
       }
     },
@@ -196,7 +129,90 @@ export function useSaveCallerUserProfile() {
   });
 }
 
-// Helper function to implement exponential backoff retry logic
+// Clinic status hooks
+export function useGetClinicOpen() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<boolean>({
+    queryKey: ['clinicOpen'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getClinicOpen();
+    },
+    enabled: !!actor && !actorFetching,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    retry: 1,
+  });
+}
+
+export function useSetClinicOpen() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (isOpen: boolean) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.setClinicOpen(isOpen);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clinicOpen'] });
+    },
+  });
+}
+
+// Opening hours hooks
+export function useGetAllOpeningHours() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Array<[string, OpeningHours]>>({
+    queryKey: ['openingHours', 'all'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getAllOpeningHours();
+    },
+    enabled: !!actor && !actorFetching,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+}
+
+export function useGetOpeningHours(day: string) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<OpeningHours | null>({
+    queryKey: ['openingHours', day],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getOpeningHours(day);
+    },
+    enabled: !!actor && !actorFetching && !!day,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+}
+
+export function useSetOpeningHours() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: { day: string; openTime: number; closeTime: number }) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.setOpeningHoursForDay(data.day, BigInt(data.openTime), BigInt(data.closeTime));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['openingHours'] });
+    },
+  });
+}
+
+// Helper function to implement exponential backoff retry logic with faster timeouts
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
@@ -206,7 +222,12 @@ async function retryWithBackoff<T>(
   
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      return await fn();
+      // Add timeout to each attempt (5 seconds)
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 5000);
+      });
+      
+      return await Promise.race([fn(), timeoutPromise]);
     } catch (error) {
       lastError = error as Error;
       
@@ -230,8 +251,8 @@ async function retryWithBackoff<T>(
         onRetry(attempt + 1, lastError);
       }
       
-      // Exponential backoff: 1s, 2s, 4s
-      const delay = Math.pow(2, attempt) * 1000;
+      // Exponential backoff: 500ms, 1s, 2s (faster than before)
+      const delay = Math.pow(2, attempt) * 500;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
@@ -261,15 +282,6 @@ export function useBookAppointment() {
       // Use retry logic with exponential backoff
       return await retryWithBackoff(
         async () => {
-          console.log('[Booking] Attempting to book appointment:', {
-            patientName: data.patientName,
-            contactInfo: data.contactInfo,
-            date: data.date.toISOString(),
-            serviceType: data.serviceType,
-            actorAvailable: !!actor,
-            isFetching,
-          });
-
           try {
             await actor.book(
               data.patientName,
@@ -277,13 +289,8 @@ export function useBookAppointment() {
               timestamp,
               data.serviceType
             );
-            console.log('[Booking] Appointment booked successfully');
           } catch (error) {
-            console.error('[Booking] Error during booking:', {
-              error,
-              errorMessage: error instanceof Error ? error.message : 'Unknown error',
-              errorStack: error instanceof Error ? error.stack : undefined,
-            });
+            console.error('[Booking] Error during booking:', error);
             throw error;
           }
         },
@@ -292,15 +299,12 @@ export function useBookAppointment() {
       );
     },
     onSuccess: () => {
+      // Invalidate queries to refresh appointment list
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
       queryClient.invalidateQueries({ queryKey: ['allAppointments'] });
     },
     onError: (error) => {
-      console.error('[Booking] Final error after all retries:', {
-        error,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
-        errorStack: error instanceof Error ? error.stack : undefined,
-      });
+      console.error('[Booking] Final error after all retries:', error);
     },
   });
 }

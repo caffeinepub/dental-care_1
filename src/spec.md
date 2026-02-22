@@ -1,12 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Update admin authentication credentials and implement a sign-in flow that protects the admin panel.
+**Goal:** Relocate admin panel access from main navigation to a subtle, fixed bottom-right corner position.
 
 **Planned changes:**
-- Change admin login credentials to username 'USER' and password 'PASS'
-- Add authentication requirement before accessing admin panel
-- Redirect unauthenticated users to login form
-- Display all appointments and settings in admin panel after successful login
+- Remove admin panel link from the main header navigation
+- Add a small, discreet button/icon fixed in the bottom-right corner of all pages
+- Style the corner element with low visual prominence (reduced opacity, small size)
+- Make the element slightly more visible on hover for interactivity feedback
+- Ensure the corner element remains accessible across all viewport sizes
 
-**User-visible outcome:** Admin must sign in with new credentials (USER/PASS) to access the admin panel, where they can view all appointments and settings.
+**User-visible outcome:** Admin panel access is moved to a subtle bottom-right corner position that is visible but not prominent, while main visitors see a cleaner navigation without the admin link.

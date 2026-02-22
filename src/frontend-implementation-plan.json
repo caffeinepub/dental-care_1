@@ -1,69 +1,45 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update admin credentials and add sign-in flow to admin panel",
+  "title": "Move admin panel to subtle bottom corner access",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
+      "summary": "Move admin panel link from main navigation to a subtle fixed bottom-right corner button",
       "acceptanceCriteria": [
-        "Admin can successfully log in using username 'USER' and password 'PASS'",
-        "Previous credentials (ANAS/Anas@2020) no longer work",
-        "Credentials are validated correctly in the useAdminAuth hook"
+        "Admin panel access is removed from the main header navigation",
+        "A small, subtle button or icon appears fixed in the bottom-right corner of all pages",
+        "The corner element is visible but designed to be inconspicuous (small size, low opacity, or minimal styling)",
+        "Clicking the corner element navigates to the admin login/panel",
+        "The corner element remains accessible on all viewport sizes"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useAdminAuth.ts",
+          "path": "frontend/src/components/Header.tsx",
           "operation": "modify",
-          "description": "Update the hardcoded admin credentials from ANAS/Anas@2020 to USER/PASS. Modify the validation logic to check against the new credentials while maintaining sessionStorage persistence and console logging for debugging."
+          "description": "Remove the admin panel link from the main navigation menu. Identify and remove any navigation items, links, or buttons that direct users to the admin panel or admin login page from the header component."
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Add a fixed bottom-right corner admin access button component. Create a small, subtle button positioned with fixed positioning (bottom-right corner, e.g., bottom-4 right-4) that navigates to the admin page when clicked. The button should be rendered alongside Header, Outlet, and Footer to appear on all pages."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Implement a sign-in process that requires authentication before accessing the admin panel",
+      "summary": "Style the bottom corner admin access element to be discreet with minimal visual emphasis",
       "acceptanceCriteria": [
-        "Admin panel is protected and cannot be accessed without signing in",
-        "Users are redirected to login form when attempting to access admin panel without authentication",
-        "After successful login, admin is automatically navigated to the admin panel"
+        "The admin access element has low visual prominence (e.g., opacity 0.3-0.5 on normal state)",
+        "Element size is small enough to not draw attention but large enough to be clickable",
+        "On hover, the element becomes more visible to confirm it is interactive",
+        "The styling matches the overall design but remains subtle"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/AdminPage.tsx",
+          "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Add authentication gate to the AdminPage component. Check useAdminAuth state on component mount. If not authenticated, render the AdminLoginForm component instead of the appointment table. After successful login (detected via useAdminAuth state change), automatically display the admin panel content with all appointments. Remove or relocate any existing login form that may be embedded in the page to ensure a clean sign-in flow."
-        },
-        {
-          "path": "frontend/src/components/AdminLoginForm.tsx",
-          "operation": "modify",
-          "description": "Update the AdminLoginForm to handle successful login by triggering a state change in useAdminAuth that will cause AdminPage to re-render and display the panel. Ensure the form integrates with the updated credentials (USER/PASS) and provides clear feedback on authentication success. The form should already use react-hook-form validation and error alerts; ensure these work correctly with the new credentials."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Review the admin route configuration to ensure it properly renders AdminPage. Verify that the route does not bypass authentication checks and that users attempting to navigate to /admin without credentials are shown the login form through AdminPage's authentication gate."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Ensure the admin panel displays all settings and all received appointments after successful login",
-      "acceptanceCriteria": [
-        "Admin panel shows a complete list of all appointments that have been received",
-        "Admin can view all relevant settings in the admin panel",
-        "Appointment data loads correctly after admin authentication",
-        "No authorization errors occur when viewing appointments"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/AdminPage.tsx",
-          "operation": "modify",
-          "description": "Verify that after successful authentication, the AdminPage renders the complete appointments table using the useGetAllAppointments or useAllAppointments hook. Ensure the query hook is called only after authentication is confirmed to prevent premature backend calls. Display all appointment fields (patientName, contactInfo, date, serviceType) in the filterable/sortable table. If 'settings' refers to UI controls (filters, sorting, table configuration), ensure these are visible and functional. If it refers to application settings, add a section to display/manage those settings in the admin panel after the appointments table."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Review useGetAllAppointments and useAllAppointments hooks to ensure they properly handle authentication state and actor availability. Verify that the enabled flag correctly checks for actor and identity dependencies so queries only execute when the user is authenticated. Ensure detailed console logging remains in place for debugging appointment data loading issues."
+          "description": "Style the admin corner button with discreet design: use small size (e.g., w-10 h-10 or w-12 h-12), low opacity (opacity-30 to opacity-50), subtle colors that blend with the background, rounded corners, and a simple icon (e.g., settings or shield icon). Add hover state that increases opacity (hover:opacity-100) and potentially adds a subtle shadow or scale effect to confirm interactivity. Ensure the button has proper z-index to stay above other content and is touch-friendly on mobile devices."
         }
       ]
     }

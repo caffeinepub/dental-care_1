@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-change-admin-login-credentials-to-username-user-and-password-pass-in-the-authentication-system",
-      "featureTitle": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
+      "featureId": "feature-move-the-admin-panel-link-from-the-main-navigation-to-a-subtle-fixed-position-in-the-bottom-right-corner-of-the-website-that-is-visible-but-not-prominent",
+      "featureTitle": "Move the admin panel link from the main navigation to a subtle, fixed position in the bottom-right corner of the website that is visible but not prominent",
       "files": [
-        "frontend/src/hooks/useAdminAuth.ts"
+        "frontend/src/components/Layout.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -18,6 +18,26 @@
       ],
       "testIds": [
         "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-style-the-bottom-corner-admin-access-element-to-be-discreet-use-minimal-visual-emphasis-such-as-small-icon-size-reduced-opacity-or-subtle-coloring-that-blends-with-the-page-footer-area",
+      "featureTitle": "Style the bottom corner admin access element to be discreet - use minimal visual emphasis such as small icon size, reduced opacity, or subtle coloring that blends with the page footer area",
+      "files": [
+        "frontend/src/components/Layout.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
       ],
       "confidence": "high"
     }

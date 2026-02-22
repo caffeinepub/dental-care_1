@@ -44,6 +44,10 @@ export const Appointment = IDL.Record({
   'date' : Time,
   'patientName' : IDL.Text,
 });
+export const OpeningHours = IDL.Record({
+  'closeTime' : IDL.Nat,
+  'openTime' : IDL.Nat,
+});
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 
 export const idlService = IDL.Service({
@@ -78,11 +82,18 @@ export const idlService = IDL.Service({
   'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [], []),
   'cancel' : IDL.Func([IDL.Nat], [], []),
   'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
-  'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
+  'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+  'getAllOpeningHours' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, OpeningHours))],
+      ['query'],
+    ),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
-  'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], []),
+  'getClinicOpen' : IDL.Func([], [IDL.Bool], ['query']),
+  'getOpeningHours' : IDL.Func([IDL.Text], [IDL.Opt(OpeningHours)], ['query']),
+  'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+  'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -90,9 +101,15 @@ export const idlService = IDL.Service({
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], []),
-  'searchByService' : IDL.Func([ServiceType], [IDL.Vec(Appointment)], []),
+  'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], ['query']),
+  'searchByService' : IDL.Func(
+      [ServiceType],
+      [IDL.Vec(Appointment)],
+      ['query'],
+    ),
   'serviceTypeToText' : IDL.Func([ServiceType], [IDL.Text], ['query']),
+  'setClinicOpen' : IDL.Func([IDL.Bool], [], []),
+  'setOpeningHoursForDay' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [], []),
 });
 
 export const idlInitArgs = [];
@@ -134,6 +151,10 @@ export const idlFactory = ({ IDL }) => {
     'date' : Time,
     'patientName' : IDL.Text,
   });
+  const OpeningHours = IDL.Record({
+    'closeTime' : IDL.Nat,
+    'openTime' : IDL.Nat,
+  });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
   
   return IDL.Service({
@@ -168,11 +189,22 @@ export const idlFactory = ({ IDL }) => {
     'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [], []),
     'cancel' : IDL.Func([IDL.Nat], [], []),
     'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
-    'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
+    'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+    'getAllOpeningHours' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, OpeningHours))],
+        ['query'],
+      ),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
-    'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], []),
+    'getClinicOpen' : IDL.Func([], [IDL.Bool], ['query']),
+    'getOpeningHours' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(OpeningHours)],
+        ['query'],
+      ),
+    'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+    'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -180,9 +212,15 @@ export const idlFactory = ({ IDL }) => {
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], []),
-    'searchByService' : IDL.Func([ServiceType], [IDL.Vec(Appointment)], []),
+    'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], ['query']),
+    'searchByService' : IDL.Func(
+        [ServiceType],
+        [IDL.Vec(Appointment)],
+        ['query'],
+      ),
     'serviceTypeToText' : IDL.Func([ServiceType], [IDL.Text], ['query']),
+    'setClinicOpen' : IDL.Func([IDL.Bool], [], []),
+    'setOpeningHoursForDay' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [], []),
   });
 };
 

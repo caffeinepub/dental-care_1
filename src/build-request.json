@@ -1,75 +1,58 @@
 {
   "kind": "build_request",
-  "title": "Update admin credentials and add sign-in flow to admin panel",
-  "projectName": "Annaya Dental Admin",
+  "title": "Move admin panel to subtle bottom corner access",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
+      "text": "Move the admin panel link from the main navigation to a subtle, fixed position in the bottom-right corner of the website that is visible but not prominent",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-latest"
         ],
         "quotes": [
-          "ab admin ka user name me USER  rakho aur pass me PASS  rakho"
+          "admin panel ko website ke last me bilkul corner par har kisi ko na dikhe vaise rakho but visble ho"
         ]
       },
       "acceptanceCriteria": [
-        "Admin can successfully log in using username 'USER' and password 'PASS'",
-        "Previous credentials (ANAS/Anas@2020) no longer work",
-        "Credentials are validated correctly in the useAdminAuth hook"
+        "Admin panel access is removed from the main header navigation",
+        "A small, subtle button or icon appears fixed in the bottom-right corner of all pages",
+        "The corner element is visible but designed to be inconspicuous (small size, low opacity, or minimal styling)",
+        "Clicking the corner element navigates to the admin login/panel",
+        "The corner element remains accessible on all viewport sizes"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Implement a sign-in process that requires authentication before accessing the admin panel",
+      "text": "Style the bottom corner admin access element to be discreet - use minimal visual emphasis such as small icon size, reduced opacity, or subtle coloring that blends with the page footer area",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-latest"
         ],
         "quotes": [
-          "jab user login kare tab sing in prosses hona chahiye"
+          "har kisi ko na dikhe vaise rakho but visble ho"
         ]
       },
       "acceptanceCriteria": [
-        "Admin panel is protected and cannot be accessed without signing in",
-        "Users are redirected to login form when attempting to access admin panel without authentication",
-        "After successful login, admin is automatically navigated to the admin panel"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Ensure the admin panel displays all settings and all received appointments after successful login",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ],
-        "quotes": [
-          "fir admin ko admin panel me le jana chahiye jis se admin sare settings aur aayi hui apointment ko dekh sake"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Admin panel shows a complete list of all appointments that have been received",
-        "Admin can view all relevant settings in the admin panel",
-        "Appointment data loads correctly after admin authentication",
-        "No authorization errors occur when viewing appointments"
+        "The admin access element has low visual prominence (e.g., opacity 0.3-0.5 on normal state)",
+        "Element size is small enough to not draw attention but large enough to be clickable",
+        "On hover, the element becomes more visible to confirm it is interactive",
+        "The styling matches the overall design but remains subtle"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the backend authentication logic or schema",
-    "Keep the existing Internet Identity integration intact",
-    "Maintain the current appointment data structure and query hooks"
+    "Do not change the admin authentication logic or access control",
+    "Maintain the existing admin panel functionality and features",
+    "Keep the admin login form and dashboard pages unchanged"
   ],
   "nonGoals": [
-    "Creating new appointment features beyond viewing",
-    "Modifying the user-facing booking flow",
-    "Adding role-based permissions beyond admin access",
-    "Implementing password reset or recovery functionality"
+    "Changing admin panel functionality or features",
+    "Modifying the admin authentication system",
+    "Adding new admin capabilities",
+    "Changing the main navigation structure beyond removing the admin link"
   ],
   "imageRequirements": {
     "required": [],
