@@ -1,36 +1,69 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix admin authorization error when viewing appointments",
+  "title": "Update admin credentials and add sign-in flow to admin panel",
   "requirements": [
     {
-      "id": "REQ-6",
-      "summary": "Verify and fix frontend admin access token handling in actor initialization and getAllAppointments calls",
+      "id": "REQ-1",
+      "summary": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
       "acceptanceCriteria": [
-        "The useActor hook correctly retrieves and includes the admin access token when creating the backend actor instance",
-        "Console logs or network inspection confirms the access token is being sent with the getAllAppointments request",
-        "The access token matches the expected value configured in the backend"
+        "Admin can successfully log in using username 'USER' and password 'PASS'",
+        "Previous credentials (ANAS/Anas@2020) no longer work",
+        "Credentials are validated correctly in the useAdminAuth hook"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useActor.ts",
+          "path": "frontend/src/hooks/useAdminAuth.ts",
           "operation": "modify",
-          "description": "Add comprehensive debug logging to trace: (1) whether adminAuth is initialized when creating the actor, (2) the access token value being passed to initializeAccessControl, (3) confirmation that the token is included in the actor's identity/authentication context. Verify that the access token from useAdminAuth is correctly retrieved and passed during actor initialization. Ensure the token is available before the actor makes any admin-protected calls."
+          "description": "Update the hardcoded admin credentials from ANAS/Anas@2020 to USER/PASS. Modify the validation logic to check against the new credentials while maintaining sessionStorage persistence and console logging for debugging."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Implement a sign-in process that requires authentication before accessing the admin panel",
+      "acceptanceCriteria": [
+        "Admin panel is protected and cannot be accessed without signing in",
+        "Users are redirected to login form when attempting to access admin panel without authentication",
+        "After successful login, admin is automatically navigated to the admin panel"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/AdminPage.tsx",
+          "operation": "modify",
+          "description": "Add authentication gate to the AdminPage component. Check useAdminAuth state on component mount. If not authenticated, render the AdminLoginForm component instead of the appointment table. After successful login (detected via useAdminAuth state change), automatically display the admin panel content with all appointments. Remove or relocate any existing login form that may be embedded in the page to ensure a clean sign-in flow."
+        },
+        {
+          "path": "frontend/src/components/AdminLoginForm.tsx",
+          "operation": "modify",
+          "description": "Update the AdminLoginForm to handle successful login by triggering a state change in useAdminAuth that will cause AdminPage to re-render and display the panel. Ensure the form integrates with the updated credentials (USER/PASS) and provides clear feedback on authentication success. The form should already use react-hook-form validation and error alerts; ensure these work correctly with the new credentials."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Review the admin route configuration to ensure it properly renders AdminPage. Verify that the route does not bypass authentication checks and that users attempting to navigate to /admin without credentials are shown the login form through AdminPage's authentication gate."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Ensure the admin panel displays all settings and all received appointments after successful login",
+      "acceptanceCriteria": [
+        "Admin panel shows a complete list of all appointments that have been received",
+        "Admin can view all relevant settings in the admin panel",
+        "Appointment data loads correctly after admin authentication",
+        "No authorization errors occur when viewing appointments"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/AdminPage.tsx",
+          "operation": "modify",
+          "description": "Verify that after successful authentication, the AdminPage renders the complete appointments table using the useGetAllAppointments or useAllAppointments hook. Ensure the query hook is called only after authentication is confirmed to prevent premature backend calls. Display all appointment fields (patientName, contactInfo, date, serviceType) in the filterable/sortable table. If 'settings' refers to UI controls (filters, sorting, table configuration), ensure these are visible and functional. If it refers to application settings, add a section to display/manage those settings in the admin panel after the appointments table."
         },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add debug logging in the useGetAllAppointments query hook to log: (1) when the query is triggered, (2) the actor's authentication state before calling getAllAppointments, (3) any errors returned from the backend with full error details. This helps verify the access token is present during the actual API call."
-        },
-        {
-          "path": "frontend/src/pages/AdminPage.tsx",
-          "operation": "modify",
-          "description": "Add debug logging when the admin page loads to verify: (1) adminAuth state (isAuthenticated value), (2) Internet Identity authentication status, (3) the sequence of authentication checks before attempting to load appointments. Add console logging for any authorization errors received from the backend to help diagnose the exact error message and context."
-        },
-        {
-          "path": "frontend/src/hooks/useAdminAuth.ts",
-          "operation": "modify",
-          "description": "Add debug logging to the useAdminAuth hook to trace: (1) when the access token is generated or retrieved, (2) the token value (or a hash/prefix for security), (3) when the token is stored in sessionStorage, (4) when the token is retrieved from sessionStorage. This ensures the token lifecycle is transparent and helps verify it matches the backend's expected value."
+          "description": "Review useGetAllAppointments and useAllAppointments hooks to ensure they properly handle authentication state and actor availability. Verify that the enabled flag correctly checks for actor and identity dependencies so queries only execute when the user is authenticated. Ensure detailed console logging remains in place for debugging appointment data loading issues."
         }
       ]
     }

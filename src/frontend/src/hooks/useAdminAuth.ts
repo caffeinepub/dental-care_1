@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 const ADMIN_AUTH_KEY = 'admin_authenticated';
-const ADMIN_USERNAME = 'ANAS';
-const ADMIN_PASSWORD = 'Anas@2020';
+const ADMIN_USERNAME = 'USER';
+const ADMIN_PASSWORD = 'PASS';
 
 /**
  * Custom hook to manage admin authentication state with sessionStorage persistence

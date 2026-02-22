@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-verify-that-the-frontend-is-correctly-passing-the-admin-access-token-when-initializing-the-actor-and-making-the-getallappointments-call",
-      "featureTitle": "Verify that the frontend is correctly passing the admin access token when initializing the actor and making the getAllAppointments call",
+      "featureId": "feature-change-admin-login-credentials-to-username-user-and-password-pass-in-the-authentication-system",
+      "featureTitle": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
       "files": [
-        "frontend/src/hooks/useAdminAuth.ts",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/AdminPage.tsx"
+        "frontend/src/hooks/useAdminAuth.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -19,7 +17,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-6"
+        "REQ-1"
       ],
       "confidence": "high"
     }

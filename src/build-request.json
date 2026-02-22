@@ -1,68 +1,75 @@
 {
   "kind": "build_request",
-  "title": "Fix admin authorization error when viewing appointments",
-  "priority": "high",
+  "title": "Update admin credentials and add sign-in flow to admin panel",
+  "projectName": "Annaya Dental Admin",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-4",
-      "text": "Fix the backend authorization logic in getAllAppointments function to correctly recognize the principal 'toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe' as an admin when adminAuth is initialized with the correct access token",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Unauthorized: Only admins can view all appointments",
-          "Principal: toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe",
-          "Admin Auth (Frontend): true"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The admin user with principal 'toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe' can successfully view all appointments without receiving an 'Unauthorized' error",
-        "The backend correctly validates admin access for the specific principal when the access token is provided",
-        "No authorization errors appear in the admin panel when loading appointments"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Add comprehensive debug logging to the backend getAllAppointments function to trace: incoming caller principal, admin authentication status check result, and the exact reason for authorization failure if it occurs",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend logs show the caller principal for each getAllAppointments request",
-        "Backend logs indicate whether the caller passed the admin authentication check",
-        "If authorization fails, backend logs explain why (e.g., 'Principal not in admin list', 'Access token missing', 'Access token mismatch')"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Verify that the frontend is correctly passing the admin access token when initializing the actor and making the getAllAppointments call",
+      "id": "REQ-1",
+      "text": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-latest"
+        ],
+        "quotes": [
+          "ab admin ka user name me USER  rakho aur pass me PASS  rakho"
         ]
       },
       "acceptanceCriteria": [
-        "The useActor hook correctly retrieves and includes the admin access token when creating the backend actor instance",
-        "Console logs or network inspection confirms the access token is being sent with the getAllAppointments request",
-        "The access token matches the expected value configured in the backend"
+        "Admin can successfully log in using username 'USER' and password 'PASS'",
+        "Previous credentials (ANAS/Anas@2020) no longer work",
+        "Credentials are validated correctly in the useAdminAuth hook"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement a sign-in process that requires authentication before accessing the admin panel",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "jab user login kare tab sing in prosses hona chahiye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin panel is protected and cannot be accessed without signing in",
+        "Users are redirected to login form when attempting to access admin panel without authentication",
+        "After successful login, admin is automatically navigated to the admin panel"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure the admin panel displays all settings and all received appointments after successful login",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "fir admin ko admin panel me le jana chahiye jis se admin sare settings aur aayi hui apointment ko dekh sake"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin panel shows a complete list of all appointments that have been received",
+        "Admin can view all relevant settings in the admin panel",
+        "Appointment data loads correctly after admin authentication",
+        "No authorization errors occur when viewing appointments"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the existing admin authentication flow in useAdminAuth hook",
-    "Preserve the current Internet Identity integration",
-    "Do not change the user-facing error messages unless authorization actually succeeds"
+    "Do not modify the backend authentication logic or schema",
+    "Keep the existing Internet Identity integration intact",
+    "Maintain the current appointment data structure and query hooks"
   ],
   "nonGoals": [
-    "Changing the admin credentials (username: ANAS, password: Anas@2020)",
-    "Modifying the appointment data structure",
-    "Redesigning the admin panel UI"
+    "Creating new appointment features beyond viewing",
+    "Modifying the user-facing booking flow",
+    "Adding role-based permissions beyond admin access",
+    "Implementing password reset or recovery functionality"
   ],
   "imageRequirements": {
     "required": [],

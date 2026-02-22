@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the admin authorization error preventing the admin user from viewing all appointments in the admin panel.
+**Goal:** Update admin authentication credentials and implement a sign-in flow that protects the admin panel.
 
 **Planned changes:**
-- Fix backend authorization logic to correctly recognize the admin principal 'toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe' as an admin
-- Add debug logging to trace caller principal, admin authentication check results, and authorization failure reasons
-- Verify frontend is correctly passing the admin access token when making getAllAppointments calls
+- Change admin login credentials to username 'USER' and password 'PASS'
+- Add authentication requirement before accessing admin panel
+- Redirect unauthenticated users to login form
+- Display all appointments and settings in admin panel after successful login
 
-**User-visible outcome:** Admin users can successfully view all appointments in the admin panel without encountering "Unauthorized" errors.
+**User-visible outcome:** Admin must sign in with new credentials (USER/PASS) to access the admin panel, where they can view all appointments and settings.

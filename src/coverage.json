@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-22T08:33:15.314Z",
+  "generatedAt": "2026-02-22T09:28:27.560Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,46 +11,45 @@
     "implemented": 1,
     "items": [
       {
-        "id": "REQ-4",
-        "summary": "Fix the backend authorization logic in getAllAppointments function to correctly recognize the principal 'toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe' as an admin when adminAuth is initialized with the correct access token",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Add comprehensive debug logging to the backend getAllAppointments function to trace: incoming caller principal, admin authentication status check result, and the exact reason for authorization failure if it occurs",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-6",
-        "summary": "Verify that the frontend is correctly passing the admin access token when initializing the actor and making the getAllAppointments call",
+        "id": "REQ-1",
+        "summary": "Change admin login credentials to username 'USER' and password 'PASS' in the authentication system",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useActor.ts",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/pages/AdminPage.tsx",
           "frontend/src/hooks/useAdminAuth.ts"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/pages/AdminPage.tsx",
           "frontend/src/hooks/useAdminAuth.ts"
         ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Implement a sign-in process that requires authentication before accessing the admin panel",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/components/AdminLoginForm.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the admin panel displays all settings and all received appointments after successful login",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/hooks/useAdminAuth.ts",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/AdminPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
