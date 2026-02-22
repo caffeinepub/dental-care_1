@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-22T11:30:28.844Z",
+  "generatedAt": "2026-02-22T12:24:31.629Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,54 +12,50 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove any verification or multi-step authentication process from the admin login flow. The admin panel should authenticate using only username and password credentials.",
+        "summary": "Fix the 'You may not have the required permissions. Please contact the system administrator.' error in the admin panel by ensuring proper authentication checks and authorization flow",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/AdminLoginForm.tsx",
-          "frontend/src/pages/AdminPage.tsx"
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/AdminLoginForm.tsx",
-          "frontend/src/pages/AdminPage.tsx"
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Ensure that admin access is granted only when both the username and password match the actual stored credentials (username: 6352174912, password: 63521). Invalid credentials should be rejected.",
+        "summary": "Add interactive Open and Close buttons in the admin panel to control clinic status, replacing the current read-only status display",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useAdminAuth.ts",
-          "frontend/src/components/AdminLoginForm.tsx"
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useAdminAuth.ts",
-          "frontend/src/components/AdminLoginForm.tsx"
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Streamline the authentication process to be direct and simple with no additional processing steps or complexity beyond credential validation.",
+        "summary": "Ensure the manual clinic status override functionality in the backend is properly integrated with the admin panel controls",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useAdminAuth.ts",
-          "frontend/src/components/AdminLoginForm.tsx",
           "frontend/src/pages/AdminPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useAdminAuth.ts",
-          "frontend/src/components/AdminLoginForm.tsx",
           "frontend/src/pages/AdminPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/AdminLoginForm.tsx",
-    "frontend/src/hooks/useAdminAuth.ts",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/pages/AdminPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",

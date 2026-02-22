@@ -1,74 +1,72 @@
 {
   "kind": "build_request",
-  "title": "Simplify admin panel authentication to username and password only",
+  "title": "Fix admin panel permissions and add open/close control buttons",
   "projectName": "Annaya Dental Care",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove any verification or multi-step authentication process from the admin login flow. The admin panel should authenticate using only username and password credentials.",
-      "target": "frontend",
+      "text": "Fix the 'You may not have the required permissions. Please contact the system administrator.' error in the admin panel by ensuring proper authentication checks and authorization flow",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-6"
         ],
         "quotes": [
-          "no veryfy only usr and pass dalo opne ho jana chahiye"
+          "admin panel me ye problem aa rahi hai You may not have the required permissions. Please contact the system administrator."
         ]
       },
       "acceptanceCriteria": [
-        "Admin login form displays only username and password fields",
-        "No verification step or additional authentication screens appear after entering credentials",
-        "Admin panel opens immediately upon successful username/password validation"
+        "Admin panel loads without permission errors when accessed with valid credentials",
+        "Authentication state is properly validated before rendering admin content",
+        "Error message no longer appears for authenticated admin users"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure that admin access is granted only when both the username and password match the actual stored credentials (username: 6352174912, password: 63521). Invalid credentials should be rejected.",
+      "text": "Add interactive Open and Close buttons in the admin panel to control clinic status, replacing the current read-only status display",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-6"
         ],
         "quotes": [
-          "bur real user name and real pass ho tab hi"
+          "admin panel me button do opne close ka sirf ststus nahi dekhna muje button chahiye taki me cuntrol kar saku"
         ]
       },
       "acceptanceCriteria": [
-        "Login succeeds only when username exactly matches 6352174912 and password exactly matches 63521",
-        "Any mismatch in username or password displays an error message",
-        "Partial matches or incorrect credentials do not grant access"
+        "Two separate buttons labeled 'Open' and 'Close' are displayed in the admin panel",
+        "Clicking 'Open' button sets clinic status to open",
+        "Clicking 'Close' button sets clinic status to closed",
+        "Current clinic status is visually indicated (e.g., active button highlighted or disabled)",
+        "Status changes are immediately reflected in the admin panel UI"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Streamline the authentication process to be direct and simple with no additional processing steps or complexity beyond credential validation.",
-      "target": "frontend",
+      "text": "Ensure the manual clinic status override functionality in the backend is properly integrated with the admin panel controls",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "koi jyada prosses nahi"
+          "msg-6"
         ]
       },
       "acceptanceCriteria": [
-        "Authentication flow completes in a single step after submitting credentials",
-        "No loading states, intermediate screens, or unnecessary processing delays",
-        "User sees immediate feedback (success or error) after credential submission"
+        "Backend setClinicOpen and setClinicClosed functions are callable from the frontend",
+        "Manual override status persists across page refreshes",
+        "Status changes trigger appropriate backend state updates"
       ]
     }
   ],
   "constraints": [
-    "Maintain the existing hardcoded credentials (username: 6352174912, password: 63521)",
-    "Preserve session storage-based authentication state management",
-    "Do not modify backend authentication logic"
+    "Maintain existing admin authentication using sessionStorage with hardcoded credentials",
+    "Preserve the existing ClinicStatus record structure with isOpen and manualOverride fields",
+    "Keep the MixinAuthorization pattern for admin access control"
   ],
   "nonGoals": [
-    "Implementing Internet Identity integration for admin access",
-    "Adding password reset or recovery functionality",
-    "Creating multi-factor authentication",
-    "Changing the admin credentials to different values"
+    "Changing the authentication credentials",
+    "Modifying the overall admin panel layout",
+    "Adding new clinic management features beyond open/close control"
   ],
   "imageRequirements": {
     "required": [],

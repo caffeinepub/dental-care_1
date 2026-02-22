@@ -1,73 +1,65 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Simplify admin panel authentication to username and password only",
+  "title": "Fix admin panel permissions and add open/close control buttons",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove any verification or multi-step authentication process from the admin login flow. The admin panel should authenticate using only username and password credentials.",
+      "summary": "Fix the 'You may not have the required permissions. Please contact the system administrator.' error in the admin panel by ensuring proper authentication checks and authorization flow",
       "acceptanceCriteria": [
-        "Admin login form displays only username and password fields",
-        "No verification step or additional authentication screens appear after entering credentials",
-        "Admin panel opens immediately upon successful username/password validation"
+        "Admin panel loads without permission errors when accessed with valid credentials",
+        "Authentication state is properly validated before rendering admin content",
+        "Error message no longer appears for authenticated admin users"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/AdminLoginForm.tsx",
-          "operation": "modify",
-          "description": "Simplify the admin login form to display only username and password input fields. Remove any multi-step authentication UI, verification prompts, or additional authentication screens. Ensure the form directly calls the useAdminAuth login function with username and password, and navigates to the admin panel immediately upon successful authentication without intermediate steps."
-        },
-        {
           "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Review and simplify the authentication flow on the admin page. Ensure that once the user successfully logs in via AdminLoginForm, they are immediately granted access to the admin panel without additional verification screens, loading states, or processing steps. Remove any conditional rendering that might show intermediate authentication screens after login."
+          "description": "Fix the authentication and authorization checks by properly handling the admin authentication state from useAdminAuth and the actor's isCallerAdmin query. Ensure that the AccessDeniedScreen is only shown when the admin is not authenticated via sessionStorage credentials, and that backend authorization checks are handled separately with appropriate error handling. Remove or adjust any conflicting authorization logic that prevents authenticated admins from accessing the panel."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a new React Query hook useIsCallerAdmin that calls the backend isCallerAdmin method. Configure the query to handle authentication state properly and return loading/error states. This hook will be used in AdminPage to verify backend authorization status."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Ensure that admin access is granted only when both the username and password match the actual stored credentials (username: 6352174912, password: 63521). Invalid credentials should be rejected.",
+      "summary": "Add interactive Open and Close buttons in the admin panel to control clinic status, replacing the current read-only status display",
       "acceptanceCriteria": [
-        "Login succeeds only when username exactly matches 6352174912 and password exactly matches 63521",
-        "Any mismatch in username or password displays an error message",
-        "Partial matches or incorrect credentials do not grant access"
+        "Two separate buttons labeled 'Open' and 'Close' are displayed in the admin panel",
+        "Clicking 'Open' button sets clinic status to open",
+        "Clicking 'Close' button sets clinic status to closed",
+        "Current clinic status is visually indicated (e.g., active button highlighted or disabled)",
+        "Status changes are immediately reflected in the admin panel UI"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useAdminAuth.ts",
+          "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Review and ensure the login function performs exact string matching for both username (6352174912) and password (63521). The validation logic must reject any partial matches, case variations, or incorrect credentials. Ensure the error handling provides clear feedback when credentials don't match, and that the sessionStorage-based authentication state is only set when both credentials are exactly correct."
+          "description": "Replace the current read-only clinic status display with two interactive buttons labeled 'Open' and 'Close'. Implement click handlers that call the backend setClinicOpen method with true for Open and false for Close. Add visual indication of the current status by styling the active button differently (e.g., using primary color for the current state, secondary for the inactive option). Use the existing useGetClinicOpen query to display current status and invalidate the query after status changes to reflect updates immediately."
         },
         {
-          "path": "frontend/src/components/AdminLoginForm.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Ensure the form validation and error display properly show rejection messages when credentials are invalid. Display clear error feedback to the user when username or password doesn't match the stored credentials, and prevent form submission or navigation until exact matches are provided."
+          "description": "Add a new React Query mutation hook useSetClinicOpen that calls the backend setClinicOpen method with a boolean parameter. Configure the mutation to invalidate the 'clinicOpen' query key on success to trigger an automatic refetch of the current status. Include proper error handling and success notifications using toast."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Streamline the authentication process to be direct and simple with no additional processing steps or complexity beyond credential validation.",
+      "summary": "Ensure the manual clinic status override functionality in the backend is properly integrated with the admin panel controls",
       "acceptanceCriteria": [
-        "Authentication flow completes in a single step after submitting credentials",
-        "No loading states, intermediate screens, or unnecessary processing delays",
-        "User sees immediate feedback (success or error) after credential submission"
+        "Backend setClinicOpen method is callable from the frontend through the mutation hook",
+        "Manual override status persists across page refreshes",
+        "Status changes trigger appropriate backend state updates"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useAdminAuth.ts",
-          "operation": "modify",
-          "description": "Streamline the login function to perform synchronous credential validation without async delays, network calls, or processing steps. Remove any artificial loading states or delays. The authentication state should be updated immediately in sessionStorage upon successful validation, enabling instant feedback to the user."
-        },
-        {
-          "path": "frontend/src/components/AdminLoginForm.tsx",
-          "operation": "modify",
-          "description": "Remove any loading spinners, progress indicators, or delayed state transitions from the login form. Ensure the form provides immediate feedback (success or error) after credential submission. Upon successful validation, navigate directly to the admin panel without intermediate screens or processing delays."
-        },
-        {
           "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Ensure the admin page renders immediately once authentication is confirmed, without showing loading states, verification screens, or processing overlays. Remove any unnecessary conditional rendering that might delay access to the admin panel after successful login."
+          "description": "Verify that the Open/Close button handlers properly call the useSetClinicOpen mutation hook and handle loading states during the mutation. Add visual feedback (loading spinner or disabled state) on buttons while the mutation is in progress. Ensure that after a successful status change, the UI reflects the persisted backend state by relying on the refetched query data."
         }
       ]
     }

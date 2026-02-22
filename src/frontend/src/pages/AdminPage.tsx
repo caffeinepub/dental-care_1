@@ -8,8 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, LogOut, Power, Clock, Save, Mail } from 'lucide-react';
+import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, LogOut, Power, Clock, Save, Mail, CheckCircle2, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { ServiceType } from '../backend';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
@@ -115,14 +114,26 @@ export default function AdminPage() {
     window.location.reload();
   };
 
-  const handleToggleClinicOpen = () => {
-    const newStatus = !clinicOpen;
-    setClinicOpen(newStatus, {
+  const handleSetClinicOpen = () => {
+    setClinicOpen(true, {
       onSuccess: () => {
-        toast.success(newStatus ? 'Clinic is now open for bookings' : 'Clinic is now closed for bookings');
+        toast.success('Clinic is now open for bookings');
       },
       onError: (error) => {
-        toast.error('Failed to update clinic status', {
+        toast.error('Failed to open clinic', {
+          description: error instanceof Error ? error.message : 'Unknown error',
+        });
+      },
+    });
+  };
+
+  const handleSetClinicClosed = () => {
+    setClinicOpen(false, {
+      onSuccess: () => {
+        toast.success('Clinic is now closed for bookings');
+      },
+      onError: (error) => {
+        toast.error('Failed to close clinic', {
           description: error instanceof Error ? error.message : 'Unknown error',
         });
       },
@@ -197,7 +208,7 @@ export default function AdminPage() {
                 {error instanceof Error ? error.message : String(error)}
               </p>
               <p className="text-sm text-muted-foreground">
-                You may not have the required permissions. Please contact the system administrator.
+                There was an error loading the admin panel. Please try again.
               </p>
             </div>
 
@@ -280,36 +291,71 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Clinic Status Control */}
-        <Card className="mb-6 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Power className="w-5 h-5" />
-              Clinic Status
+        {/* Clinic Status Control - Prominent Card with Open/Close Buttons */}
+        <Card className="mb-6 shadow-lg border-2 border-primary/20">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Power className="w-6 h-6 text-primary" />
+              Clinic Status Control
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="font-medium">
-                  Clinic is currently {clinicOpen ? 'OPEN' : 'CLOSED'} for new bookings
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {clinicOpen
-                    ? 'Patients can book appointments online'
-                    : 'New appointment bookings are disabled'}
-                </p>
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-3">
+                  {clinicOpen ? (
+                    <CheckCircle2 className="w-8 h-8 text-green-600" />
+                  ) : (
+                    <XCircle className="w-8 h-8 text-red-600" />
+                  )}
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {clinicOpen ? 'OPEN' : 'CLOSED'}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {clinicOpen
+                        ? 'Accepting new appointment bookings'
+                        : 'Not accepting new bookings'}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Label htmlFor="clinic-status" className="text-sm font-medium">
-                  {clinicOpen ? 'Open' : 'Closed'}
-                </Label>
-                <Switch
-                  id="clinic-status"
-                  checked={clinicOpen || false}
-                  onCheckedChange={handleToggleClinicOpen}
-                  disabled={isSettingClinicOpen}
-                />
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleSetClinicOpen}
+                  disabled={isSettingClinicOpen || clinicOpen === true}
+                  size="lg"
+                  className={`gap-2 min-w-[140px] ${
+                    clinicOpen === true
+                      ? 'bg-green-600 hover:bg-green-600 text-white'
+                      : 'bg-green-600/20 hover:bg-green-600 text-green-700 hover:text-white'
+                  }`}
+                >
+                  {isSettingClinicOpen && clinicOpen !== true ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="w-5 h-5" />
+                  )}
+                  Open
+                </Button>
+                <Button
+                  onClick={handleSetClinicClosed}
+                  disabled={isSettingClinicOpen || clinicOpen === false}
+                  size="lg"
+                  variant="destructive"
+                  className={`gap-2 min-w-[140px] ${
+                    clinicOpen === false
+                      ? 'bg-red-600 hover:bg-red-600 text-white'
+                      : 'bg-red-600/20 hover:bg-red-600 text-red-700 hover:text-white'
+                  }`}
+                >
+                  {isSettingClinicOpen && clinicOpen !== false ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <XCircle className="w-5 h-5" />
+                  )}
+                  Close
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -344,9 +390,7 @@ export default function AdminPage() {
                         className="w-20"
                       />
                       <span className="text-sm text-muted-foreground">:00</span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-1">
-                      <Label htmlFor={`${day}-close`} className="text-sm w-12">
+                      <Label htmlFor={`${day}-close`} className="text-sm w-12 ml-4">
                         Close:
                       </Label>
                       <Input
@@ -366,7 +410,11 @@ export default function AdminPage() {
                       size="sm"
                       className="gap-2"
                     >
-                      <Save className="w-4 h-4" />
+                      {isSettingOpeningHours ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Save className="w-4 h-4" />
+                      )}
                       Save
                     </Button>
                   </div>
@@ -453,7 +501,7 @@ export default function AdminPage() {
                 className="gap-2"
               >
                 <ArrowUpDown className="w-4 h-4" />
-                Sort by Date ({sortOrder === 'asc' ? 'Oldest First' : 'Newest First'})
+                {sortOrder === 'asc' ? 'Oldest First' : 'Newest First'}
               </Button>
             </div>
 
@@ -464,61 +512,119 @@ export default function AdminPage() {
                 tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
-              <div className="rounded-lg border overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50">
-                      <TableHead className="font-semibold">Patient Name</TableHead>
-                      <TableHead className="font-semibold">Contact Info</TableHead>
-                      <TableHead className="font-semibold">Date & Time</TableHead>
-                      <TableHead className="font-semibold">Service Type</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredAppointments.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                          No appointments found
-                        </TableCell>
+              {filteredAppointments.length === 0 ? (
+                <div className="text-center py-12 bg-muted/30 rounded-lg">
+                  <Calendar className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium text-muted-foreground">No appointments found</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {searchName || filterService !== 'all' || startDate || endDate
+                      ? 'Try adjusting your filters'
+                      : 'Appointments will appear here once patients book'}
+                  </p>
+                </div>
+              ) : (
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="font-semibold">
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4" />
+                            Patient Name
+                          </div>
+                        </TableHead>
+                        <TableHead className="font-semibold">
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-4 h-4" />
+                            Contact
+                          </div>
+                        </TableHead>
+                        <TableHead className="font-semibold">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            Date & Time
+                          </div>
+                        </TableHead>
+                        <TableHead className="font-semibold">
+                          <div className="flex items-center gap-2">
+                            <Stethoscope className="w-4 h-4" />
+                            Service
+                          </div>
+                        </TableHead>
                       </TableRow>
-                    ) : (
-                      filteredAppointments.map((appointment, index) => (
-                        <TableRow key={index} className="hover:bg-muted/30 transition-colors">
-                          <TableCell className="font-medium">
-                            <div className="flex items-center gap-2">
-                              <User className="w-4 h-4 text-muted-foreground" />
-                              {appointment.patientName}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-2 text-sm">
-                                <Phone className="w-3 h-3 text-muted-foreground" />
-                                {appointment.contactInfo.includes('@') ? (
-                                  <Mail className="w-3 h-3 text-muted-foreground" />
-                                ) : null}
-                                <span className="text-muted-foreground">{appointment.contactInfo}</span>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredAppointments.map((appointment, index) => {
+                        const appointmentDate = new Date(Number(appointment.date) / 1000000);
+                        const isPast = appointmentDate < new Date();
+
+                        return (
+                          <TableRow
+                            key={index}
+                            className={`hover:bg-muted/50 transition-colors ${
+                              isPast ? 'opacity-60' : ''
+                            }`}
+                          >
+                            <TableCell className="font-medium">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <User className="w-4 h-4 text-primary" />
+                                </div>
+                                {appointment.patientName}
                               </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4 text-muted-foreground" />
-                              {format(new Date(Number(appointment.date) / 1000000), 'PPp')}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="gap-1">
-                              <Stethoscope className="w-3 h-3" />
-                              {serviceTypeToText(appointment.serviceType)}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                {appointment.contactInfo.includes('@') ? (
+                                  <>
+                                    <Mail className="w-4 h-4 text-muted-foreground" />
+                                    <a
+                                      href={`mailto:${appointment.contactInfo}`}
+                                      className="text-primary hover:underline"
+                                    >
+                                      {appointment.contactInfo}
+                                    </a>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Phone className="w-4 h-4 text-muted-foreground" />
+                                    <a
+                                      href={`tel:${appointment.contactInfo}`}
+                                      className="text-primary hover:underline"
+                                    >
+                                      {appointment.contactInfo}
+                                    </a>
+                                  </>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <div className="font-medium">
+                                  {format(appointmentDate, 'MMM dd, yyyy')}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {format(appointmentDate, 'hh:mm a')}
+                                </div>
+                                {isPast && (
+                                  <Badge variant="outline" className="text-xs">
+                                    Past
+                                  </Badge>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary" className="font-normal">
+                                {serviceTypeToText(appointment.serviceType)}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

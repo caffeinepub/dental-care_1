@@ -81,6 +81,7 @@ export const idlService = IDL.Service({
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [IDL.Nat], []),
   'cancel' : IDL.Func([IDL.Nat], [], []),
+  'clearManualOverride' : IDL.Func([], [], []),
   'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
   'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
   'getAllOpeningHours' : IDL.Func(
@@ -93,6 +94,7 @@ export const idlService = IDL.Service({
   'getClinicOpen' : IDL.Func([], [IDL.Bool], ['query']),
   'getOpeningHours' : IDL.Func([IDL.Text], [IDL.Opt(OpeningHours)], ['query']),
   'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+  'getShouldBeOpen' : IDL.Func([], [IDL.Bool], ['query']),
   'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
@@ -188,6 +190,7 @@ export const idlFactory = ({ IDL }) => {
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [IDL.Nat], []),
     'cancel' : IDL.Func([IDL.Nat], [], []),
+    'clearManualOverride' : IDL.Func([], [], []),
     'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
     'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
     'getAllOpeningHours' : IDL.Func(
@@ -204,6 +207,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+    'getShouldBeOpen' : IDL.Func([], [IDL.Bool], ['query']),
     'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],

@@ -20,7 +20,15 @@ actor {
     closeTime : Nat;
   };
 
-  var clinicOpen : Bool = false;
+  public type ClinicStatus = {
+    isOpen : Bool;
+    manualOverride : Bool;
+  };
+
+  var clinicStatus : ClinicStatus = {
+    isOpen = false;
+    manualOverride = false;
+  };
 
   let daysOfWeek = [
     "Monday",
@@ -93,23 +101,38 @@ actor {
     );
   };
 
-  private func ensureAdminAccess(caller : Principal) {
-    if (not AccessControl.isAdmin(accessControlState, caller)) {
-      Runtime.trap("Unauthorized: Only admins can access this resource");
+  public shared ({ caller }) func setClinicOpen(isOpen : Bool) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
+    clinicStatus := {
+      isOpen;
+      manualOverride = true;
     };
   };
 
-  public shared ({ caller }) func setClinicOpen(isOpen : Bool) : async () {
-    ensureAdminAccess(caller);
-    clinicOpen := isOpen;
+  public shared ({ caller }) func clearManualOverride() : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
+    clinicStatus := {
+      isOpen = false;
+      manualOverride = false;
+    };
   };
 
   public query ({ caller }) func getClinicOpen() : async Bool {
-    clinicOpen;
+    clinicStatus.isOpen;
+  };
+
+  public query ({ caller }) func getShouldBeOpen() : async Bool {
+    clinicStatus.isOpen;
   };
 
   public shared ({ caller }) func setOpeningHoursForDay(day : Text, openTime : Nat, closeTime : Nat) : async () {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     let hours : OpeningHours = {
       openTime;
       closeTime;
@@ -126,8 +149,8 @@ actor {
   };
 
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view profiles");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can access profiles");
     };
     userProfiles.get(caller);
   };
@@ -140,14 +163,14 @@ actor {
   };
 
   public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can save profiles");
     };
     userProfiles.add(caller, profile);
   };
 
   public shared ({ caller }) func book(patientName : Text, contactInfo : Text, date : Time.Time, serviceType : ServiceType) : async Nat {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can book appointments");
     };
     let appointment : Appointment = {
@@ -163,7 +186,9 @@ actor {
   };
 
   public shared ({ caller }) func cancel(appointmentId : Nat) : async () {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     if (not appointments.containsKey(appointmentId)) {
       Runtime.trap("Appointment does not exist.");
     };
@@ -171,17 +196,23 @@ actor {
   };
 
   public query ({ caller }) func getAll() : async [Appointment] {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     appointments.values().toArray();
   };
 
   public query ({ caller }) func getAllAppointments() : async [Appointment] {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     appointments.values().toArray();
   };
 
   public query ({ caller }) func searchByService(serviceType : ServiceType) : async [Appointment] {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     appointments.values().filter(
       func(appointment) {
         appointment.serviceType == serviceType;
@@ -190,7 +221,9 @@ actor {
   };
 
   public query ({ caller }) func getUpcoming() : async [Appointment] {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     let currentTime = Time.now();
     appointments.values().filter(
       func(appointment) {
@@ -200,7 +233,9 @@ actor {
   };
 
   public query ({ caller }) func getPastAppointments() : async [Appointment] {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     let currentTime = Time.now();
     appointments.values().filter(
       func(appointment) {
@@ -210,7 +245,9 @@ actor {
   };
 
   public query ({ caller }) func searchByPatient(patientName : Text) : async [Appointment] {
-    ensureAdminAccess(caller);
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
     appointments.values().filter(
       func(appointment) {
         Text.equal(appointment.patientName, patientName);

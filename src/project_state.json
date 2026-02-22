@@ -1,48 +1,43 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Admin authentication system with simple username/password login",
+  "summary": "Clinic management application with admin panel for controlling clinic open/close status",
   "architectural_notes": [
-    "Admin panel uses simple username/password authentication without additional verification steps"
+    "Admin panel requires open/close control buttons (not just status display)",
+    "Permission system needs configuration to allow admin access"
   ],
   "known_issues": [
-    "Admin panel verification process not working properly"
+    "Admin panel showing 'You may not have the required permissions' error",
+    "Admin panel missing interactive open/close buttons - currently only shows status"
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-remove-any-verification-or-multi-step-authentication-process-from-the-admin-login-flow-the-admin-panel-should-authenticate-using-only-username-and-password-credentials",
-      "title": "Remove any verification or multi-step authentication process from the admin login flow. The admin panel should authenticate using only username and password credentials.",
+      "id": "feature-fix-the-you-may-not-have-the-required-permissions-please-contact-the-system-administrator-error-in-the-admin-panel-by-ensuring-proper-authentication-checks-and-authorization-flow",
+      "title": "Fix the 'You may not have the required permissions. Please contact the system administrator.' error in the admin panel by ensuring proper authentication checks and authorization flow",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-that-admin-access-is-granted-only-when-both-the-username-and-password-match-the-actual-stored-credentials-username-6352174912-password-63521-invalid-credentials-should-be-rejected",
-      "title": "Ensure that admin access is granted only when both the username and password match the actual stored credentials (username: 6352174912, password: 63521). Invalid credentials should be rejected.",
+      "id": "feature-add-interactive-open-and-close-buttons-in-the-admin-panel-to-control-clinic-status-replacing-the-current-read-only-status-display",
+      "title": "Add interactive Open and Close buttons in the admin panel to control clinic status, replacing the current read-only status display",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-streamline-the-authentication-process-to-be-direct-and-simple-with-no-additional-processing-steps-or-complexity-beyond-credential-validation",
-      "title": "Streamline the authentication process to be direct and simple with no additional processing steps or complexity beyond credential validation.",
+      "id": "feature-ensure-the-manual-clinic-status-override-functionality-in-the-backend-is-properly-integrated-with-the-admin-panel-controls",
+      "title": "Ensure the manual clinic status override functionality in the backend is properly integrated with the admin panel controls",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Simplify admin panel login - remove verification, use only username and password authentication",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
+  "new_feature_requests": [],
   "projectName": "Annaya Dental Care",
   "clarification_mode": "instant",
   "clarification_rounds": 0

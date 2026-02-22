@@ -72,10 +72,19 @@ export default function Header() {
     return activeSection === link.href.substring(1);
   };
 
+  const handleClinicNameClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.location.reload();
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link 
+          to="/" 
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={handleClinicNameClick}
+        >
           <span className="text-xl font-bold text-primary">Annaya Dental Care</span>
         </Link>
 

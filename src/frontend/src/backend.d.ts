@@ -43,6 +43,7 @@ export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<bigint>;
     cancel(appointmentId: bigint): Promise<void>;
+    clearManualOverride(): Promise<void>;
     getAll(): Promise<Array<Appointment>>;
     getAllAppointments(): Promise<Array<Appointment>>;
     getAllOpeningHours(): Promise<Array<[string, OpeningHours]>>;
@@ -51,6 +52,7 @@ export interface backendInterface {
     getClinicOpen(): Promise<boolean>;
     getOpeningHours(day: string): Promise<OpeningHours | null>;
     getPastAppointments(): Promise<Array<Appointment>>;
+    getShouldBeOpen(): Promise<boolean>;
     getUpcoming(): Promise<Array<Appointment>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;

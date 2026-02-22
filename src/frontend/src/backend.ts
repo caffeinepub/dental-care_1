@@ -143,6 +143,7 @@ export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<bigint>;
     cancel(appointmentId: bigint): Promise<void>;
+    clearManualOverride(): Promise<void>;
     getAll(): Promise<Array<Appointment>>;
     getAllAppointments(): Promise<Array<Appointment>>;
     getAllOpeningHours(): Promise<Array<[string, OpeningHours]>>;
@@ -151,6 +152,7 @@ export interface backendInterface {
     getClinicOpen(): Promise<boolean>;
     getOpeningHours(day: string): Promise<OpeningHours | null>;
     getPastAppointments(): Promise<Array<Appointment>>;
+    getShouldBeOpen(): Promise<boolean>;
     getUpcoming(): Promise<Array<Appointment>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
@@ -304,6 +306,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async clearManualOverride(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.clearManualOverride();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.clearManualOverride();
+            return result;
+        }
+    }
     async getAll(): Promise<Array<Appointment>> {
         if (this.processError) {
             try {
@@ -414,6 +430,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getPastAppointments();
             return from_candid_vec_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getShouldBeOpen(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getShouldBeOpen();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getShouldBeOpen();
+            return result;
         }
     }
     async getUpcoming(): Promise<Array<Appointment>> {
