@@ -78,11 +78,11 @@ export const idlService = IDL.Service({
   'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [], []),
   'cancel' : IDL.Func([IDL.Nat], [], []),
   'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
-  'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+  'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
-  'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+  'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
+  'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], []),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -90,12 +90,8 @@ export const idlService = IDL.Service({
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], ['query']),
-  'searchByService' : IDL.Func(
-      [ServiceType],
-      [IDL.Vec(Appointment)],
-      ['query'],
-    ),
+  'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], []),
+  'searchByService' : IDL.Func([ServiceType], [IDL.Vec(Appointment)], []),
   'serviceTypeToText' : IDL.Func([ServiceType], [IDL.Text], ['query']),
 });
 
@@ -172,11 +168,11 @@ export const idlFactory = ({ IDL }) => {
     'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [], []),
     'cancel' : IDL.Func([IDL.Nat], [], []),
     'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
-    'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+    'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
-    'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+    'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], []),
+    'getUpcoming' : IDL.Func([], [IDL.Vec(Appointment)], []),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -184,12 +180,8 @@ export const idlFactory = ({ IDL }) => {
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], ['query']),
-    'searchByService' : IDL.Func(
-        [ServiceType],
-        [IDL.Vec(Appointment)],
-        ['query'],
-      ),
+    'searchByPatient' : IDL.Func([IDL.Text], [IDL.Vec(Appointment)], []),
+    'searchByService' : IDL.Func([ServiceType], [IDL.Vec(Appointment)], []),
     'serviceTypeToText' : IDL.Func([ServiceType], [IDL.Text], ['query']),
   });
 };

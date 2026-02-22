@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Loader2, CheckCircle2, Sparkles, AlertCircle } from 'lucide-react';
+import { CalendarIcon, Loader2, CheckCircle2, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { useActor } from '@/hooks/useActor';
 import { useBookAppointment } from '@/hooks/useQueries';
@@ -76,7 +76,9 @@ export default function AppointmentForm() {
   const [date, setDate] = useState<Date>();
   const [selectedService, setSelectedService] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState(false);
-  const [retryAttempt, setRetryAttempt] = useState(0);
+  const [bookingRetryAttempt, setBookingRetryAttempt] = useState(0);
+  const [connectionTimeout, setConnectionTimeout] = useState(false);
+  const [initializationTime, setInitializationTime] = useState(0);
   
   const {
     register,
@@ -86,6 +88,44 @@ export default function AppointmentForm() {
   } = useForm<AppointmentFormData>();
 
   const bookMutation = useBookAppointment();
+
+  // Track initialization time and detect timeout
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let startTime = Date.now();
+
+    if (actorFetching && !actor) {
+      // Start tracking initialization time
+      const intervalId = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        setInitializationTime(elapsed);
+        
+        // Set timeout flag after 30 seconds
+        if (elapsed > 30000) {
+          setConnectionTimeout(true);
+          clearInterval(intervalId);
+        }
+      }, 1000);
+
+      timeoutId = intervalId;
+    } else if (actor) {
+      // Actor loaded successfully
+      setConnectionTimeout(false);
+      setInitializationTime(0);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearInterval(timeoutId);
+      }
+    };
+  }, [actorFetching, actor]);
+
+  const handleRetry = () => {
+    setConnectionTimeout(false);
+    setInitializationTime(0);
+    window.location.reload();
+  };
 
   const onSubmit = (data: AppointmentFormData) => {
     if (!date) {
@@ -97,18 +137,27 @@ export default function AppointmentForm() {
       return;
     }
 
+    // Validate actor is available
     if (!actor) {
       console.error('[AppointmentForm] Actor not available during submission', {
         actorFetching,
         actor: !!actor,
+        connectionTimeout,
       });
-      toast.error('Backend connection not ready', {
-        description: 'Please wait a moment for the system to initialize and try again.',
-      });
+      
+      if (connectionTimeout) {
+        toast.error('Connection timeout', {
+          description: 'The system took too long to respond. Please check your internet connection and try again.',
+        });
+      } else {
+        toast.error('System not ready', {
+          description: 'Please wait for the system to finish initializing and try again.',
+        });
+      }
       return;
     }
 
-    // Validate actor is fully initialized
+    // Prevent submission while actor is still initializing
     if (actorFetching) {
       console.warn('[AppointmentForm] Actor still fetching during submission');
       toast.error('System is still initializing', {
@@ -126,7 +175,7 @@ export default function AppointmentForm() {
       actorFetching,
     });
 
-    setRetryAttempt(0);
+    setBookingRetryAttempt(0);
 
     const backendServiceType = mapServiceToBackendType(selectedService);
 
@@ -137,8 +186,8 @@ export default function AppointmentForm() {
         date,
         serviceType: backendServiceType,
         onRetry: (attempt, error) => {
-          console.log(`[AppointmentForm] Retry attempt ${attempt} after error:`, error.message);
-          setRetryAttempt(attempt);
+          console.log(`[AppointmentForm] Booking retry attempt ${attempt} after error:`, error.message);
+          setBookingRetryAttempt(attempt);
           toast.info(`Retrying... (Attempt ${attempt} of 3)`, {
             description: 'Please wait while we process your request.',
           });
@@ -147,7 +196,7 @@ export default function AppointmentForm() {
       {
         onSuccess: () => {
           console.log('[AppointmentForm] Booking successful');
-          setRetryAttempt(0);
+          setBookingRetryAttempt(0);
           setShowSuccess(true);
           toast.success('Appointment booked successfully!', {
             description: 'We will contact you shortly to confirm your appointment.',
@@ -167,17 +216,21 @@ export default function AppointmentForm() {
             errorStack: error instanceof Error ? error.stack : undefined,
           });
           
-          setRetryAttempt(0);
+          setBookingRetryAttempt(0);
           
           const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
           const isInstallError = errorMessage.toLowerCase().includes('installing');
           const isNetworkError = errorMessage.toLowerCase().includes('network') || 
                                  errorMessage.toLowerCase().includes('connection');
+          const isTimeoutError = errorMessage.toLowerCase().includes('timeout');
           
           let userMessage = 'Failed to book appointment';
           let description = 'Please try again later.';
           
-          if (isInstallError) {
+          if (isTimeoutError) {
+            userMessage = 'Request timeout';
+            description = 'The booking request took too long. Please check your internet connection and try again.';
+          } else if (isInstallError) {
             userMessage = 'System is still initializing';
             description = 'The booking system is starting up. Please wait a moment and try again.';
           } else if (isNetworkError) {
@@ -196,8 +249,14 @@ export default function AppointmentForm() {
     );
   };
 
+  // Check if actor is initialized (not fetching and actor exists)
+  const isActorReady = !actorFetching && !!actor;
+  
   // Check if form should be disabled
-  const isFormDisabled = actorFetching || !actor || bookMutation.isPending;
+  const isFormDisabled = !isActorReady || bookMutation.isPending;
+
+  // Show connection error with retry option
+  const showConnectionError = connectionTimeout && !actor;
 
   if (showSuccess) {
     return (
@@ -232,16 +291,45 @@ export default function AppointmentForm() {
             <CardDescription className="text-base text-muted-foreground">
               Fill out the form below and we will get back to you as soon as possible
             </CardDescription>
-            {actorFetching && (
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            
+            {/* Connection Status Messages */}
+            {actorFetching && !actor && !connectionTimeout && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-xl p-3">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Initializing booking system...</span>
+                <span>Connecting to booking system...</span>
+                {initializationTime > 5000 && (
+                  <span className="text-xs text-muted-foreground/70">
+                    ({Math.floor(initializationTime / 1000)}s)
+                  </span>
+                )}
               </div>
             )}
-            {!actor && !actorFetching && (
-              <div className="flex items-center justify-center gap-2 text-sm text-amber-600 dark:text-amber-500">
-                <AlertCircle className="h-4 w-4" />
-                <span>Waiting for backend connection...</span>
+            
+            {showConnectionError && (
+              <div className="flex flex-col items-center justify-center gap-3 text-sm bg-destructive/10 border border-destructive/20 rounded-xl p-4">
+                <div className="flex items-center gap-2 text-destructive">
+                  <AlertCircle className="h-5 w-5" />
+                  <span className="font-semibold">Connection Timeout</span>
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  The system took too long to respond. Please check your internet connection.
+                </p>
+                <Button
+                  onClick={handleRetry}
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Retry Connection
+                </Button>
+              </div>
+            )}
+            
+            {bookingRetryAttempt > 0 && (
+              <div className="flex items-center justify-center gap-2 text-sm text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/20 rounded-xl p-3">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Retrying booking... (Attempt {bookingRetryAttempt} of 3)</span>
               </div>
             )}
           </div>
@@ -371,24 +459,24 @@ export default function AppointmentForm() {
               disabled={isFormDisabled}
             >
               <span className="relative z-10 flex items-center justify-center">
-                {actorFetching ? (
+                {bookMutation.isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Initializing...
+                    <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                    Booking Appointment...
                   </>
-                ) : bookMutation.isPending ? (
+                ) : !isActorReady ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {retryAttempt > 0 ? `Retrying... (${retryAttempt}/3)` : 'Booking...'}
+                    <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                    Initializing System...
                   </>
                 ) : (
                   <>
+                    <CalendarIcon className="mr-3 h-6 w-6 transition-transform group-hover:scale-110" />
                     Book Appointment
-                    <Sparkles className="ml-2 h-5 w-5 group-hover:animate-bounce" />
                   </>
                 )}
               </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-primary-foreground/0 via-primary-foreground/20 to-primary-foreground/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-white/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
             </Button>
           </form>
         </CardContent>

@@ -1,4 +1,27 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-verify-that-the-frontend-is-correctly-passing-the-admin-access-token-when-initializing-the-actor-and-making-the-getallappointments-call",
+      "featureTitle": "Verify that the frontend is correctly passing the admin access token when initializing the actor and making the getAllAppointments call",
+      "files": [
+        "frontend/src/hooks/useAdminAuth.ts",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/AdminPage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

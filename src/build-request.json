@@ -1,35 +1,68 @@
 {
   "kind": "build_request",
-  "title": "Update admin credentials to ANAS/Anas@2020",
-  "priority": "normal",
+  "title": "Fix admin authorization error when viewing appointments",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Update the hardcoded admin credentials in the frontend authentication hook to use username 'ANAS' and password 'Anas@2020'",
-      "target": "frontend",
+      "id": "REQ-4",
+      "text": "Fix the backend authorization logic in getAllAppointments function to correctly recognize the principal 'toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe' as an admin when adminAuth is initialized with the correct access token",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-10"
+          "msg-1"
         ],
         "quotes": [
-          "admin panel me user name ANAS rakho aur pass Anas@2020 rakho"
+          "Unauthorized: Only admins can view all appointments",
+          "Principal: toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe",
+          "Admin Auth (Frontend): true"
         ]
       },
       "acceptanceCriteria": [
-        "Admin login form accepts username 'ANAS' with password 'Anas@2020'",
-        "Previous credentials no longer work",
-        "Session storage and authentication state management remain unchanged"
+        "The admin user with principal 'toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe' can successfully view all appointments without receiving an 'Unauthorized' error",
+        "The backend correctly validates admin access for the specific principal when the access token is provided",
+        "No authorization errors appear in the admin panel when loading appointments"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add comprehensive debug logging to the backend getAllAppointments function to trace: incoming caller principal, admin authentication status check result, and the exact reason for authorization failure if it occurs",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend logs show the caller principal for each getAllAppointments request",
+        "Backend logs indicate whether the caller passed the admin authentication check",
+        "If authorization fails, backend logs explain why (e.g., 'Principal not in admin list', 'Access token missing', 'Access token mismatch')"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Verify that the frontend is correctly passing the admin access token when initializing the actor and making the getAllAppointments call",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The useActor hook correctly retrieves and includes the admin access token when creating the backend actor instance",
+        "Console logs or network inspection confirms the access token is being sent with the getAllAppointments request",
+        "The access token matches the expected value configured in the backend"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the authentication flow or session management logic",
-    "Keep the existing AdminLoginForm component interface unchanged"
+    "Do not modify the existing admin authentication flow in useAdminAuth hook",
+    "Preserve the current Internet Identity integration",
+    "Do not change the user-facing error messages unless authorization actually succeeds"
   ],
   "nonGoals": [
-    "Implementing database-backed user management",
-    "Adding user registration or password reset features",
-    "Creating multiple admin accounts"
+    "Changing the admin credentials (username: ANAS, password: Anas@2020)",
+    "Modifying the appointment data structure",
+    "Redesigning the admin panel UI"
   ],
   "imageRequirements": {
     "required": [],

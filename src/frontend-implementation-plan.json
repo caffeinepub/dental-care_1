@@ -1,21 +1,36 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update Admin Credentials to ANAS/Anas@2020",
+  "title": "Fix admin authorization error when viewing appointments",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Update the hardcoded admin credentials in the frontend authentication hook to use username 'ANAS' and password 'Anas@2020'",
+      "id": "REQ-6",
+      "summary": "Verify and fix frontend admin access token handling in actor initialization and getAllAppointments calls",
       "acceptanceCriteria": [
-        "Admin login form accepts username 'ANAS' with password 'Anas@2020'",
-        "Previous credentials no longer work",
-        "Session storage and authentication state management remain unchanged"
+        "The useActor hook correctly retrieves and includes the admin access token when creating the backend actor instance",
+        "Console logs or network inspection confirms the access token is being sent with the getAllAppointments request",
+        "The access token matches the expected value configured in the backend"
       ],
       "file_operations": [
         {
+          "path": "frontend/src/hooks/useActor.ts",
+          "operation": "modify",
+          "description": "Add comprehensive debug logging to trace: (1) whether adminAuth is initialized when creating the actor, (2) the access token value being passed to initializeAccessControl, (3) confirmation that the token is included in the actor's identity/authentication context. Verify that the access token from useAdminAuth is correctly retrieved and passed during actor initialization. Ensure the token is available before the actor makes any admin-protected calls."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add debug logging in the useGetAllAppointments query hook to log: (1) when the query is triggered, (2) the actor's authentication state before calling getAllAppointments, (3) any errors returned from the backend with full error details. This helps verify the access token is present during the actual API call."
+        },
+        {
+          "path": "frontend/src/pages/AdminPage.tsx",
+          "operation": "modify",
+          "description": "Add debug logging when the admin page loads to verify: (1) adminAuth state (isAuthenticated value), (2) Internet Identity authentication status, (3) the sequence of authentication checks before attempting to load appointments. Add console logging for any authorization errors received from the backend to help diagnose the exact error message and context."
+        },
+        {
           "path": "frontend/src/hooks/useAdminAuth.ts",
           "operation": "modify",
-          "description": "Update the hardcoded ADMIN_USERNAME constant from 'admin' to 'ANAS' and ADMIN_PASSWORD constant from 'admin123' to 'Anas@2020' in the useAdminAuth hook. Do not modify any other logic including the login function, sessionStorage handling, or state management."
+          "description": "Add debug logging to the useAdminAuth hook to trace: (1) when the access token is generated or retrieved, (2) the token value (or a hash/prefix for security), (3) when the token is stored in sessionStorage, (4) when the token is retrieved from sessionStorage. This ensures the token lifecycle is transparent and helps verify it matches the backend's expected value."
         }
       ]
     }

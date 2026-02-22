@@ -1,45 +1,45 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Dental care website with admin panel for managing clinic settings",
+  "summary": "Healthcare appointment booking system with admin panel authorization issues",
   "architectural_notes": [
-    "Admin panel authentication required",
-    "Clinic schedule management system needed"
+    "Admin panel requires proper authorization for viewing all appointments",
+    "Frontend shows admin auth as true but backend authorization failing",
+    "Principal ID: toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe"
   ],
   "known_issues": [
-    "Previous admin settings panel build failed - attempting simpler approach"
+    "Admin authorization not working despite frontend showing admin auth as true - 'Unauthorized: Only admins can view all appointments' error persists"
   ],
-  "isFixRequest": false,
-  "existing_features": [],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-verify-that-the-frontend-is-correctly-passing-the-admin-access-token-when-initializing-the-actor-and-making-the-getallappointments-call",
+      "title": "Verify that the frontend is correctly passing the admin access token when initializing the actor and making the getAllAppointments call",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    }
+  ],
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Admin panel with clinic schedule controls (on/off, date/time settings)",
-      "reqIds": [],
+      "summary": "Fix the backend authorization logic in getAllAppointments function to correctly recognize the principal 'toamj-lbfi5-2suff-sgsui-6nkd7-obeou-bycm3-yv3ea-izdzv-w6ra2-zqe' as an admin when adminAuth is initialized with the correct access token",
+      "reqIds": [
+        "REQ-4"
+      ],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Admin panel feature to change website services",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Set admin credentials: username 'ANAS', password 'Anas@2020'",
-      "reqIds": [],
-      "status": "in_progress"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Update the hardcoded admin credentials in the frontend authentication hook to use username 'ANAS' and password 'Anas@2020'",
+      "summary": "Add comprehensive debug logging to the backend getAllAppointments function to trace: incoming caller principal, admin authentication status check result, and the exact reason for authorization failure if it occurs",
       "reqIds": [
-        "REQ-1"
+        "REQ-5"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "Annaya Dental Care",
+  "projectName": "Fix admin authorization error when viewing appointments",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

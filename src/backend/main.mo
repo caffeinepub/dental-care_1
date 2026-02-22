@@ -9,6 +9,7 @@ import Principal "mo:core/Principal";
 import MixinStorage "blob-storage/Mixin";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+import Debug "mo:core/Debug";
 
 actor {
   let accessControlState = AccessControl.initState();
@@ -72,8 +73,19 @@ actor {
     };
   };
 
+  private func ensureAdminAccess(caller : Principal) {
+    Debug.print("ensureAdminAccess called by: " # caller.toText());
+    let isAdmin = AccessControl.isAdmin(accessControlState, caller);
+    Debug.print("Admin check result for caller " # caller.toText() # ": " # debug_show(isAdmin));
+    if (not isAdmin) {
+      Debug.print("Unauthorized access attempt by " # caller.toText());
+      Runtime.trap("Unauthorized: Only admins can access this resource");
+    };
+  };
+
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Debug.print("Unauthorized: Only users can view profiles");
       Runtime.trap("Unauthorized: Only users can view profiles");
     };
     userProfiles.get(caller);
@@ -81,6 +93,7 @@ actor {
 
   public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
     if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
+      Debug.print("Unauthorized: Can only view your own profile");
       Runtime.trap("Unauthorized: Can only view your own profile");
     };
     userProfiles.get(user);
@@ -88,13 +101,14 @@ actor {
 
   public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Debug.print("Unauthorized: Only users can save profiles");
       Runtime.trap("Unauthorized: Only users can save profiles");
     };
     userProfiles.add(caller, profile);
+    Debug.print("Profile saved for user: " # caller.toText());
   };
 
   public shared ({ caller }) func book(patientName : Text, contactInfo : Text, date : Time.Time, serviceType : ServiceType) : async () {
-    // No authorization check - public appointment booking for all users including guests
     let appointment : Appointment = {
       patientName;
       contactInfo;
@@ -103,36 +117,33 @@ actor {
     };
     appointments.add(nextAppointmentId, appointment);
     nextAppointmentId += 1;
+
+    Debug.print("Appointment booked by: " # caller.toText());
   };
 
   public shared ({ caller }) func cancel(appointmentId : Nat) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
-      Runtime.trap("Unauthorized: Only admins can cancel appointments");
-    };
+    ensureAdminAccess(caller);
     if (not appointments.containsKey(appointmentId)) {
+      Debug.print("Appointment does not exist for ID: " # appointmentId.toText());
       Runtime.trap("Appointment does not exist. ");
     };
     appointments.remove(appointmentId);
+    Debug.print("Appointment cancelled by admin: " # caller.toText());
   };
 
   public query ({ caller }) func getAll() : async [Appointment] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
-      Runtime.trap("Unauthorized: Only admins can view all appointments");
-    };
+    ensureAdminAccess(caller);
     appointments.values().toArray();
   };
 
-  public query ({ caller }) func getAllAppointments() : async [Appointment] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only authenticated users can view appointments");
-    };
+  public shared ({ caller }) func getAllAppointments() : async [Appointment] {
+    Debug.print("getAllAppointments called by: " # caller.toText());
+    ensureAdminAccess(caller);
     appointments.values().toArray();
   };
 
-  public query ({ caller }) func searchByService(serviceType : ServiceType) : async [Appointment] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
-      Runtime.trap("Unauthorized: Only admins can search appointments");
-    };
+  public shared ({ caller }) func searchByService(serviceType : ServiceType) : async [Appointment] {
+    ensureAdminAccess(caller);
     appointments.values().filter(
       func(appointment) {
         appointment.serviceType == serviceType;
@@ -140,10 +151,8 @@ actor {
     ).toArray();
   };
 
-  public query ({ caller }) func getUpcoming() : async [Appointment] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
-      Runtime.trap("Unauthorized: Only admins can view upcoming appointments");
-    };
+  public shared ({ caller }) func getUpcoming() : async [Appointment] {
+    ensureAdminAccess(caller);
     let currentTime = Time.now();
     appointments.values().filter(
       func(appointment) {
@@ -152,10 +161,8 @@ actor {
     ).toArray();
   };
 
-  public query ({ caller }) func getPastAppointments() : async [Appointment] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
-      Runtime.trap("Unauthorized: Only admins can view past appointments");
-    };
+  public shared ({ caller }) func getPastAppointments() : async [Appointment] {
+    ensureAdminAccess(caller);
     let currentTime = Time.now();
     appointments.values().filter(
       func(appointment) {
@@ -164,10 +171,8 @@ actor {
     ).toArray();
   };
 
-  public query ({ caller }) func searchByPatient(patientName : Text) : async [Appointment] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
-      Runtime.trap("Unauthorized: Only admins can search by patient");
-    };
+  public shared ({ caller }) func searchByPatient(patientName : Text) : async [Appointment] {
+    ensureAdminAccess(caller);
     appointments.values().filter(
       func(appointment) {
         Text.equal(appointment.patientName, patientName);
@@ -176,7 +181,6 @@ actor {
   };
 
   public query ({ caller }) func serviceTypeToText(serviceType : ServiceType) : async Text {
-    // No authorization check - public utility function for data transformation
     ServiceType.toText(serviceType);
   };
 };

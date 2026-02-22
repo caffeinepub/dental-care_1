@@ -10,8 +10,43 @@ export function useGetAllAppointments() {
   return useQuery<Appointment[]>({
     queryKey: ['appointments'],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getAll();
+      console.log('[useGetAllAppointments] ===== FETCHING APPOINTMENTS (getAll) =====');
+      console.log('[useGetAllAppointments] Query state:', {
+        timestamp: new Date().toISOString(),
+        hasActor: !!actor,
+        actorFetching,
+        hasIdentity: !!identity,
+        principal: identity?.getPrincipal().toString(),
+        adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
+        caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
+      });
+
+      if (!actor) {
+        console.error('[useGetAllAppointments] Actor not available');
+        throw new Error('Actor not available');
+      }
+      
+      console.log('[useGetAllAppointments] Calling actor.getAll()...');
+      try {
+        const result = await actor.getAll();
+        console.log('[useGetAllAppointments] ===== SUCCESS =====');
+        console.log('[useGetAllAppointments] Successfully fetched appointments:', {
+          count: result.length,
+          timestamp: new Date().toISOString(),
+        });
+        return result;
+      } catch (error) {
+        console.error('[useGetAllAppointments] ===== ERROR =====');
+        console.error('[useGetAllAppointments] Error fetching appointments:', {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+          principal: identity?.getPrincipal().toString(),
+          adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
+          caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
+        });
+        throw error;
+      }
     },
     enabled: !!actor && !actorFetching && !!identity,
     retry: false,
@@ -25,8 +60,46 @@ export function useAllAppointments() {
   return useQuery<Appointment[]>({
     queryKey: ['allAppointments'],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getAllAppointments();
+      console.log('[useAllAppointments] ===== FETCHING ALL APPOINTMENTS (getAllAppointments) =====');
+      console.log('[useAllAppointments] Query state:', {
+        timestamp: new Date().toISOString(),
+        hasActor: !!actor,
+        actorFetching,
+        hasIdentity: !!identity,
+        principal: identity?.getPrincipal().toString(),
+        adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
+        caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
+      });
+
+      if (!actor) {
+        console.error('[useAllAppointments] Actor not available');
+        throw new Error('Actor not available');
+      }
+      
+      console.log('[useAllAppointments] Calling actor.getAllAppointments()...');
+      console.log('[useAllAppointments] Actor methods available:', Object.keys(actor).filter(k => typeof (actor as any)[k] === 'function'));
+      
+      try {
+        const result = await actor.getAllAppointments();
+        console.log('[useAllAppointments] ===== SUCCESS =====');
+        console.log('[useAllAppointments] Successfully fetched all appointments:', {
+          count: result.length,
+          timestamp: new Date().toISOString(),
+        });
+        return result;
+      } catch (error) {
+        console.error('[useAllAppointments] ===== ERROR =====');
+        console.error('[useAllAppointments] Error fetching all appointments:', {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+          errorName: error instanceof Error ? error.name : undefined,
+          principal: identity?.getPrincipal().toString(),
+          adminAuthFromSession: sessionStorage.getItem('admin_authenticated'),
+          caffeineTokenFromSession: sessionStorage.getItem('caffeineAdminToken') ? 'present' : 'absent',
+        });
+        throw error;
+      }
     },
     enabled: !!actor && !actorFetching && !!identity,
     retry: false,
@@ -55,8 +128,30 @@ export function useGetCallerUserProfile() {
   const query = useQuery<UserProfile | null>({
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
+      console.log('[useGetCallerUserProfile] Fetching user profile:', {
+        timestamp: new Date().toISOString(),
+        hasActor: !!actor,
+        actorFetching,
+        hasIdentity: !!identity,
+        principal: identity?.getPrincipal().toString(),
+      });
+
       if (!actor) throw new Error('Actor not available');
-      return actor.getCallerUserProfile();
+      
+      try {
+        const result = await actor.getCallerUserProfile();
+        console.log('[useGetCallerUserProfile] Successfully fetched user profile:', {
+          hasProfile: !!result,
+          profileName: result?.name,
+        });
+        return result;
+      } catch (error) {
+        console.error('[useGetCallerUserProfile] Error fetching user profile:', {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+        });
+        throw error;
+      }
     },
     enabled: !!actor && !actorFetching && !!identity,
     retry: false,
@@ -76,8 +171,23 @@ export function useSaveCallerUserProfile() {
 
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
+      console.log('[useSaveCallerUserProfile] Saving user profile:', {
+        timestamp: new Date().toISOString(),
+        profileName: profile.name,
+      });
+
       if (!actor) throw new Error('Actor not available');
-      return actor.saveCallerUserProfile(profile);
+      
+      try {
+        await actor.saveCallerUserProfile(profile);
+        console.log('[useSaveCallerUserProfile] Successfully saved user profile');
+      } catch (error) {
+        console.error('[useSaveCallerUserProfile] Error saving user profile:', {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+        });
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
@@ -130,7 +240,7 @@ async function retryWithBackoff<T>(
 }
 
 export function useBookAppointment() {
-  const { actor } = useActor();
+  const { actor, isFetching } = useActor();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -141,8 +251,9 @@ export function useBookAppointment() {
       serviceType: ServiceType;
       onRetry?: (attempt: number, error: Error) => void;
     }) => {
-      if (!actor) {
-        throw new Error('Backend connection not ready. Please wait a moment and try again.');
+      // Validate actor is available and not fetching
+      if (!actor || isFetching) {
+        throw new Error('Backend connection not ready. Please wait for the system to initialize and try again.');
       }
 
       const timestamp = BigInt(data.date.getTime() * 1000000);
@@ -155,6 +266,8 @@ export function useBookAppointment() {
             contactInfo: data.contactInfo,
             date: data.date.toISOString(),
             serviceType: data.serviceType,
+            actorAvailable: !!actor,
+            isFetching,
           });
 
           try {
