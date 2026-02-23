@@ -1,9 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, AlertCircle, Phone, Mail } from 'lucide-react';
 import AppointmentForm from '@/components/AppointmentForm';
+import { useGetClinicOpen } from '@/hooks/useQueries';
 
 export default function BookingPage() {
+  const { data: clinicOpen, isLoading: clinicOpenLoading } = useGetClinicOpen();
+
   return (
     <div className="container py-12 animate-page-fade-in">
       <div className="mb-8 animate-fade-in">

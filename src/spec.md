@@ -1,12 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Fix admin panel permission errors and add interactive open/close control buttons for clinic status management.
+**Goal:** Enable the clinic to accept appointments by setting the clinic status to permanently open.
 
 **Planned changes:**
-- Fix the "You may not have the required permissions" error by ensuring proper authentication checks in the admin panel
-- Replace the read-only clinic status display with interactive "Open" and "Close" buttons
-- Connect the frontend buttons to backend setClinicOpen and setClinicClosed functions
-- Ensure manual override status persists and updates are immediately reflected in the UI
+- Set the clinic status to open in the backend so appointments can be accepted at all times
+- Update the frontend to remove the "Clinic Currently Closed" message and enable appointment booking functionality
 
-**User-visible outcome:** Admin users can access the admin panel without permission errors and actively control the clinic's open/closed status using dedicated buttons, with changes taking effect immediately.
+**User-visible outcome:** Users will see that the clinic is open and accepting appointments, and they will be able to successfully submit appointment booking requests through the form.

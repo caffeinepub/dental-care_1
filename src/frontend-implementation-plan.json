@@ -1,65 +1,41 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix admin panel permissions and add open/close control buttons",
+  "title": "Enable clinic open status to allow appointments",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Fix the 'You may not have the required permissions. Please contact the system administrator.' error in the admin panel by ensuring proper authentication checks and authorization flow",
-      "acceptanceCriteria": [
-        "Admin panel loads without permission errors when accessed with valid credentials",
-        "Authentication state is properly validated before rendering admin content",
-        "Error message no longer appears for authenticated admin users"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/AdminPage.tsx",
-          "operation": "modify",
-          "description": "Fix the authentication and authorization checks by properly handling the admin authentication state from useAdminAuth and the actor's isCallerAdmin query. Ensure that the AccessDeniedScreen is only shown when the admin is not authenticated via sessionStorage credentials, and that backend authorization checks are handled separately with appropriate error handling. Remove or adjust any conflicting authorization logic that prevents authenticated admins from accessing the panel."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add a new React Query hook useIsCallerAdmin that calls the backend isCallerAdmin method. Configure the query to handle authentication state properly and return loading/error states. This hook will be used in AdminPage to verify backend authorization status."
-        }
-      ]
-    },
-    {
       "id": "REQ-2",
-      "summary": "Add interactive Open and Close buttons in the admin panel to control clinic status, replacing the current read-only status display",
+      "summary": "Update the frontend to display the open clinic status and enable the appointment booking functionality",
       "acceptanceCriteria": [
-        "Two separate buttons labeled 'Open' and 'Close' are displayed in the admin panel",
-        "Clicking 'Open' button sets clinic status to open",
-        "Clicking 'Close' button sets clinic status to closed",
-        "Current clinic status is visually indicated (e.g., active button highlighted or disabled)",
-        "Status changes are immediately reflected in the admin panel UI"
+        "The frontend displays that the clinic is open and accepting appointments",
+        "Users can access and submit the appointment booking form",
+        "The closed clinic warning message is removed or hidden when the clinic is open"
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/pages/AdminPage.tsx",
-          "operation": "modify",
-          "description": "Replace the current read-only clinic status display with two interactive buttons labeled 'Open' and 'Close'. Implement click handlers that call the backend setClinicOpen method with true for Open and false for Close. Add visual indication of the current status by styling the active button differently (e.g., using primary color for the current state, secondary for the inactive option). Use the existing useGetClinicOpen query to display current status and invalidate the query after status changes to reflect updates immediately."
-        },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add a new React Query mutation hook useSetClinicOpen that calls the backend setClinicOpen method with a boolean parameter. Configure the mutation to invalidate the 'clinicOpen' query key on success to trigger an automatic refetch of the current status. Include proper error handling and success notifications using toast."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Ensure the manual clinic status override functionality in the backend is properly integrated with the admin panel controls",
-      "acceptanceCriteria": [
-        "Backend setClinicOpen method is callable from the frontend through the mutation hook",
-        "Manual override status persists across page refreshes",
-        "Status changes trigger appropriate backend state updates"
-      ],
-      "file_operations": [
+          "description": "Add a React Query hook `useGetClinicOpen` that calls the backend method `getClinicOpen()` to fetch the current clinic open/closed status. This query should be enabled by default and cached with a stale time to avoid excessive backend calls. Return the boolean status and loading state for use in components."
+        },
         {
-          "path": "frontend/src/pages/AdminPage.tsx",
+          "path": "frontend/src/components/AppointmentForm.tsx",
           "operation": "modify",
-          "description": "Verify that the Open/Close button handlers properly call the useSetClinicOpen mutation hook and handle loading states during the mutation. Add visual feedback (loading spinner or disabled state) on buttons while the mutation is in progress. Ensure that after a successful status change, the UI reflects the persisted backend state by relying on the refetched query data."
+          "description": "Import and use the `useGetClinicOpen` hook to fetch the clinic status. At the top of the form, conditionally render a status message: if the clinic is closed, display a warning alert stating 'Clinic Currently Closed - We are not accepting new appointments at this time' with appropriate styling; if open, display a success message stating 'Clinic is Open - We are accepting appointments'. Disable the entire form (all inputs and submit button) when the clinic is closed. Add loading state handling while fetching the clinic status."
+        },
+        {
+          "path": "frontend/src/pages/BookingPage.tsx",
+          "operation": "modify",
+          "description": "Import and use the `useGetClinicOpen` hook to check clinic status before rendering the AppointmentForm. If the clinic is closed, display a centered card with an informational message and icon explaining that appointments are not currently being accepted, with a suggestion to check back later or contact the clinic directly. Include the clinic contact information from the backend. If open, render the AppointmentForm as usual. Handle loading states appropriately."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Import and use the `useGetClinicOpen` hook in the HomePage component. Pass the clinic open status as a prop to the HeroSection component so it can adjust the call-to-action messaging dynamically based on whether appointments are being accepted."
+        },
+        {
+          "path": "frontend/src/components/HeroSection.tsx",
+          "operation": "modify",
+          "description": "Accept a `clinicOpen` boolean prop from HomePage. Conditionally adjust the hero section messaging and CTA buttons based on clinic status. When closed, update the primary CTA text to 'View Our Services' instead of 'Book Appointment' and change the button link to navigate to the services page. Display a subtle badge or label indicating 'Currently Closed' near the hero text. When open, keep the existing 'Book Appointment' CTA and ensure it links to the booking page."
         }
       ]
     }

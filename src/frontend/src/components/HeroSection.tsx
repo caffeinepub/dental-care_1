@@ -1,9 +1,15 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowRight, Phone } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowRight, Phone, CheckCircle } from 'lucide-react';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  clinicOpen?: boolean;
+  isLoading?: boolean;
+}
+
+export default function HeroSection({ clinicOpen, isLoading }: HeroSectionProps) {
   const navigate = useNavigate();
 
   const handleContactClick = () => {
@@ -12,6 +18,12 @@ export default function HeroSection() {
       contactSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Determine CTA based on clinic status
+  const primaryCTAText = clinicOpen === false ? 'View Our Services' : 'Book Appointment Now';
+  const primaryCTAAction = clinicOpen === false 
+    ? () => navigate({ to: '/services' })
+    : () => navigate({ to: '/booking' });
 
   return (
     <section 
@@ -38,6 +50,14 @@ export default function HeroSection() {
               <div className="relative z-10 py-12 md:py-16 px-6">
                 <div className="max-w-2xl mx-auto lg:mx-0 text-center lg:text-left space-y-8">
                   <div className="space-y-6">
+                    {/* Clinic Status Badge */}
+                    {!isLoading && clinicOpen === true && (
+                      <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm font-semibold inline-flex items-center gap-2 animate-fade-in">
+                        <CheckCircle className="w-4 h-4" />
+                        Clinic Open - Accepting Appointments
+                      </Badge>
+                    )}
+                    
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white animate-fade-in">
                       Your Journey to a Beautiful Smile Starts Here
                     </h1>
@@ -49,10 +69,10 @@ export default function HeroSection() {
                   <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center pt-4 animate-fade-in-delay-400">
                     <Button
                       size="lg"
-                      onClick={() => navigate({ to: '/booking' })}
+                      onClick={primaryCTAAction}
                       className="text-lg px-8 py-6 h-auto font-semibold group bg-white text-primary hover:bg-white/90 hover:scale-105 transition-all shadow-lg animate-pulse-subtle"
                     >
-                      Book Appointment Now
+                      {primaryCTAText}
                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                     <Button
@@ -95,10 +115,10 @@ export default function HeroSection() {
                 
                 <Button
                   size="lg"
-                  onClick={() => navigate({ to: '/booking' })}
+                  onClick={primaryCTAAction}
                   className="text-lg px-10 py-6 h-auto font-bold bg-white text-primary hover:bg-white/90 hover:scale-110 transition-all shadow-2xl"
                 >
-                  Claim Your Offer
+                  {clinicOpen === false ? 'Explore Services' : 'Claim Your Offer'}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </div>

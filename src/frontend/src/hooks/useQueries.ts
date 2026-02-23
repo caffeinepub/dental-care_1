@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { useInternetIdentity } from './useInternetIdentity';
-import type { Appointment, ServiceType, UserProfile, OpeningHours } from '../backend';
+import type { Appointment, ServiceType, UserProfile, OpeningHours, AppointmentRequest } from '../backend';
 
 export function useGetAllAppointments() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -146,21 +146,6 @@ export function useGetClinicOpen() {
   });
 }
 
-export function useSetClinicOpen() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (isOpen: boolean) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.setClinicOpen(isOpen);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['clinicOpen'] });
-    },
-  });
-}
-
 // Opening hours hooks
 export function useGetAllOpeningHours() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -283,12 +268,13 @@ export function useBookAppointment() {
       return await retryWithBackoff(
         async () => {
           try {
-            await actor.book(
-              data.patientName,
-              data.contactInfo,
-              timestamp,
-              data.serviceType
-            );
+            const request: AppointmentRequest = {
+              patientName: data.patientName,
+              contactInfo: data.contactInfo,
+              date: timestamp,
+              serviceType: data.serviceType,
+            };
+            await actor.book(request);
           } catch (error) {
             console.error('[Booking] Error during booking:', error);
             throw error;

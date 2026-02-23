@@ -3,44 +3,19 @@ import Array "mo:core/Array";
 import Text "mo:core/Text";
 import Time "mo:core/Time";
 import Iter "mo:core/Iter";
-import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
+import Runtime "mo:core/Runtime";
 import MixinStorage "blob-storage/Mixin";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
-  let accessControlState = AccessControl.initState();
-  include MixinAuthorization(accessControlState);
-
-  include MixinStorage();
-
-  public type OpeningHours = {
+  type OpeningHours = {
     openTime : Nat;
     closeTime : Nat;
   };
-
-  public type ClinicStatus = {
-    isOpen : Bool;
-    manualOverride : Bool;
-  };
-
-  var clinicStatus : ClinicStatus = {
-    isOpen = false;
-    manualOverride = false;
-  };
-
-  let daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
-  let openingHours = Map.empty<Text, OpeningHours>();
 
   type Appointment = {
     patientName : Text;
@@ -49,7 +24,7 @@ actor {
     serviceType : ServiceType;
   };
 
-  public type ServiceType = {
+  type ServiceType = {
     #FirstExamAndXray;
     #Hygiene;
     #HygieneAndExam;
@@ -62,6 +37,37 @@ actor {
     #BotoxConsultForMigraines;
     #BotoxConsultForCosmetic;
   };
+
+  type UserProfile = {
+    name : Text;
+  };
+
+  type AppointmentResponse = {
+    id : Nat;
+    patientName : Text;
+    contactInfo : Text;
+    date : Time.Time;
+    serviceType : ServiceType;
+  };
+
+  let accessControlState = AccessControl.initState();
+  include MixinAuthorization(accessControlState);
+  include MixinStorage();
+
+  let daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  var openingHours = Map.empty<Text, OpeningHours>();
+  var nextAppointmentId = 0;
+  var appointments = Map.empty<Nat, Appointment>();
+  var userProfiles = Map.empty<Principal, UserProfile>();
 
   module ServiceType {
     public func toText(serviceType : ServiceType) : Text {
@@ -81,14 +87,12 @@ actor {
     };
   };
 
-  public type UserProfile = {
-    name : Text;
-    // Could add more user metadata here
+  public type AppointmentRequest = {
+    patientName : Text;
+    contactInfo : Text;
+    date : Time.Time;
+    serviceType : ServiceType;
   };
-
-  var nextAppointmentId = 0;
-  let appointments = Map.empty<Nat, Appointment>();
-  let userProfiles = Map.empty<Principal, UserProfile>();
 
   // Initialize default opening hours for each day of the week
   for (day in daysOfWeek.values()) {
@@ -101,34 +105,16 @@ actor {
     );
   };
 
-  public shared ({ caller }) func setClinicOpen(isOpen : Bool) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
-    };
-    clinicStatus := {
-      isOpen;
-      manualOverride = true;
-    };
+  // Clinic is permanently open - status functions always return true
+  public query func getClinicOpen() : async Bool {
+    true; // Always open
   };
 
-  public shared ({ caller }) func clearManualOverride() : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
-    };
-    clinicStatus := {
-      isOpen = false;
-      manualOverride = false;
-    };
+  public query func getShouldBeOpen() : async Bool {
+    true; // Always open
   };
 
-  public query ({ caller }) func getClinicOpen() : async Bool {
-    clinicStatus.isOpen;
-  };
-
-  public query ({ caller }) func getShouldBeOpen() : async Bool {
-    clinicStatus.isOpen;
-  };
-
+  // Opening hours management - Admin only
   public shared ({ caller }) func setOpeningHoursForDay(day : Text, openTime : Nat, closeTime : Nat) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can perform this action");
@@ -140,17 +126,19 @@ actor {
     openingHours.add(day, hours);
   };
 
-  public query ({ caller }) func getOpeningHours(day : Text) : async ?OpeningHours {
+  // Public queries - no auth needed
+  public query func getOpeningHours(day : Text) : async ?OpeningHours {
     openingHours.get(day);
   };
 
-  public query ({ caller }) func getAllOpeningHours() : async [(Text, OpeningHours)] {
+  public query func getAllOpeningHours() : async [(Text, OpeningHours)] {
     openingHours.toArray();
   };
 
+  // User profile management
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can access profiles");
+      Runtime.trap("Unauthorized: Only users can view profiles");
     };
     userProfiles.get(caller);
   };
@@ -169,15 +157,16 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  public shared ({ caller }) func book(patientName : Text, contactInfo : Text, date : Time.Time, serviceType : ServiceType) : async Nat {
+  // Appointment management - booking requires user auth
+  public shared ({ caller }) func book(request : AppointmentRequest) : async Nat {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can book appointments");
     };
     let appointment : Appointment = {
-      patientName;
-      contactInfo;
-      date;
-      serviceType;
+      patientName = request.patientName;
+      contactInfo = request.contactInfo;
+      date = request.date;
+      serviceType = request.serviceType;
     };
     let appointmentId = nextAppointmentId;
     appointments.add(appointmentId, appointment);
@@ -185,21 +174,33 @@ actor {
     appointmentId;
   };
 
+  // Cancel appointment - Admin only
   public shared ({ caller }) func cancel(appointmentId : Nat) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can perform this action");
     };
     if (not appointments.containsKey(appointmentId)) {
-      Runtime.trap("Appointment does not exist.");
+      return;
     };
     appointments.remove(appointmentId);
   };
 
-  public query ({ caller }) func getAll() : async [Appointment] {
+  // Admin-only queries
+  public query ({ caller }) func getAll() : async [AppointmentResponse] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can perform this action");
     };
-    appointments.values().toArray();
+    appointments.toArray().map(
+      func((id, appointment)) : AppointmentResponse {
+        {
+          id;
+          patientName = appointment.patientName;
+          contactInfo = appointment.contactInfo;
+          date = appointment.date;
+          serviceType = appointment.serviceType;
+        };
+      }
+    );
   };
 
   public query ({ caller }) func getAllAppointments() : async [Appointment] {
@@ -214,7 +215,7 @@ actor {
       Runtime.trap("Unauthorized: Only admins can perform this action");
     };
     appointments.values().filter(
-      func(appointment) {
+      func(appointment) : Bool {
         appointment.serviceType == serviceType;
       }
     ).toArray();
@@ -226,7 +227,7 @@ actor {
     };
     let currentTime = Time.now();
     appointments.values().filter(
-      func(appointment) {
+      func(appointment) : Bool {
         appointment.date > currentTime;
       }
     ).toArray();
@@ -238,7 +239,7 @@ actor {
     };
     let currentTime = Time.now();
     appointments.values().filter(
-      func(appointment) {
+      func(appointment) : Bool {
         appointment.date <= currentTime;
       }
     ).toArray();
@@ -249,13 +250,19 @@ actor {
       Runtime.trap("Unauthorized: Only admins can perform this action");
     };
     appointments.values().filter(
-      func(appointment) {
+      func(appointment) : Bool {
         Text.equal(appointment.patientName, patientName);
       }
     ).toArray();
   };
 
-  public query ({ caller }) func serviceTypeToText(serviceType : ServiceType) : async Text {
+  // Public utility function - no auth needed
+  public query func serviceTypeToText(serviceType : ServiceType) : async Text {
     ServiceType.toText(serviceType);
+  };
+
+  // Query returning empty array - no auth needed (public endpoint)
+  public query ({ caller }) func getEmptyAppointments() : async [AppointmentResponse] {
+    [];
   };
 };

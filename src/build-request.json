@@ -1,72 +1,55 @@
 {
   "kind": "build_request",
-  "title": "Fix admin panel permissions and add open/close control buttons",
+  "title": "Enable clinic open status to allow appointments",
   "projectName": "Annaya Dental Care",
-  "priority": "high",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the 'You may not have the required permissions. Please contact the system administrator.' error in the admin panel by ensuring proper authentication checks and authorization flow",
-      "target": "both",
+      "text": "Set the clinic status to permanently open so that new appointments can be accepted at all times",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-final"
         ],
         "quotes": [
-          "admin panel me ye problem aa rahi hai You may not have the required permissions. Please contact the system administrator."
+          "Clinic ko hamesa ke liye open hu rakho kabhi bhi band na ho",
+          "Mere clinic ko opne karo taki mije apoitments aa sake"
         ]
       },
       "acceptanceCriteria": [
-        "Admin panel loads without permission errors when accessed with valid credentials",
-        "Authentication state is properly validated before rendering admin content",
-        "Error message no longer appears for authenticated admin users"
+        "The clinic status is set to open in the backend",
+        "Appointments can be successfully booked when the clinic is open",
+        "The 'Clinic Currently Closed' message is no longer displayed on the frontend"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add interactive Open and Close buttons in the admin panel to control clinic status, replacing the current read-only status display",
+      "text": "Update the frontend to display the open clinic status and enable the appointment booking functionality",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-final"
         ],
         "quotes": [
-          "admin panel me button do opne close ka sirf ststus nahi dekhna muje button chahiye taki me cuntrol kar saku"
+          "Clinic Currently Closed We are not accepting new appointments at this time"
         ]
       },
       "acceptanceCriteria": [
-        "Two separate buttons labeled 'Open' and 'Close' are displayed in the admin panel",
-        "Clicking 'Open' button sets clinic status to open",
-        "Clicking 'Close' button sets clinic status to closed",
-        "Current clinic status is visually indicated (e.g., active button highlighted or disabled)",
-        "Status changes are immediately reflected in the admin panel UI"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Ensure the manual clinic status override functionality in the backend is properly integrated with the admin panel controls",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend setClinicOpen and setClinicClosed functions are callable from the frontend",
-        "Manual override status persists across page refreshes",
-        "Status changes trigger appropriate backend state updates"
+        "The frontend displays that the clinic is open and accepting appointments",
+        "Users can access and submit the appointment booking form",
+        "The closed clinic warning message is removed or hidden when the clinic is open"
       ]
     }
   ],
   "constraints": [
-    "Maintain existing admin authentication using sessionStorage with hardcoded credentials",
-    "Preserve the existing ClinicStatus record structure with isOpen and manualOverride fields",
-    "Keep the MixinAuthorization pattern for admin access control"
+    "Do not remove the clinic status management functionality from the admin panel",
+    "Preserve the existing appointment booking form and validation logic"
   ],
   "nonGoals": [
-    "Changing the authentication credentials",
-    "Modifying the overall admin panel layout",
-    "Adding new clinic management features beyond open/close control"
+    "Changing the admin authentication system",
+    "Modifying the opening hours management interface",
+    "Altering the appointment data structure or storage"
   ],
   "imageRequirements": {
     "required": [],

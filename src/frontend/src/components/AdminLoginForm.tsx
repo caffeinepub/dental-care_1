@@ -1,118 +1,121 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Lock, User, AlertCircle } from 'lucide-react';
+import { Lock, Loader2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 interface AdminLoginFormProps {
-  onLoginSuccess: () => void;
-}
-
-interface LoginFormData {
-  username: string;
-  password: string;
+  onLoginSuccess?: () => void;
 }
 
 export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) {
-  const [error, setError] = useState<string>('');
-  const { loginAdmin } = useAdminAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { loginAdmin, isLoggingIn, hasIdentity } = useAdminAuth();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>();
-
-  const onSubmit = (data: LoginFormData) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    // Validate credentials using the hook
-    const success = loginAdmin(data.username, data.password);
-    
-    if (success) {
-      onLoginSuccess();
-    } else {
-      setError('Invalid username or password. Please try again.');
+    try {
+      const success = await loginAdmin(username, password);
+      
+      if (success) {
+        // Wait a moment for state to update
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+      } else {
+        setError('Invalid username or password');
+      }
+    } catch (err) {
+      console.error('[AdminLoginForm] Login error:', err);
+      setError('An error occurred during login. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const isSubmitting = isLoading || isLoggingIn;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/20 px-4">
-      <Card className="w-full max-w-md shadow-2xl">
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-3xl flex items-center justify-center shadow-lg">
-            <Lock className="w-10 h-10 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="space-y-1 text-center">
+          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+            <Lock className="w-6 h-6 text-primary" />
           </div>
-          <div>
-            <CardTitle className="text-3xl font-bold">Admin Login</CardTitle>
-            <CardDescription className="text-base mt-2">
-              Enter your credentials to access the admin dashboard
-            </CardDescription>
-          </div>
+          <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
+          <CardDescription>
+            Enter your credentials to access the admin dashboard
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Enter username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={isSubmitting}
+                required
+                autoComplete="username"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isSubmitting}
+                required
+                autoComplete="current-password"
+              />
+            </div>
+
             {error && (
-              <Alert variant="destructive" className="animate-in slide-in-from-top-2">
+              <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="username" className="flex items-center gap-2 text-base">
-                <User className="w-4 h-4" />
-                Username
-              </Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="Enter username"
-                className="h-12 text-base rounded-xl"
-                autoComplete="username"
-                {...register('username', {
-                  required: 'Username is required',
-                })}
-              />
-              {errors.username && (
-                <p className="text-sm text-destructive animate-in slide-in-from-top-1">
-                  {errors.username.message}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="flex items-center gap-2 text-base">
-                <Lock className="w-4 h-4" />
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter password"
-                className="h-12 text-base rounded-xl"
-                autoComplete="current-password"
-                {...register('password', {
-                  required: 'Password is required',
-                })}
-              />
-              {errors.password && (
-                <p className="text-sm text-destructive animate-in slide-in-from-top-1">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
+            {isLoggingIn && !hasIdentity && (
+              <Alert>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <AlertDescription>
+                  Connecting to Internet Identity...
+                </AlertDescription>
+              </Alert>
+            )}
 
             <Button
               type="submit"
-              className="w-full h-12 text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
-              size="lg"
+              className="w-full"
+              disabled={isSubmitting}
             >
-              Sign In
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {isLoggingIn ? 'Authenticating...' : 'Logging in...'}
+                </>
+              ) : (
+                'Login'
+              )}
             </Button>
           </form>
         </CardContent>

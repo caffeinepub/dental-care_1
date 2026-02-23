@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useAllAppointments, useGetClinicOpen, useSetClinicOpen, useGetAllOpeningHours, useSetOpeningHours } from '@/hooks/useQueries';
+import { useAllAppointments, useGetClinicOpen, useGetAllOpeningHours, useSetOpeningHours } from '@/hooks/useQueries';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { useInternetIdentity } from '@/hooks/useInternetIdentity';
+import { useActor } from '@/hooks/useActor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, LogOut, Power, Clock, Save, Mail, CheckCircle2, XCircle } from 'lucide-react';
+import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, LogOut, Clock, Save, Mail, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ServiceType } from '../backend';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
@@ -37,13 +39,17 @@ const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sat
 
 export default function AdminPage() {
   // Admin authentication using custom hook
-  const { isAuthenticated: isAdminAuthenticated, logoutAdmin } = useAdminAuth();
+  const { isAuthenticated: isAdminAuthenticated, logoutAdmin, hasIdentity } = useAdminAuth();
+  const { identity, clear: clearIdentity } = useInternetIdentity();
+  const { actor, isFetching: actorFetching } = useActor();
+
+  // Wait for both admin auth and Internet Identity
+  const isFullyAuthenticated = isAdminAuthenticated && hasIdentity && !!actor;
 
   const { data: appointments, isLoading: appointmentsLoading, error } = useAllAppointments();
   
   // Clinic status and opening hours
   const { data: clinicOpen, isLoading: clinicOpenLoading } = useGetClinicOpen();
-  const { mutate: setClinicOpen, isPending: isSettingClinicOpen } = useSetClinicOpen();
   const { data: openingHours, isLoading: openingHoursLoading } = useGetAllOpeningHours();
   const { mutate: setOpeningHours, isPending: isSettingOpeningHours } = useSetOpeningHours();
 
@@ -114,32 +120,6 @@ export default function AdminPage() {
     window.location.reload();
   };
 
-  const handleSetClinicOpen = () => {
-    setClinicOpen(true, {
-      onSuccess: () => {
-        toast.success('Clinic is now open for bookings');
-      },
-      onError: (error) => {
-        toast.error('Failed to open clinic', {
-          description: error instanceof Error ? error.message : 'Unknown error',
-        });
-      },
-    });
-  };
-
-  const handleSetClinicClosed = () => {
-    setClinicOpen(false, {
-      onSuccess: () => {
-        toast.success('Clinic is now closed for bookings');
-      },
-      onError: (error) => {
-        toast.error('Failed to close clinic', {
-          description: error instanceof Error ? error.message : 'Unknown error',
-        });
-      },
-    });
-  };
-
   const handleSaveOpeningHours = (day: string) => {
     const hours = editingHours[day];
     if (!hours) return;
@@ -187,9 +167,29 @@ export default function AdminPage() {
     }));
   };
 
+  const handleLogout = async () => {
+    logoutAdmin();
+    await clearIdentity();
+    window.location.href = '/';
+  };
+
   // Show admin login form if not admin authenticated
   if (!isAdminAuthenticated) {
     return <AdminLoginForm onLoginSuccess={handleAdminLoginSuccess} />;
+  }
+
+  // Show loading while waiting for Internet Identity and actor
+  if (!isFullyAuthenticated || actorFetching) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
+          <p className="text-lg font-medium text-muted-foreground">
+            {!hasIdentity ? 'Authenticating with Internet Identity...' : 'Initializing admin panel...'}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   // Show error state
@@ -221,10 +221,7 @@ export default function AdminPage() {
                 Retry
               </Button>
               <Button
-                onClick={() => {
-                  logoutAdmin();
-                  window.location.href = '/';
-                }}
+                onClick={handleLogout}
                 variant="destructive"
                 className="flex-1"
               >
@@ -264,14 +261,11 @@ export default function AdminPage() {
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
               <p className="text-muted-foreground">
-                Manage appointments, clinic status, and operating hours
+                Manage appointments and operating hours
               </p>
             </div>
             <Button
-              onClick={() => {
-                logoutAdmin();
-                window.location.href = '/';
-              }}
+              onClick={handleLogout}
               variant="outline"
               className="gap-2"
             >
@@ -288,78 +282,33 @@ export default function AdminPage() {
               <Calendar className="w-3 h-3" />
               {filteredAppointments.length} Appointments
             </Badge>
+            {clinicOpen && (
+              <Badge className="gap-1 bg-green-600 hover:bg-green-700">
+                <CheckCircle2 className="w-3 h-3" />
+                Clinic Open
+              </Badge>
+            )}
           </div>
         </div>
 
-        {/* Clinic Status Control - Prominent Card with Open/Close Buttons */}
-        <Card className="mb-6 shadow-lg border-2 border-primary/20">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Power className="w-6 h-6 text-primary" />
-              Clinic Status Control
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div className="space-y-2 flex-1">
-                <div className="flex items-center gap-3">
-                  {clinicOpen ? (
-                    <CheckCircle2 className="w-8 h-8 text-green-600" />
-                  ) : (
-                    <XCircle className="w-8 h-8 text-red-600" />
-                  )}
-                  <div>
-                    <p className="text-2xl font-bold">
-                      {clinicOpen ? 'OPEN' : 'CLOSED'}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {clinicOpen
-                        ? 'Accepting new appointment bookings'
-                        : 'Not accepting new bookings'}
-                    </p>
-                  </div>
+        {/* Clinic Status Info Banner - Read-only */}
+        {clinicOpen && (
+          <Card className="mb-6 shadow-lg border-2 border-green-500/20 bg-green-50 dark:bg-green-950/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="w-8 h-8 text-green-600" />
+                <div>
+                  <p className="text-xl font-bold text-green-800 dark:text-green-300">
+                    Clinic is Open
+                  </p>
+                  <p className="text-sm text-green-700 dark:text-green-400">
+                    Currently accepting new appointment bookings
+                  </p>
                 </div>
               </div>
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleSetClinicOpen}
-                  disabled={isSettingClinicOpen || clinicOpen === true}
-                  size="lg"
-                  className={`gap-2 min-w-[140px] ${
-                    clinicOpen === true
-                      ? 'bg-green-600 hover:bg-green-600 text-white'
-                      : 'bg-green-600/20 hover:bg-green-600 text-green-700 hover:text-white'
-                  }`}
-                >
-                  {isSettingClinicOpen && clinicOpen !== true ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <CheckCircle2 className="w-5 h-5" />
-                  )}
-                  Open
-                </Button>
-                <Button
-                  onClick={handleSetClinicClosed}
-                  disabled={isSettingClinicOpen || clinicOpen === false}
-                  size="lg"
-                  variant="destructive"
-                  className={`gap-2 min-w-[140px] ${
-                    clinicOpen === false
-                      ? 'bg-red-600 hover:bg-red-600 text-white'
-                      : 'bg-red-600/20 hover:bg-red-600 text-red-700 hover:text-white'
-                  }`}
-                >
-                  {isSettingClinicOpen && clinicOpen !== false ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <XCircle className="w-5 h-5" />
-                  )}
-                  Close
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Operating Hours Management */}
         <Card className="mb-6 shadow-lg">
@@ -389,8 +338,7 @@ export default function AdminPage() {
                         onChange={(e) => handleHoursChange(day, 'openTime', e.target.value)}
                         className="w-20"
                       />
-                      <span className="text-sm text-muted-foreground">:00</span>
-                      <Label htmlFor={`${day}-close`} className="text-sm w-12 ml-4">
+                      <Label htmlFor={`${day}-close`} className="text-sm w-12">
                         Close:
                       </Label>
                       <Input
@@ -402,7 +350,6 @@ export default function AdminPage() {
                         onChange={(e) => handleHoursChange(day, 'closeTime', e.target.value)}
                         className="w-20"
                       />
-                      <span className="text-sm text-muted-foreground">:00</span>
                     </div>
                     <Button
                       onClick={() => handleSaveOpeningHours(day)}
@@ -424,7 +371,7 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
-        {/* Appointments Section */}
+        {/* Appointments Management */}
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -449,10 +396,7 @@ export default function AdminPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="filter-service" className="flex items-center gap-2">
-                  <Stethoscope className="w-4 h-4" />
-                  Filter by Service
-                </Label>
+                <Label htmlFor="filter-service">Filter by Service</Label>
                 <Select value={filterService} onValueChange={setFilterService}>
                   <SelectTrigger id="filter-service">
                     <SelectValue placeholder="All services" />
@@ -501,7 +445,7 @@ export default function AdminPage() {
                 className="gap-2"
               >
                 <ArrowUpDown className="w-4 h-4" />
-                {sortOrder === 'asc' ? 'Oldest First' : 'Newest First'}
+                Sort by Date ({sortOrder === 'asc' ? 'Oldest First' : 'Newest First'})
               </Button>
             </div>
 
@@ -514,12 +458,12 @@ export default function AdminPage() {
             >
               {filteredAppointments.length === 0 ? (
                 <div className="text-center py-12 bg-muted/30 rounded-lg">
-                  <Calendar className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <Calendar className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-lg font-medium text-muted-foreground">No appointments found</p>
                   <p className="text-sm text-muted-foreground mt-2">
                     {searchName || filterService !== 'all' || startDate || endDate
                       ? 'Try adjusting your filters'
-                      : 'Appointments will appear here once patients book'}
+                      : 'Appointments will appear here once booked'}
                   </p>
                 </div>
               ) : (
@@ -530,7 +474,7 @@ export default function AdminPage() {
                         <TableHead className="font-semibold">
                           <div className="flex items-center gap-2">
                             <User className="w-4 h-4" />
-                            Patient Name
+                            Patient
                           </div>
                         </TableHead>
                         <TableHead className="font-semibold">
@@ -556,14 +500,12 @@ export default function AdminPage() {
                     <TableBody>
                       {filteredAppointments.map((appointment, index) => {
                         const appointmentDate = new Date(Number(appointment.date) / 1000000);
-                        const isPast = appointmentDate < new Date();
+                        const isUpcoming = appointmentDate > new Date();
 
                         return (
                           <TableRow
                             key={index}
-                            className={`hover:bg-muted/50 transition-colors ${
-                              isPast ? 'opacity-60' : ''
-                            }`}
+                            className="hover:bg-muted/30 transition-colors"
                           >
                             <TableCell className="font-medium">
                               <div className="flex items-center gap-2">
@@ -574,41 +516,26 @@ export default function AdminPage() {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 text-sm">
                                 {appointment.contactInfo.includes('@') ? (
-                                  <>
-                                    <Mail className="w-4 h-4 text-muted-foreground" />
-                                    <a
-                                      href={`mailto:${appointment.contactInfo}`}
-                                      className="text-primary hover:underline"
-                                    >
-                                      {appointment.contactInfo}
-                                    </a>
-                                  </>
+                                  <Mail className="w-4 h-4 text-muted-foreground" />
                                 ) : (
-                                  <>
-                                    <Phone className="w-4 h-4 text-muted-foreground" />
-                                    <a
-                                      href={`tel:${appointment.contactInfo}`}
-                                      className="text-primary hover:underline"
-                                    >
-                                      {appointment.contactInfo}
-                                    </a>
-                                  </>
+                                  <Phone className="w-4 h-4 text-muted-foreground" />
                                 )}
+                                {appointment.contactInfo}
                               </div>
                             </TableCell>
                             <TableCell>
                               <div className="space-y-1">
                                 <div className="font-medium">
-                                  {format(appointmentDate, 'MMM dd, yyyy')}
+                                  {format(appointmentDate, 'PPP')}
                                 </div>
                                 <div className="text-sm text-muted-foreground">
-                                  {format(appointmentDate, 'hh:mm a')}
+                                  {format(appointmentDate, 'p')}
                                 </div>
-                                {isPast && (
+                                {isUpcoming && (
                                   <Badge variant="outline" className="text-xs">
-                                    Past
+                                    Upcoming
                                   </Badge>
                                 )}
                               </div>

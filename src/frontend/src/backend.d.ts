@@ -12,6 +12,19 @@ export interface OpeningHours {
     openTime: bigint;
 }
 export type Time = bigint;
+export interface AppointmentResponse {
+    id: bigint;
+    serviceType: ServiceType;
+    contactInfo: string;
+    date: Time;
+    patientName: string;
+}
+export interface AppointmentRequest {
+    serviceType: ServiceType;
+    contactInfo: string;
+    date: Time;
+    patientName: string;
+}
 export interface Appointment {
     serviceType: ServiceType;
     contactInfo: string;
@@ -41,15 +54,15 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    book(patientName: string, contactInfo: string, date: Time, serviceType: ServiceType): Promise<bigint>;
+    book(request: AppointmentRequest): Promise<bigint>;
     cancel(appointmentId: bigint): Promise<void>;
-    clearManualOverride(): Promise<void>;
-    getAll(): Promise<Array<Appointment>>;
+    getAll(): Promise<Array<AppointmentResponse>>;
     getAllAppointments(): Promise<Array<Appointment>>;
     getAllOpeningHours(): Promise<Array<[string, OpeningHours]>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getClinicOpen(): Promise<boolean>;
+    getEmptyAppointments(): Promise<Array<AppointmentResponse>>;
     getOpeningHours(day: string): Promise<OpeningHours | null>;
     getPastAppointments(): Promise<Array<Appointment>>;
     getShouldBeOpen(): Promise<boolean>;
@@ -60,6 +73,5 @@ export interface backendInterface {
     searchByPatient(patientName: string): Promise<Array<Appointment>>;
     searchByService(serviceType: ServiceType): Promise<Array<Appointment>>;
     serviceTypeToText(serviceType: ServiceType): Promise<string>;
-    setClinicOpen(isOpen: boolean): Promise<void>;
     setOpeningHoursForDay(day: string, openTime: bigint, closeTime: bigint): Promise<void>;
 }

@@ -24,7 +24,6 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const Time = IDL.Int;
 export const ServiceType = IDL.Variant({
   'PediatricExamAndCleaning' : IDL.Null,
   'PeriodontalScaling' : IDL.Null,
@@ -37,6 +36,20 @@ export const ServiceType = IDL.Variant({
   'FirstExamAndXray' : IDL.Null,
   'CrownAndExam' : IDL.Null,
   'ExtractionConsult' : IDL.Null,
+});
+export const Time = IDL.Int;
+export const AppointmentRequest = IDL.Record({
+  'serviceType' : ServiceType,
+  'contactInfo' : IDL.Text,
+  'date' : Time,
+  'patientName' : IDL.Text,
+});
+export const AppointmentResponse = IDL.Record({
+  'id' : IDL.Nat,
+  'serviceType' : ServiceType,
+  'contactInfo' : IDL.Text,
+  'date' : Time,
+  'patientName' : IDL.Text,
 });
 export const Appointment = IDL.Record({
   'serviceType' : ServiceType,
@@ -79,10 +92,9 @@ export const idlService = IDL.Service({
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [IDL.Nat], []),
+  'book' : IDL.Func([AppointmentRequest], [IDL.Nat], []),
   'cancel' : IDL.Func([IDL.Nat], [], []),
-  'clearManualOverride' : IDL.Func([], [], []),
-  'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+  'getAll' : IDL.Func([], [IDL.Vec(AppointmentResponse)], ['query']),
   'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
   'getAllOpeningHours' : IDL.Func(
       [],
@@ -92,6 +104,11 @@ export const idlService = IDL.Service({
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getClinicOpen' : IDL.Func([], [IDL.Bool], ['query']),
+  'getEmptyAppointments' : IDL.Func(
+      [],
+      [IDL.Vec(AppointmentResponse)],
+      ['query'],
+    ),
   'getOpeningHours' : IDL.Func([IDL.Text], [IDL.Opt(OpeningHours)], ['query']),
   'getPastAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
   'getShouldBeOpen' : IDL.Func([], [IDL.Bool], ['query']),
@@ -110,7 +127,6 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'serviceTypeToText' : IDL.Func([ServiceType], [IDL.Text], ['query']),
-  'setClinicOpen' : IDL.Func([IDL.Bool], [], []),
   'setOpeningHoursForDay' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [], []),
 });
 
@@ -133,7 +149,6 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const Time = IDL.Int;
   const ServiceType = IDL.Variant({
     'PediatricExamAndCleaning' : IDL.Null,
     'PeriodontalScaling' : IDL.Null,
@@ -146,6 +161,20 @@ export const idlFactory = ({ IDL }) => {
     'FirstExamAndXray' : IDL.Null,
     'CrownAndExam' : IDL.Null,
     'ExtractionConsult' : IDL.Null,
+  });
+  const Time = IDL.Int;
+  const AppointmentRequest = IDL.Record({
+    'serviceType' : ServiceType,
+    'contactInfo' : IDL.Text,
+    'date' : Time,
+    'patientName' : IDL.Text,
+  });
+  const AppointmentResponse = IDL.Record({
+    'id' : IDL.Nat,
+    'serviceType' : ServiceType,
+    'contactInfo' : IDL.Text,
+    'date' : Time,
+    'patientName' : IDL.Text,
   });
   const Appointment = IDL.Record({
     'serviceType' : ServiceType,
@@ -188,10 +217,9 @@ export const idlFactory = ({ IDL }) => {
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'book' : IDL.Func([IDL.Text, IDL.Text, Time, ServiceType], [IDL.Nat], []),
+    'book' : IDL.Func([AppointmentRequest], [IDL.Nat], []),
     'cancel' : IDL.Func([IDL.Nat], [], []),
-    'clearManualOverride' : IDL.Func([], [], []),
-    'getAll' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
+    'getAll' : IDL.Func([], [IDL.Vec(AppointmentResponse)], ['query']),
     'getAllAppointments' : IDL.Func([], [IDL.Vec(Appointment)], ['query']),
     'getAllOpeningHours' : IDL.Func(
         [],
@@ -201,6 +229,11 @@ export const idlFactory = ({ IDL }) => {
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getClinicOpen' : IDL.Func([], [IDL.Bool], ['query']),
+    'getEmptyAppointments' : IDL.Func(
+        [],
+        [IDL.Vec(AppointmentResponse)],
+        ['query'],
+      ),
     'getOpeningHours' : IDL.Func(
         [IDL.Text],
         [IDL.Opt(OpeningHours)],
@@ -223,7 +256,6 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'serviceTypeToText' : IDL.Func([ServiceType], [IDL.Text], ['query']),
-    'setClinicOpen' : IDL.Func([IDL.Bool], [], []),
     'setOpeningHoursForDay' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [], []),
   });
 };

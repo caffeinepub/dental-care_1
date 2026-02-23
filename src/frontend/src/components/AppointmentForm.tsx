@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CalendarIcon, Loader2, CheckCircle2, Sparkles, AlertCircle, RefreshCw, Clock, WifiOff } from 'lucide-react';
+import { CalendarIcon, Loader2, CheckCircle2, Sparkles, AlertCircle, RefreshCw, Clock, WifiOff, CheckCircle, ArrowRight } from 'lucide-react';
 import { format, getDay } from 'date-fns';
 import { useActor } from '@/hooks/useActor';
 import { useBookAppointment, useGetClinicOpen, useGetOpeningHours } from '@/hooks/useQueries';
@@ -229,7 +229,7 @@ function AppointmentForm() {
 
     // Show immediate loading feedback
     toast.loading('Booking your appointment...', {
-      id: 'booking-progress',
+      id: 'booking-toast',
     });
 
     bookMutation.mutate(
@@ -240,317 +240,305 @@ function AppointmentForm() {
         serviceType: backendServiceType,
         onRetry: (attempt, error) => {
           setBookingRetryAttempt(attempt);
-          const delays = [2, 4, 8];
-          toast.loading(`Retrying... (Attempt ${attempt} of 3, waiting ${delays[attempt - 1]}s)`, {
-            id: 'booking-progress',
-            description: 'Please wait while we process your request.',
+          toast.loading(`Retrying... (Attempt ${attempt}/3)`, {
+            id: 'booking-toast',
+            description: error.message,
           });
         },
       },
       {
         onSuccess: () => {
-          setBookingRetryAttempt(0);
-          toast.dismiss('booking-progress');
+          toast.dismiss('booking-toast');
+          toast.success('Appointment booked successfully!');
           setShowSuccess(true);
-          toast.success('Appointment booked successfully!', {
-            description: 'We will contact you shortly to confirm your appointment.',
-          });
-          
-          setTimeout(() => {
-            setShowSuccess(false);
-            reset();
-            setDate(undefined);
-            setSelectedService('');
-          }, 3000);
+          reset();
+          setDate(undefined);
+          setSelectedService('');
+          setBookingRetryAttempt(0);
         },
         onError: (error) => {
+          toast.dismiss('booking-toast');
           setBookingRetryAttempt(0);
-          toast.dismiss('booking-progress');
           
           const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-          const isInstallError = errorMessage.toLowerCase().includes('installing');
-          const isNetworkError = errorMessage.toLowerCase().includes('network') || 
-                                 errorMessage.toLowerCase().includes('connection');
-          const isTimeoutError = errorMessage.toLowerCase().includes('timeout');
           
-          let userMessage = 'Failed to book appointment';
-          let description = 'Please try again later.';
-          
-          if (isTimeoutError) {
-            userMessage = 'Request timeout';
-            description = 'The booking request took too long. Please check your internet connection and try again.';
-          } else if (isInstallError) {
-            userMessage = 'System is still initializing';
-            description = 'The booking system is starting up. Please wait a moment and try again.';
-          } else if (isNetworkError) {
-            userMessage = 'Connection error';
-            description = 'Please check your internet connection and try again.';
-          } else if (errorMessage.includes('not ready') || errorMessage.includes('not available')) {
-            userMessage = 'Backend not ready';
-            description = 'Please wait a moment for the system to initialize and try again.';
+          // Provide user-friendly error messages
+          if (errorMessage.toLowerCase().includes('timeout')) {
+            toast.error('Request timeout', {
+              description: 'The booking request took too long. Please check your connection and try again.',
+            });
+          } else if (errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('connection')) {
+            toast.error('Network error', {
+              description: 'Unable to connect to the server. Please check your internet connection.',
+            });
+          } else if (errorMessage.toLowerCase().includes('not ready') || errorMessage.toLowerCase().includes('initializing')) {
+            toast.error('System not ready', {
+              description: 'The system is still initializing. Please wait a moment and try again.',
+            });
           } else {
-            description = errorMessage;
+            toast.error('Booking failed', {
+              description: errorMessage,
+            });
           }
-          
-          toast.error(userMessage, { description });
         },
       }
     );
-  }, [date, selectedService, actor, actorFetching, connectionTimeout, bookMutation, reset, clinicOpen, isOnline]);
+  }, [date, selectedService, isOnline, clinicOpen, actor, connectionTimeout, actorFetching, bookMutation, reset, checkConnectivity]);
 
-  // Memoized computed values
-  const isActorReady = useMemo(() => !actorFetching && !!actor, [actorFetching, actor]);
-  const isFormDisabled = useMemo(() => 
-    !isActorReady || bookMutation.isPending || clinicOpen === false || !isOnline, 
-    [isActorReady, bookMutation.isPending, clinicOpen, isOnline]
-  );
-  const showConnectionError = useMemo(() => connectionTimeout && !actor, [connectionTimeout, actor]);
-
+  // Show success screen after booking
   if (showSuccess) {
     return <SuccessScreen />;
   }
 
-  return (
-    <div className="max-w-2xl mx-auto rounded-[3rem] bg-gradient-to-br from-primary/10 via-background to-accent/10 p-1 shadow-2xl hover:shadow-3xl transition-all duration-500">
-      <Card className="rounded-[2.9rem] border-0 shadow-none bg-card/95 backdrop-blur-sm">
-        <CardHeader className="space-y-4 pb-8 pt-10 px-8">
-          <div className="text-center space-y-3">
-            <CardTitle className="text-4xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-              Book Your Appointment
-            </CardTitle>
-            <CardDescription className="text-base text-muted-foreground">
-              Fill out the form below and we will get back to you as soon as possible
-            </CardDescription>
-            
-            {/* Network Status Indicator */}
-            {(!isOnline || isChecking) && (
-              <div className="flex justify-center">
-                <NetworkStatusIndicator />
-              </div>
-            )}
-            
-            {/* Offline Alert */}
-            {!isOnline && !isChecking && (
-              <Alert variant="destructive" className="mt-4">
-                <WifiOff className="h-4 w-4" />
-                <AlertTitle>No Internet Connection</AlertTitle>
-                <AlertDescription>
-                  You are currently offline. Please check your internet connection to book an appointment.
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {/* Clinic Closed Alert */}
-            {!clinicOpenLoading && clinicOpen === false && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Clinic Currently Closed</AlertTitle>
-                <AlertDescription>
-                  We are not accepting new appointments at this time. For urgent dental needs, please contact us directly at{' '}
-                  <a href="tel:+916352174912" className="font-semibold underline">
-                    +91 635-217-4912
-                  </a>
-                  .
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {/* Connection Status Messages */}
-            {actorFetching && !actor && !connectionTimeout && (
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-xl p-3">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Initializing booking system... ({Math.floor(initializationTime / 1000)}s)</span>
-              </div>
-            )}
+  // Show loading state while checking clinic status
+  if (clinicOpenLoading) {
+    return (
+      <Card className="max-w-2xl mx-auto">
+        <CardContent className="p-12 text-center">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading clinic status...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
-            {showConnectionError && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Connection Timeout</AlertTitle>
-                <AlertDescription className="space-y-2">
-                  <p>The booking system is taking longer than expected to load. This might be due to:</p>
-                  <ul className="list-disc list-inside text-sm space-y-1">
-                    <li>Slow internet connection</li>
-                    <li>System initialization in progress</li>
-                    <li>Network connectivity issues</li>
-                  </ul>
-                  <Button
-                    onClick={handleRetry}
-                    variant="outline"
-                    size="sm"
-                    className="mt-2 gap-2"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                    Retry Connection
-                  </Button>
-                </AlertDescription>
-              </Alert>
+  // Determine if form should be disabled
+  const isFormDisabled = clinicOpen === false || bookMutation.isPending || actorFetching || !actor;
+
+  return (
+    <Card className="max-w-2xl mx-auto shadow-xl">
+      <CardHeader className="space-y-4">
+        <CardTitle className="text-2xl">Book Your Appointment</CardTitle>
+        <CardDescription>
+          Fill in your details and we'll get back to you to confirm your appointment.
+        </CardDescription>
+
+        {/* Clinic Status Alert */}
+        {clinicOpen === true && (
+          <Alert className="border-green-500/50 bg-green-50 dark:bg-green-950/20">
+            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+            <AlertTitle className="text-green-800 dark:text-green-300 font-semibold">
+              Clinic is Open
+            </AlertTitle>
+            <AlertDescription className="text-green-700 dark:text-green-400">
+              We are accepting appointments. Book your visit today!
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {clinicOpen === false && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-5 w-5" />
+            <AlertTitle className="font-semibold">Clinic Currently Closed</AlertTitle>
+            <AlertDescription>
+              We are not accepting new appointments at this time. For urgent dental needs, please contact us directly.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Network Status Indicator */}
+        <NetworkStatusIndicator />
+
+        {/* Connection Timeout Warning */}
+        {connectionTimeout && (
+          <Alert variant="destructive" className="animate-error-slide-in">
+            <AlertCircle className="h-5 w-5" />
+            <AlertTitle className="font-semibold">Connection Timeout</AlertTitle>
+            <AlertDescription className="space-y-2">
+              <p>The system took too long to respond. This might be due to:</p>
+              <ul className="list-disc list-inside text-sm space-y-1 ml-2">
+                <li>Slow internet connection</li>
+                <li>Server initialization delay</li>
+                <li>Network connectivity issues</li>
+              </ul>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRetry}
+                className="mt-2"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Retry Connection
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Initialization Progress */}
+        {actorFetching && !actor && initializationTime > 5000 && (
+          <Alert>
+            <Clock className="h-5 w-5 animate-pulse" />
+            <AlertTitle>Initializing System</AlertTitle>
+            <AlertDescription>
+              Please wait while we connect to the backend... ({Math.floor(initializationTime / 1000)}s)
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Retry Attempt Indicator */}
+        {bookingRetryAttempt > 0 && (
+          <Alert>
+            <RefreshCw className="h-5 w-5 animate-spin" />
+            <AlertTitle>Retrying Connection</AlertTitle>
+            <AlertDescription>
+              Attempt {bookingRetryAttempt} of 3... Please wait.
+            </AlertDescription>
+          </Alert>
+        )}
+      </CardHeader>
+
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="patientName">Full Name *</Label>
+            <Input
+              id="patientName"
+              placeholder="Enter your full name"
+              {...register('patientName', { required: 'Name is required' })}
+              disabled={isFormDisabled}
+              className="transition-all focus:ring-2 focus:ring-primary"
+            />
+            {errors.patientName && (
+              <p className="text-sm text-destructive animate-error-slide-in">{errors.patientName.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="contactInfo">Contact Information *</Label>
+            <Input
+              id="contactInfo"
+              type="tel"
+              placeholder="Phone number or email"
+              {...register('contactInfo', { required: 'Contact information is required' })}
+              disabled={isFormDisabled}
+              className="transition-all focus:ring-2 focus:ring-primary"
+            />
+            {errors.contactInfo && (
+              <p className="text-sm text-destructive animate-error-slide-in">{errors.contactInfo.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="serviceType">Service Type *</Label>
+            <Select
+              value={selectedService}
+              onValueChange={setSelectedService}
+              disabled={isFormDisabled}
+            >
+              <SelectTrigger id="serviceType" className="transition-all focus:ring-2 focus:ring-primary">
+                <SelectValue placeholder="Select a service" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[300px] animate-dropdown-in">
+                {services.map((service) => (
+                  <SelectItem key={service} value={service} className="cursor-pointer hover:bg-accent">
+                    {service}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {!selectedService && errors.serviceType && (
+              <p className="text-sm text-destructive animate-error-slide-in">Please select a service</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Preferred Date *</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal transition-all focus:ring-2 focus:ring-primary"
+                  disabled={isFormDisabled}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 animate-calendar-in" align="start">
+                <Suspense fallback={
+                  <div className="p-8 flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  </div>
+                }>
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    initialFocus
+                  />
+                </Suspense>
+              </PopoverContent>
+            </Popover>
+            {!date && errors.serviceType && (
+              <p className="text-sm text-destructive animate-error-slide-in">Please select a date</p>
             )}
             
-            {/* Retry Attempt Indicator */}
-            {bookingRetryAttempt > 0 && (
-              <div className="flex items-center justify-center gap-2 text-sm text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/20 rounded-xl p-3">
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Retrying booking request... (Attempt {bookingRetryAttempt} of 3)</span>
+            {/* Display opening hours for selected day */}
+            {date && selectedDayName && (
+              <div className="text-sm text-muted-foreground mt-2 p-3 bg-muted/50 rounded-md">
+                {openingHoursLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Loading hours...</span>
+                  </div>
+                ) : openingHours ? (
+                  <p>
+                    <strong>{selectedDayName}:</strong> {Number(openingHours.openTime)}:00 - {Number(openingHours.closeTime)}:00
+                  </p>
+                ) : (
+                  <p>Opening hours not available for {selectedDayName}</p>
+                )}
               </div>
             )}
           </div>
-        </CardHeader>
 
-        <CardContent className="px-8 pb-10">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Patient Name */}
-            <div className="space-y-2">
-              <Label htmlFor="patientName" className="text-base font-semibold">
-                Full Name *
-              </Label>
-              <Input
-                id="patientName"
-                placeholder="Enter your full name"
-                {...register('patientName', { required: 'Name is required' })}
-                disabled={isFormDisabled}
-                className="h-12 text-base"
-              />
-              {errors.patientName && (
-                <p className="text-sm text-destructive animate-slide-in">
-                  {errors.patientName.message}
-                </p>
-              )}
-            </div>
-
-            {/* Contact Info */}
-            <div className="space-y-2">
-              <Label htmlFor="contactInfo" className="text-base font-semibold">
-                Contact Information *
-              </Label>
-              <Input
-                id="contactInfo"
-                type="tel"
-                placeholder="Phone number or email"
-                {...register('contactInfo', { required: 'Contact information is required' })}
-                disabled={isFormDisabled}
-                className="h-12 text-base"
-              />
-              {errors.contactInfo && (
-                <p className="text-sm text-destructive animate-slide-in">
-                  {errors.contactInfo.message}
-                </p>
-              )}
-            </div>
-
-            {/* Service Type */}
-            <div className="space-y-2">
-              <Label htmlFor="serviceType" className="text-base font-semibold">
-                Service Type *
-              </Label>
-              <Select
-                value={selectedService}
-                onValueChange={setSelectedService}
-                disabled={isFormDisabled}
-              >
-                <SelectTrigger id="serviceType" className="h-12 text-base">
-                  <SelectValue placeholder="Select a service" />
-                </SelectTrigger>
-                <SelectContent>
-                  {services.map((service) => (
-                    <SelectItem key={service} value={service}>
-                      {service}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {!selectedService && (
-                <p className="text-sm text-muted-foreground">
-                  Please select the type of service you need
-                </p>
-              )}
-            </div>
-
-            {/* Date Picker */}
-            <div className="space-y-2">
-              <Label className="text-base font-semibold">Preferred Date *</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    disabled={isFormDisabled}
-                    className={`w-full h-12 justify-start text-left font-normal text-base ${
-                      !date && 'text-muted-foreground'
-                    }`}
-                  >
-                    <CalendarIcon className="mr-2 h-5 w-5" />
-                    {date ? format(date, 'PPP') : 'Pick a date'}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Suspense
-                    fallback={
-                      <div className="flex items-center justify-center p-8">
-                        <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                      </div>
-                    }
-                  >
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </Suspense>
-                </PopoverContent>
-              </Popover>
-              
-              {/* Display operating hours for selected date */}
-              {date && !openingHoursLoading && openingHours && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-                  <Clock className="w-4 h-4" />
-                  <span>
-                    Clinic hours on {selectedDayName}: {Number(openingHours.openTime)}:00 - {Number(openingHours.closeTime)}:00
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Additional Notes */}
-            <div className="space-y-2">
-              <Label htmlFor="additionalNotes" className="text-base font-semibold">
-                Additional Notes (Optional)
-              </Label>
-              <Textarea
-                id="additionalNotes"
-                placeholder="Any specific concerns or requirements?"
-                {...register('additionalNotes')}
-                disabled={isFormDisabled}
-                className="min-h-[100px] text-base resize-none"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <Button
-              type="submit"
+          <div className="space-y-2">
+            <Label htmlFor="additionalNotes">Additional Notes (Optional)</Label>
+            <Textarea
+              id="additionalNotes"
+              placeholder="Any specific concerns or requests?"
+              {...register('additionalNotes')}
               disabled={isFormDisabled}
-              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {bookMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Booking...
-                </>
-              ) : !isOnline ? (
-                <>
-                  <WifiOff className="mr-2 h-5 w-5" />
-                  No Connection
-                </>
-              ) : (
-                'Book Appointment'
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+              className="min-h-[100px] transition-all focus:ring-2 focus:ring-primary"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full text-lg py-6 font-semibold group hover:scale-[1.02] transition-all"
+            disabled={isFormDisabled}
+          >
+            {bookMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Booking...
+              </>
+            ) : actorFetching ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Initializing...
+              </>
+            ) : clinicOpen === false ? (
+              'Clinic Closed - Cannot Book'
+            ) : (
+              <>
+                Book Appointment
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
+          </Button>
+
+          {!isOnline && (
+            <p className="text-sm text-center text-destructive flex items-center justify-center gap-2 animate-error-slide-in">
+              <WifiOff className="w-4 h-4" />
+              No internet connection. Please check your network.
+            </p>
+          )}
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
-export default memo(AppointmentForm);
+export default AppointmentForm;

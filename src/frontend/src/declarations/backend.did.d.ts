@@ -16,6 +16,19 @@ export interface Appointment {
   'date' : Time,
   'patientName' : string,
 }
+export interface AppointmentRequest {
+  'serviceType' : ServiceType,
+  'contactInfo' : string,
+  'date' : Time,
+  'patientName' : string,
+}
+export interface AppointmentResponse {
+  'id' : bigint,
+  'serviceType' : ServiceType,
+  'contactInfo' : string,
+  'date' : Time,
+  'patientName' : string,
+}
 export interface OpeningHours { 'closeTime' : bigint, 'openTime' : bigint }
 export type ServiceType = { 'PediatricExamAndCleaning' : null } |
   { 'PeriodontalScaling' : null } |
@@ -62,15 +75,15 @@ export interface _SERVICE {
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'book' : ActorMethod<[string, string, Time, ServiceType], bigint>,
+  'book' : ActorMethod<[AppointmentRequest], bigint>,
   'cancel' : ActorMethod<[bigint], undefined>,
-  'clearManualOverride' : ActorMethod<[], undefined>,
-  'getAll' : ActorMethod<[], Array<Appointment>>,
+  'getAll' : ActorMethod<[], Array<AppointmentResponse>>,
   'getAllAppointments' : ActorMethod<[], Array<Appointment>>,
   'getAllOpeningHours' : ActorMethod<[], Array<[string, OpeningHours]>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getClinicOpen' : ActorMethod<[], boolean>,
+  'getEmptyAppointments' : ActorMethod<[], Array<AppointmentResponse>>,
   'getOpeningHours' : ActorMethod<[string], [] | [OpeningHours]>,
   'getPastAppointments' : ActorMethod<[], Array<Appointment>>,
   'getShouldBeOpen' : ActorMethod<[], boolean>,
@@ -81,7 +94,6 @@ export interface _SERVICE {
   'searchByPatient' : ActorMethod<[string], Array<Appointment>>,
   'searchByService' : ActorMethod<[ServiceType], Array<Appointment>>,
   'serviceTypeToText' : ActorMethod<[ServiceType], string>,
-  'setClinicOpen' : ActorMethod<[boolean], undefined>,
   'setOpeningHoursForDay' : ActorMethod<[string, bigint, bigint], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
