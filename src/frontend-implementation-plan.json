@@ -1,41 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Enable clinic open status to allow appointments",
+  "title": "Update Admin Login Credentials",
   "requirements": [
     {
-      "id": "REQ-2",
-      "summary": "Update the frontend to display the open clinic status and enable the appointment booking functionality",
+      "id": "REQ-1",
+      "summary": "Update the hardcoded admin credentials in useAdminAuth hook to username '6352174912' and password '63521'",
       "acceptanceCriteria": [
-        "The frontend displays that the clinic is open and accepting appointments",
-        "Users can access and submit the appointment booking form",
-        "The closed clinic warning message is removed or hidden when the clinic is open"
+        "Admin login accepts username '6352174912' and password '63521'",
+        "Previous credentials no longer work",
+        "Login validation works correctly with new credentials",
+        "Invalid Login error is resolved"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/hooks/useAdminAuth.ts",
           "operation": "modify",
-          "description": "Add a React Query hook `useGetClinicOpen` that calls the backend method `getClinicOpen()` to fetch the current clinic open/closed status. This query should be enabled by default and cached with a stale time to avoid excessive backend calls. Return the boolean status and loading state for use in components."
-        },
-        {
-          "path": "frontend/src/components/AppointmentForm.tsx",
-          "operation": "modify",
-          "description": "Import and use the `useGetClinicOpen` hook to fetch the clinic status. At the top of the form, conditionally render a status message: if the clinic is closed, display a warning alert stating 'Clinic Currently Closed - We are not accepting new appointments at this time' with appropriate styling; if open, display a success message stating 'Clinic is Open - We are accepting appointments'. Disable the entire form (all inputs and submit button) when the clinic is closed. Add loading state handling while fetching the clinic status."
-        },
-        {
-          "path": "frontend/src/pages/BookingPage.tsx",
-          "operation": "modify",
-          "description": "Import and use the `useGetClinicOpen` hook to check clinic status before rendering the AppointmentForm. If the clinic is closed, display a centered card with an informational message and icon explaining that appointments are not currently being accepted, with a suggestion to check back later or contact the clinic directly. Include the clinic contact information from the backend. If open, render the AppointmentForm as usual. Handle loading states appropriately."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Import and use the `useGetClinicOpen` hook in the HomePage component. Pass the clinic open status as a prop to the HeroSection component so it can adjust the call-to-action messaging dynamically based on whether appointments are being accepted."
-        },
-        {
-          "path": "frontend/src/components/HeroSection.tsx",
-          "operation": "modify",
-          "description": "Accept a `clinicOpen` boolean prop from HomePage. Conditionally adjust the hero section messaging and CTA buttons based on clinic status. When closed, update the primary CTA text to 'View Our Services' instead of 'Book Appointment' and change the button link to navigate to the services page. Display a subtle badge or label indicating 'Currently Closed' near the hero text. When open, keep the existing 'Book Appointment' CTA and ensure it links to the booking page."
+          "description": "Update the hardcoded admin credentials: change ADMIN_USERNAME constant to '6352174912' and ADMIN_PASSWORD constant to '63521'. Replace the existing credential values with these new values while maintaining the same authentication mechanism and sessionStorage-based approach."
         }
       ]
     }

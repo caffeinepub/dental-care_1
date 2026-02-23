@@ -2,14 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-frontend-to-display-the-open-clinic-status-and-enable-the-appointment-booking-functionality",
-      "featureTitle": "Update the frontend to display the open clinic status and enable the appointment booking functionality",
+      "featureId": "feature-update-the-hardcoded-admin-credentials-in-useadminauth-hook-to-username-6352174912-and-password-63521",
+      "featureTitle": "Update the hardcoded admin credentials in useAdminAuth hook to username '6352174912' and password '63521'",
       "files": [
-        "frontend/src/components/AppointmentForm.tsx",
-        "frontend/src/components/HeroSection.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/BookingPage.tsx",
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/hooks/useAdminAuth.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,7 +17,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-2"
+        "REQ-1"
       ],
       "confidence": "high"
     }

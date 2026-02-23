@@ -8,9 +8,7 @@ import Runtime "mo:core/Runtime";
 import MixinStorage "blob-storage/Mixin";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
-import Migration "migration";
 
-(with migration = Migration.run)
 actor {
   type OpeningHours = {
     openTime : Nat;
@@ -50,6 +48,7 @@ actor {
     serviceType : ServiceType;
   };
 
+  // Initialize access control
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
   include MixinStorage();
@@ -94,7 +93,6 @@ actor {
     serviceType : ServiceType;
   };
 
-  // Initialize default opening hours for each day of the week
   for (day in daysOfWeek.values()) {
     openingHours.add(
       day,
@@ -105,19 +103,19 @@ actor {
     );
   };
 
-  // Clinic is permanently open - status functions always return true
+  // Public queries - no auth needed
   public query func getClinicOpen() : async Bool {
-    true; // Always open
+    true;
   };
 
   public query func getShouldBeOpen() : async Bool {
-    true; // Always open
+    true;
   };
 
-  // Opening hours management - Admin only
+  // Admin-only: Opening hours management
   public shared ({ caller }) func setOpeningHoursForDay(day : Text, openTime : Nat, closeTime : Nat) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can modify opening hours");
     };
     let hours : OpeningHours = {
       openTime;
@@ -157,7 +155,7 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Appointment management - booking requires user auth
+  // User-only: Book appointment
   public shared ({ caller }) func book(request : AppointmentRequest) : async Nat {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can book appointments");
@@ -174,10 +172,10 @@ actor {
     appointmentId;
   };
 
-  // Cancel appointment - Admin only
+  // Admin-only: Cancel any appointment
   public shared ({ caller }) func cancel(appointmentId : Nat) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can cancel appointments");
     };
     if (not appointments.containsKey(appointmentId)) {
       return;
@@ -185,10 +183,10 @@ actor {
     appointments.remove(appointmentId);
   };
 
-  // Admin-only queries
+  // Admin-only: View all appointments
   public query ({ caller }) func getAll() : async [AppointmentResponse] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can view all appointments");
     };
     appointments.toArray().map(
       func((id, appointment)) : AppointmentResponse {
@@ -203,16 +201,18 @@ actor {
     );
   };
 
+  // Admin-only: View all appointments
   public query ({ caller }) func getAllAppointments() : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can view all appointments");
     };
     appointments.values().toArray();
   };
 
+  // Admin-only: Search by service
   public query ({ caller }) func searchByService(serviceType : ServiceType) : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can search appointments");
     };
     appointments.values().filter(
       func(appointment) : Bool {
@@ -221,9 +221,10 @@ actor {
     ).toArray();
   };
 
+  // Admin-only: Get upcoming appointments
   public query ({ caller }) func getUpcoming() : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can view upcoming appointments");
     };
     let currentTime = Time.now();
     appointments.values().filter(
@@ -233,9 +234,10 @@ actor {
     ).toArray();
   };
 
+  // Admin-only: Get past appointments
   public query ({ caller }) func getPastAppointments() : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can view past appointments");
     };
     let currentTime = Time.now();
     appointments.values().filter(
@@ -245,9 +247,10 @@ actor {
     ).toArray();
   };
 
+  // Admin-only: Search by patient
   public query ({ caller }) func searchByPatient(patientName : Text) : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can perform this action");
+      Runtime.trap("Unauthorized: Only admins can search by patient");
     };
     appointments.values().filter(
       func(appointment) : Bool {
@@ -261,8 +264,11 @@ actor {
     ServiceType.toText(serviceType);
   };
 
-  // Query returning empty array - no auth needed (public endpoint)
+  // Admin-only: Get empty appointments (administrative function)
   public query ({ caller }) func getEmptyAppointments() : async [AppointmentResponse] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can access this function");
+    };
     [];
   };
 };

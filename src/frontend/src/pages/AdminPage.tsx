@@ -1,8 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useAllAppointments, useGetClinicOpen, useGetAllOpeningHours, useSetOpeningHours } from '@/hooks/useQueries';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { useInternetIdentity } from '@/hooks/useInternetIdentity';
-import { useActor } from '@/hooks/useActor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -39,12 +37,7 @@ const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sat
 
 export default function AdminPage() {
   // Admin authentication using custom hook
-  const { isAuthenticated: isAdminAuthenticated, logoutAdmin, hasIdentity } = useAdminAuth();
-  const { identity, clear: clearIdentity } = useInternetIdentity();
-  const { actor, isFetching: actorFetching } = useActor();
-
-  // Wait for both admin auth and Internet Identity
-  const isFullyAuthenticated = isAdminAuthenticated && hasIdentity && !!actor;
+  const { isAuthenticated: isAdminAuthenticated, logoutAdmin } = useAdminAuth();
 
   const { data: appointments, isLoading: appointmentsLoading, error } = useAllAppointments();
   
@@ -167,29 +160,14 @@ export default function AdminPage() {
     }));
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     logoutAdmin();
-    await clearIdentity();
     window.location.href = '/';
   };
 
   // Show admin login form if not admin authenticated
   if (!isAdminAuthenticated) {
     return <AdminLoginForm onLoginSuccess={handleAdminLoginSuccess} />;
-  }
-
-  // Show loading while waiting for Internet Identity and actor
-  if (!isFullyAuthenticated || actorFetching) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-          <p className="text-lg font-medium text-muted-foreground">
-            {!hasIdentity ? 'Authenticating with Internet Identity...' : 'Initializing admin panel...'}
-          </p>
-        </div>
-      </div>
-    );
   }
 
   // Show error state
@@ -302,7 +280,7 @@ export default function AdminPage() {
                     Clinic is Open
                   </p>
                   <p className="text-sm text-green-700 dark:text-green-400">
-                    Currently accepting new appointment bookings
+                    Currently accepting new appointments
                   </p>
                 </div>
               </div>
@@ -310,7 +288,7 @@ export default function AdminPage() {
           </Card>
         )}
 
-        {/* Operating Hours Management */}
+        {/* Opening Hours Management */}
         <Card className="mb-6 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -319,50 +297,56 @@ export default function AdminPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {daysOfWeek.map((day) => {
                 const hours = editingHours[day];
                 return (
-                  <div key={day} className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
-                    <div className="w-28 font-medium">{day}</div>
-                    <div className="flex items-center gap-2 flex-1">
-                      <Label htmlFor={`${day}-open`} className="text-sm w-12">
-                        Open:
-                      </Label>
-                      <Input
-                        id={`${day}-open`}
-                        type="number"
-                        min="0"
-                        max="23"
-                        value={hours?.openTime || '9'}
-                        onChange={(e) => handleHoursChange(day, 'openTime', e.target.value)}
-                        className="w-20"
-                      />
-                      <Label htmlFor={`${day}-close`} className="text-sm w-12">
-                        Close:
-                      </Label>
-                      <Input
-                        id={`${day}-close`}
-                        type="number"
-                        min="0"
-                        max="23"
-                        value={hours?.closeTime || '17'}
-                        onChange={(e) => handleHoursChange(day, 'closeTime', e.target.value)}
-                        className="w-20"
-                      />
+                  <div key={day} className="border rounded-lg p-4 space-y-3">
+                    <h3 className="font-semibold text-sm">{day}</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label htmlFor={`${day}-open`} className="text-xs">
+                          Open
+                        </Label>
+                        <Input
+                          id={`${day}-open`}
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={hours?.openTime || '9'}
+                          onChange={(e) => handleHoursChange(day, 'openTime', e.target.value)}
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`${day}-close`} className="text-xs">
+                          Close
+                        </Label>
+                        <Input
+                          id={`${day}-close`}
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={hours?.closeTime || '17'}
+                          onChange={(e) => handleHoursChange(day, 'closeTime', e.target.value)}
+                          className="h-8 text-sm"
+                        />
+                      </div>
                     </div>
                     <Button
+                      size="sm"
                       onClick={() => handleSaveOpeningHours(day)}
                       disabled={isSettingOpeningHours}
-                      size="sm"
-                      className="gap-2"
+                      className="w-full"
                     >
                       {isSettingOpeningHours ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-3 h-3 animate-spin" />
                       ) : (
-                        <Save className="w-4 h-4" />
+                        <>
+                          <Save className="w-3 h-3 mr-1" />
+                          Save
+                        </>
                       )}
-                      Save
                     </Button>
                   </div>
                 );
@@ -371,32 +355,42 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
-        {/* Appointments Management */}
-        <Card className="shadow-lg">
+        {/* Appointments Section */}
+        <Card
+          ref={tableRef}
+          className={`shadow-lg transition-all duration-700 ${
+            tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
-              Appointments Management
+              Appointments
             </CardTitle>
           </CardHeader>
           <CardContent>
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="space-y-2">
-                <Label htmlFor="search-name" className="flex items-center gap-2">
-                  <Search className="w-4 h-4" />
+                <Label htmlFor="search-name" className="text-sm font-medium">
                   Search by Name
                 </Label>
-                <Input
-                  id="search-name"
-                  placeholder="Patient name..."
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
-                />
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="search-name"
+                    placeholder="Patient name..."
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="filter-service">Filter by Service</Label>
+                <Label htmlFor="filter-service" className="text-sm font-medium">
+                  Filter by Service
+                </Label>
                 <Select value={filterService} onValueChange={setFilterService}>
                   <SelectTrigger id="filter-service">
                     <SelectValue placeholder="All services" />
@@ -413,7 +407,9 @@ export default function AdminPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="start-date">Start Date</Label>
+                <Label htmlFor="start-date" className="text-sm font-medium">
+                  Start Date
+                </Label>
                 <Input
                   id="start-date"
                   type="date"
@@ -423,7 +419,9 @@ export default function AdminPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="end-date">End Date</Label>
+                <Label htmlFor="end-date" className="text-sm font-medium">
+                  End Date
+                </Label>
                 <Input
                   id="end-date"
                   type="date"
@@ -436,7 +434,7 @@ export default function AdminPage() {
             {/* Sort Controls */}
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-muted-foreground">
-                Showing {filteredAppointments.length} of {appointments?.length || 0} appointments
+                Showing {filteredAppointments.length} appointment{filteredAppointments.length !== 1 ? 's' : ''}
               </p>
               <Button
                 variant="outline"
@@ -445,113 +443,71 @@ export default function AdminPage() {
                 className="gap-2"
               >
                 <ArrowUpDown className="w-4 h-4" />
-                Sort by Date ({sortOrder === 'asc' ? 'Oldest First' : 'Newest First'})
+                {sortOrder === 'asc' ? 'Oldest First' : 'Newest First'}
               </Button>
             </div>
 
             {/* Appointments Table */}
-            <div
-              ref={tableRef}
-              className={`transition-all duration-700 ${
-                tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-              }`}
-            >
-              {filteredAppointments.length === 0 ? (
-                <div className="text-center py-12 bg-muted/30 rounded-lg">
-                  <Calendar className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-lg font-medium text-muted-foreground">No appointments found</p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {searchName || filterService !== 'all' || startDate || endDate
-                      ? 'Try adjusting your filters'
-                      : 'Appointments will appear here once booked'}
-                  </p>
-                </div>
-              ) : (
-                <div className="border rounded-lg overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/50">
-                        <TableHead className="font-semibold">
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Patient</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Service</TableHead>
+                    <TableHead>Date & Time</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredAppointments.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                        No appointments found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredAppointments.map((appointment, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
                           <div className="flex items-center gap-2">
-                            <User className="w-4 h-4" />
-                            Patient
+                            <User className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-medium">{appointment.patientName}</span>
                           </div>
-                        </TableHead>
-                        <TableHead className="font-semibold">
-                          <div className="flex items-center gap-2">
-                            <Phone className="w-4 h-4" />
-                            Contact
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              {appointment.contactInfo.includes('@') ? (
+                                <>
+                                  <Mail className="w-3 h-3 text-muted-foreground" />
+                                  <span>{appointment.contactInfo}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Phone className="w-3 h-3 text-muted-foreground" />
+                                  <span>{appointment.contactInfo}</span>
+                                </>
+                              )}
+                            </div>
                           </div>
-                        </TableHead>
-                        <TableHead className="font-semibold">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4" />
-                            Date & Time
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="gap-1">
+                            <Stethoscope className="w-3 h-3" />
+                            {serviceTypeToText(appointment.serviceType)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Calendar className="w-3 h-3 text-muted-foreground" />
+                            {format(new Date(Number(appointment.date) / 1000000), 'PPp')}
                           </div>
-                        </TableHead>
-                        <TableHead className="font-semibold">
-                          <div className="flex items-center gap-2">
-                            <Stethoscope className="w-4 h-4" />
-                            Service
-                          </div>
-                        </TableHead>
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredAppointments.map((appointment, index) => {
-                        const appointmentDate = new Date(Number(appointment.date) / 1000000);
-                        const isUpcoming = appointmentDate > new Date();
-
-                        return (
-                          <TableRow
-                            key={index}
-                            className="hover:bg-muted/30 transition-colors"
-                          >
-                            <TableCell className="font-medium">
-                              <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <User className="w-4 h-4 text-primary" />
-                                </div>
-                                {appointment.patientName}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2 text-sm">
-                                {appointment.contactInfo.includes('@') ? (
-                                  <Mail className="w-4 h-4 text-muted-foreground" />
-                                ) : (
-                                  <Phone className="w-4 h-4 text-muted-foreground" />
-                                )}
-                                {appointment.contactInfo}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="space-y-1">
-                                <div className="font-medium">
-                                  {format(appointmentDate, 'PPP')}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  {format(appointmentDate, 'p')}
-                                </div>
-                                {isUpcoming && (
-                                  <Badge variant="outline" className="text-xs">
-                                    Upcoming
-                                  </Badge>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="secondary" className="font-normal">
-                                {serviceTypeToText(appointment.serviceType)}
-                              </Badge>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
+                    ))
+                  )}
+                </TableBody>
+              </Table>
             </div>
           </CardContent>
         </Card>

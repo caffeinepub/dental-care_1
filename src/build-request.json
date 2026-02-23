@@ -1,55 +1,39 @@
 {
   "kind": "build_request",
-  "title": "Enable clinic open status to allow appointments",
-  "projectName": "Annaya Dental Care",
+  "title": "Update admin login credentials",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Set the clinic status to permanently open so that new appointments can be accepted at all times",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ],
-        "quotes": [
-          "Clinic ko hamesa ke liye open hu rakho kabhi bhi band na ho",
-          "Mere clinic ko opne karo taki mije apoitments aa sake"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The clinic status is set to open in the backend",
-        "Appointments can be successfully booked when the clinic is open",
-        "The 'Clinic Currently Closed' message is no longer displayed on the frontend"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Update the frontend to display the open clinic status and enable the appointment booking functionality",
+      "text": "Update the hardcoded admin credentials in useAdminAuth hook to username '6352174912' and password '63521'",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-latest"
         ],
         "quotes": [
-          "Clinic Currently Closed We are not accepting new appointments at this time"
+          "New Username: 6352174912",
+          "New Password: 63521"
         ]
       },
       "acceptanceCriteria": [
-        "The frontend displays that the clinic is open and accepting appointments",
-        "Users can access and submit the appointment booking form",
-        "The closed clinic warning message is removed or hidden when the clinic is open"
+        "Admin login accepts username '6352174912' and password '63521'",
+        "Previous credentials no longer work",
+        "Login validation works correctly with new credentials",
+        "Invalid Login error is resolved"
       ]
     }
   ],
   "constraints": [
-    "Do not remove the clinic status management functionality from the admin panel",
-    "Preserve the existing appointment booking form and validation logic"
+    "Do not modify the authentication mechanism or storage approach",
+    "Keep sessionStorage-based authentication as is",
+    "Do not change backend code"
   ],
   "nonGoals": [
-    "Changing the admin authentication system",
-    "Modifying the opening hours management interface",
-    "Altering the appointment data structure or storage"
+    "Implementing database-backed user management",
+    "Adding password encryption or hashing",
+    "Creating user registration functionality",
+    "Changing the authentication flow"
   ],
   "imageRequirements": {
     "required": [],

@@ -16,7 +16,7 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { loginAdmin, isLoggingIn, hasIdentity } = useAdminAuth();
+  const { loginAdmin } = useAdminAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,8 +44,6 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
     }
   };
 
-  const isSubmitting = isLoading || isLoggingIn;
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
@@ -68,7 +66,7 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
                 placeholder="Enter username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                disabled={isSubmitting}
+                disabled={isLoading}
                 required
                 autoComplete="username"
               />
@@ -81,7 +79,7 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitting}
+                disabled={isLoading}
                 required
                 autoComplete="current-password"
               />
@@ -94,24 +92,15 @@ export default function AdminLoginForm({ onLoginSuccess }: AdminLoginFormProps) 
               </Alert>
             )}
 
-            {isLoggingIn && !hasIdentity && (
-              <Alert>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <AlertDescription>
-                  Connecting to Internet Identity...
-                </AlertDescription>
-              </Alert>
-            )}
-
             <Button
               type="submit"
               className="w-full"
-              disabled={isSubmitting}
+              disabled={isLoading}
             >
-              {isSubmitting ? (
+              {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {isLoggingIn ? 'Authenticating...' : 'Logging in...'}
+                  Logging in...
                 </>
               ) : (
                 'Login'
