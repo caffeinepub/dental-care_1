@@ -184,7 +184,7 @@ actor {
   };
 
   // Admin-only: View all appointments
-  public query ({ caller }) func getAll() : async [AppointmentResponse] {
+  public shared ({ caller }) func getAll() : async [AppointmentResponse] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can view all appointments");
     };
@@ -202,7 +202,7 @@ actor {
   };
 
   // Admin-only: View all appointments
-  public query ({ caller }) func getAllAppointments() : async [Appointment] {
+  public shared ({ caller }) func getAllAppointments() : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can view all appointments");
     };
@@ -210,7 +210,7 @@ actor {
   };
 
   // Admin-only: Search by service
-  public query ({ caller }) func searchByService(serviceType : ServiceType) : async [Appointment] {
+  public shared ({ caller }) func searchByService(serviceType : ServiceType) : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can search appointments");
     };
@@ -222,7 +222,7 @@ actor {
   };
 
   // Admin-only: Get upcoming appointments
-  public query ({ caller }) func getUpcoming() : async [Appointment] {
+  public shared ({ caller }) func getUpcoming() : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can view upcoming appointments");
     };
@@ -235,7 +235,7 @@ actor {
   };
 
   // Admin-only: Get past appointments
-  public query ({ caller }) func getPastAppointments() : async [Appointment] {
+  public shared ({ caller }) func getPastAppointments() : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can view past appointments");
     };
@@ -248,7 +248,7 @@ actor {
   };
 
   // Admin-only: Search by patient
-  public query ({ caller }) func searchByPatient(patientName : Text) : async [Appointment] {
+  public shared ({ caller }) func searchByPatient(patientName : Text) : async [Appointment] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can search by patient");
     };
@@ -265,7 +265,7 @@ actor {
   };
 
   // Admin-only: Get empty appointments (administrative function)
-  public query ({ caller }) func getEmptyAppointments() : async [AppointmentResponse] {
+  public shared ({ caller }) func getEmptyAppointments() : async [AppointmentResponse] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can access this function");
     };

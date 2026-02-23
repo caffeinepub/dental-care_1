@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-hardcoded-admin-credentials-in-useadminauth-hook-to-username-6352174912-and-password-63521",
-      "featureTitle": "Update the hardcoded admin credentials in useAdminAuth hook to username '6352174912' and password '63521'",
+      "featureId": "feature-ensure-appointments-are-properly-displayed-in-the-admin-panel-table-after-successful-authentication",
+      "featureTitle": "Ensure appointments are properly displayed in the admin panel table after successful authentication",
       "files": [
-        "frontend/src/hooks/useAdminAuth.ts"
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/AdminPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -17,7 +18,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-2"
       ],
       "confidence": "high"
     }

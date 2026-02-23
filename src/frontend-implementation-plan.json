@@ -1,22 +1,27 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update Admin Login Credentials",
+  "title": "Fix admin panel appointment display after authorization fix",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Update the hardcoded admin credentials in useAdminAuth hook to username '6352174912' and password '63521'",
+      "id": "REQ-2",
+      "summary": "Ensure appointments are properly displayed in the admin panel table after successful authentication",
       "acceptanceCriteria": [
-        "Admin login accepts username '6352174912' and password '63521'",
-        "Previous credentials no longer work",
-        "Login validation works correctly with new credentials",
-        "Invalid Login error is resolved"
+        "All existing appointments are fetched and displayed in the admin panel table",
+        "Appointments show all relevant fields including patient name, phone, service type, date, and status",
+        "The appointment list updates properly when new appointments are created",
+        "Search and filter functionality works correctly with the displayed appointments"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useAdminAuth.ts",
+          "path": "frontend/src/pages/AdminPage.tsx",
           "operation": "modify",
-          "description": "Update the hardcoded admin credentials: change ADMIN_USERNAME constant to '6352174912' and ADMIN_PASSWORD constant to '63521'. Replace the existing credential values with these new values while maintaining the same authentication mechanism and sessionStorage-based approach."
+          "description": "Update the appointments data fetching to properly handle the getAllAppointments response after the backend authorization fix. Ensure the table correctly maps and displays all appointment fields (patientName, contactInfo, serviceType, date) from the Appointment type returned by getAllAppointments. Verify error handling displays appropriate messages if the fetch fails. Maintain existing search and filter functionality with the corrected data structure."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Review and update the useGetAllAppointments hook to ensure it properly calls actor.getAllAppointments() and handles the returned Array<Appointment> type. Add proper error handling for authorization failures and ensure query invalidation works correctly when appointments are modified. Verify the hook integrates properly with React Query caching and refetching mechanisms."
         }
       ]
     }

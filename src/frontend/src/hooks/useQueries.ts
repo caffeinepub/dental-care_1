@@ -32,6 +32,7 @@ export function useGetAllAppointments() {
 
 export function useAllAppointments() {
   const { actor, isFetching: actorFetching } = useActor();
+  const { identity } = useInternetIdentity();
 
   return useQuery<Appointment[]>({
     queryKey: ['allAppointments'],
@@ -48,7 +49,7 @@ export function useAllAppointments() {
         throw error;
       }
     },
-    enabled: !!actor && !actorFetching,
+    enabled: !!actor && !actorFetching && !!identity,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false,

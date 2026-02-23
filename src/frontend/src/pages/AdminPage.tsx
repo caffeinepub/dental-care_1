@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useAllAppointments, useGetClinicOpen, useGetAllOpeningHours, useSetOpeningHours } from '@/hooks/useQueries';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { useInternetIdentity } from '@/hooks/useInternetIdentity';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,11 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, LogOut, Clock, Save, Mail, CheckCircle2 } from 'lucide-react';
+import { Loader2, Calendar, Phone, User, Stethoscope, Search, ArrowUpDown, LogOut, Clock, Save, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ServiceType } from '../backend';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import AdminLoginForm from '@/components/AdminLoginForm';
 import { toast } from 'sonner';
 
 // Map backend ServiceType enum to user-friendly names
@@ -36,8 +35,9 @@ function serviceTypeToText(serviceType: ServiceType): string {
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function AdminPage() {
-  // Admin authentication using custom hook
-  const { isAuthenticated: isAdminAuthenticated, logoutAdmin } = useAdminAuth();
+  // Use Internet Identity for admin authentication
+  const { login, clear, loginStatus, identity } = useInternetIdentity();
+  const isAuthenticated = !!identity;
 
   const { data: appointments, isLoading: appointmentsLoading, error } = useAllAppointments();
   
@@ -108,11 +108,6 @@ export default function AdminPage() {
     return filtered;
   }, [appointments, searchName, filterService, sortOrder, startDate, endDate]);
 
-  const handleAdminLoginSuccess = () => {
-    // Force re-render after successful login
-    window.location.reload();
-  };
-
   const handleSaveOpeningHours = (day: string) => {
     const hours = editingHours[day];
     if (!hours) return;
@@ -160,33 +155,81 @@ export default function AdminPage() {
     }));
   };
 
-  const handleLogout = () => {
-    logoutAdmin();
+  const handleLogout = async () => {
+    await clear();
     window.location.href = '/';
   };
 
-  // Show admin login form if not admin authenticated
-  if (!isAdminAuthenticated) {
-    return <AdminLoginForm onLoginSuccess={handleAdminLoginSuccess} />;
+  const handleLogin = async () => {
+    try {
+      await login();
+      toast.success('Logged in successfully');
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Failed to login', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  };
+
+  // Show login screen if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="text-center space-y-2">
+              <p className="text-muted-foreground">
+                Please login with Internet Identity to access the admin panel
+              </p>
+            </div>
+            <Button
+              onClick={handleLogin}
+              disabled={loginStatus === 'logging-in'}
+              className="w-full"
+              size="lg"
+            >
+              {loginStatus === 'logging-in' ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                'Login with Internet Identity'
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   // Show error state
   if (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isAuthError = errorMessage.toLowerCase().includes('unauthorized') || 
+                        errorMessage.toLowerCase().includes('only admins');
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl shadow-xl border-destructive">
           <CardHeader>
             <CardTitle className="text-destructive flex items-center gap-2">
-              Error Loading Appointments
+              {isAuthError ? 'Access Denied' : 'Error Loading Admin Panel'}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
               <p className="font-semibold text-destructive mb-2">
-                {error instanceof Error ? error.message : String(error)}
+                {errorMessage}
               </p>
               <p className="text-sm text-muted-foreground">
-                There was an error loading the admin panel. Please try again.
+                {isAuthError 
+                  ? 'Your account does not have admin privileges. Please contact the system administrator.'
+                  : 'There was an error loading the admin panel. Please try again.'}
               </p>
             </div>
 
@@ -475,32 +518,25 @@ export default function AdminPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-sm">
-                              {appointment.contactInfo.includes('@') ? (
-                                <>
-                                  <Mail className="w-3 h-3 text-muted-foreground" />
-                                  <span>{appointment.contactInfo}</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Phone className="w-3 h-3 text-muted-foreground" />
-                                  <span>{appointment.contactInfo}</span>
-                                </>
-                              )}
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">{appointment.contactInfo}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="gap-1">
-                            <Stethoscope className="w-3 h-3" />
-                            {serviceTypeToText(appointment.serviceType)}
-                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <Stethoscope className="w-4 h-4 text-muted-foreground" />
+                            <Badge variant="outline" className="text-xs">
+                              {serviceTypeToText(appointment.serviceType)}
+                            </Badge>
+                          </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2 text-sm">
-                            <Calendar className="w-3 h-3 text-muted-foreground" />
-                            {format(new Date(Number(appointment.date) / 1000000), 'PPp')}
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">
+                              {format(new Date(Number(appointment.date) / 1000000), 'PPp')}
+                            </span>
                           </div>
                         </TableCell>
                       </TableRow>

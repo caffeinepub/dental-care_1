@@ -1,39 +1,55 @@
 {
   "kind": "build_request",
-  "title": "Update admin login credentials",
-  "priority": "normal",
+  "title": "Fix admin panel authorization and appointment display issues",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the hardcoded admin credentials in useAdminAuth hook to username '6352174912' and password '63521'",
-      "target": "frontend",
+      "text": "Fix the 'Unauthorized: Only admins can view all appointments' error in the admin panel by ensuring the backend correctly identifies authenticated admin users when they access the getAllAppointments function",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-7"
         ],
         "quotes": [
-          "New Username: 6352174912",
-          "New Password: 63521"
+          "admin panel me ye problem solve karo Unauthorized: Only admins can view all appointments"
         ]
       },
       "acceptanceCriteria": [
-        "Admin login accepts username '6352174912' and password '63521'",
-        "Previous credentials no longer work",
-        "Login validation works correctly with new credentials",
-        "Invalid Login error is resolved"
+        "Admin users logged in with username '6352174912' and password '63521' can successfully access the admin panel without authorization errors",
+        "The getAllAppointments backend function returns appointment data instead of throwing unauthorized errors",
+        "Error message 'Unauthorized: Only admins can view all appointments' no longer appears in the admin panel"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Ensure appointments are properly displayed in the admin panel table after successful authentication",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-7"
+        ],
+        "quotes": [
+          "admin panel me apoint ment bhi nahi dikh rahi usko bhi solve karo"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All existing appointments are fetched and displayed in the admin panel table",
+        "Appointments show all relevant fields including patient name, phone, service type, date, and status",
+        "The appointment list updates properly when new appointments are created",
+        "Search and filter functionality works correctly with the displayed appointments"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the authentication mechanism or storage approach",
-    "Keep sessionStorage-based authentication as is",
-    "Do not change backend code"
+    "Maintain the existing admin credentials (username: '6352174912', password: '63521')",
+    "Do not modify the frontend authentication flow in useAdminAuth hook",
+    "Preserve the existing appointment table UI and filtering features"
   ],
   "nonGoals": [
-    "Implementing database-backed user management",
-    "Adding password encryption or hashing",
-    "Creating user registration functionality",
-    "Changing the authentication flow"
+    "Changing the admin authentication mechanism",
+    "Adding new admin features beyond fixing the authorization issue",
+    "Modifying the appointment booking flow for regular users"
   ],
   "imageRequirements": {
     "required": [],
